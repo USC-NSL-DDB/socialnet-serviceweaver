@@ -1,11 +1,11 @@
 package main
 
 import (
-  "context"
-  "fmt"
-  "log"
+    "context"
+    "fmt"
+    "log"
 
-  "github.com/ServiceWeaver/weaver"
+    "github.com/ServiceWeaver/weaver"
 )
 
 func main() {
@@ -18,10 +18,16 @@ func main() {
 // it and passes it to serve.
 type app struct{
     weaver.Implements[weaver.Main]
+    reverser weaver.Ref[Reverser]
 }
 
 // serve is called by weaver.Run and contains the body of the application.
-func serve(context.Context, *app) error {
-    fmt.Println("Hello")
-    return nil
+func serve(ctx context.Context, app *app) error {
+  var r Reverser = app.reverser.Get()
+  reversed, err := r.Reverse(ctx, "!dlroW ,olleH")
+  if err != nil {
+    return err
+  }
+  fmt.Println(reversed)
+  return nil
 }

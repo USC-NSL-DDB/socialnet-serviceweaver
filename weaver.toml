@@ -1,0 +1,4 @@
+[serviceweaver]
+binary = "./hello"
+
+[multi]
