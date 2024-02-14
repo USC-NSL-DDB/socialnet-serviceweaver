@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"sync"
+
+	"github.com/ServiceWeaver/weaver"
 )
 
 type Hashtable interface {
@@ -10,9 +12,19 @@ type Hashtable interface {
   Get(ctx context.Context, key string) (string, error)
 }
 
+
+// Manually routing all request to the same replica.
+// But it's not guaranteed by the documentation.
+type hashtableRouter struct {}
+func (hashtableRouter) Get(_ context.Context, key string) string { return "same" }
+func (hashtableRouter) Put(_ context.Context, key, value string) string { return "same" } 
+
 // the hashtable needs to be manually managed so that it has only one instance and no replicas.
 // Later on, for distributed sharded hastable, we can have more replicas as shards.
 type hashtable struct {
+  weaver.Implements[Hashtable]
+  weaver.WithRouter[hashtableRouter]
+
   mu sync.Mutex
   data map[string]string
 }

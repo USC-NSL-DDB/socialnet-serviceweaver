@@ -1,4 +1,4 @@
 [serviceweaver]
-binary = "./hello"
+binary = "./SocialNetwork"
 
 [multi]
