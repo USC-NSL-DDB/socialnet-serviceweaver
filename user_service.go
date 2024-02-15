@@ -93,23 +93,25 @@ func GenerateUniqueId() int64 {
 
 type UserService struct {
     weaver.Implements[UserServicer]
+    storage weaver.Ref[Storage]
 
     _machineId string
     _secret string
-    _usernameToUserprofileMap hashtable
 }
+
+// func (us *UserService) Init(context.Context) error {
+//   
+// }
 
 func (us *UserService) LoadSecretAndMachineId() {
   // figure out how to load data from local config file
 }
 
-
-
 func (us *UserService) Login(_ context.Context, username, password string) (string, error) {
   return "", nil
 }
 
-func (us *UserService) RegisterUserWithId(_ context.Context, firstName, lastName, username, password string, userId int64) {
+func (us *UserService) RegisterUserWithId(ctx context.Context, firstName, lastName, username, password string, userId int64) {
   salt := GenRandomString(32)
   userProfile := UserProfile {
     userId: userId,
@@ -119,7 +121,8 @@ func (us *UserService) RegisterUserWithId(_ context.Context, firstName, lastName
     passwordHashed: HashPassowrd(password, salt),
   }
   // update the map
-  _ = userProfile
+  var s Storage = us.storage.Get()
+  s.PutUserProfile(ctx, username, userProfile)
 }
 
 func (us *UserService) RegisterUser(ctx context.Context, firstName, lastName, username, password string) {
@@ -137,5 +140,4 @@ type UserProfile struct {
   salt string
   passwordHashed string
 }
-
 

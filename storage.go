@@ -30,7 +30,12 @@ type Storage struct {
   mu sync.Mutex
   data map[string]string
 
-  usernameToUserProfileMap HashMap[string, UserProfile]
+  usernameToUserProfileMap *HashMap[string, UserProfile]
+}
+
+func (s *Storage) Init(context.Context) error {
+  s.usernameToUserProfileMap = NewHashMap[string, UserProfile]() 
+  return nil
 }
 
 func (s *Storage) PutUserProfile(_ context.Context, key string, val UserProfile) {
