@@ -2,7 +2,11 @@ package main
 
 import (
 	"context"
+  "time"
 	"fmt"
+  "math/rand"
+  "crypto/sha256"
+  "encoding/hex"
 
 	"github.com/ServiceWeaver/weaver"
 )
@@ -35,55 +39,103 @@ func (le *LogError) Error() string {
 }
 
 type UserServicer interface {
-    RegisterUserWithId(string, string, string, string, int64) 
-    RegisterUser(string, string, string, string) 
+    RegisterUserWithId(context.Context, string, string, string, string, int64) 
+    RegisterUser(context.Context, string, string, string, string) 
     // TODO: Figure out what is Creator return type
     // ComposeCreatorWithUsername(string) Creator
     // ComposeCreatorWithUserId(int64, string) Creator
 
-    Login(string, string) (string, error)
+    Login(context.Context, string, string) (string, error)
     
+}
+
+func GenRandomString(length int) string {
+  const alphanum string = `0123456789
+                           ABCDEFGHIJKLMNOPQRSTUVWXYZ
+                           abcdefghijklmnopqrstuvwxyz`
+  s := ""
+  for i := 0; i < length; i++ {
+    rd_idx := rand.Intn(len(alphanum))
+    s += string(alphanum[rd_idx])
+  }
+  return s
+}
+
+func HashPassowrd(password, salt string) string {
+  combined := salt
+
+  hasher := sha256.New()
+  hasher.Write([]byte(combined))
+  hashBytes := hasher.Sum(nil)
+
+  hashHex := hex.EncodeToString(hashBytes)
+  return hashHex
+}
+
+func GenerateUniqueId() int64 {
+    // Get the current Unix timestamp in milliseconds
+    // This reduces the chance of collision for IDs generated in quick succession
+    timestamp := time.Now().UnixNano() / int64(time.Millisecond)
+    
+    // Shift the timestamp to occupy the higher bits of the int64, making room for the random component
+    // Adjust the shifting based on your application's needs for timestamp precision vs. randomness
+    timestamp = timestamp << (64 - 48) // Adjust 48 based on your needs
+    
+    // Generate a random component to fill the lower bits
+    // Ensure the random source is seeded (usually done once globally)
+    randComponent := rand.Int63n(1 << 48) // Adjust 48 based on the shifting above
+    
+    // Combine the timestamp and random component
+    uniqueID := timestamp | randComponent
+    
+    return uniqueID
 }
 
 type UserService struct {
     weaver.Implements[UserServicer]
 
-    _machine_id string
+    _machineId string
     _secret string
-    _username_to_userprofile_map hashtable
+    _usernameToUserprofileMap hashtable
 }
 
 func (us *UserService) LoadSecretAndMachineId() {
   // figure out how to load data from local config file
 }
 
-func (us *UserService) Login(username, password string) (string, error) {
+
+
+func (us *UserService) Login(_ context.Context, username, password string) (string, error) {
   return "", nil
 }
 
-func (us *UserService) RegisterUserWithId(first_name, last_name, username, password string, user_id int64) {
-  u_profile := UserProfile {
-    first_name: first_name,
-    last_name: last_name,
-    user_id: user_id,
-    // salt
-    // password by hashing with salt
+func (us *UserService) RegisterUserWithId(_ context.Context, firstName, lastName, username, password string, userId int64) {
+  salt := GenRandomString(32)
+  userProfile := UserProfile {
+    userId: userId,
+    firstName: firstName,
+    lastName: lastName,
+    salt: salt,
+    passwordHashed: HashPassowrd(password, salt),
   }
-  _ = u_profile
   // update the map
+  _ = userProfile
 }
 
-func (us *UserService) RegisterUser(first_name, last_name, username, password string) {
+func (us *UserService) RegisterUser(ctx context.Context, firstName, lastName, username, password string) {
   // Generate a user id
+  uid := GenerateUniqueId()
+
   // Call RegisterUserWithId
+  us.RegisterUserWithId(ctx, firstName, lastName, username, password, uid)
 }
 
 type UserProfile struct {
-  user_id int64
-  first_name string
-  last_name string
+  userId int64
+  firstName string
+  lastName string
   salt string
-  password_hased string
+  passwordHashed string
 }
 
 
