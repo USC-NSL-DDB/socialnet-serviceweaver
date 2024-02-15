@@ -8,17 +8,66 @@ import (
 
 
 type BackendServicer interface {
-
-    RemovePost(context.Context, int64, int)
+//   void RemovePosts(int64_t user_id, int start, int stop);
+//   void ComposePost(const std::string &username, int64_t user_id,
+//                    const std::string &text,
+//                    const std::vector<int64_t> &media_ids,
+//                    const std::vector<std::string> &media_types,
+//                    PostType::type post_type) override;
+//   void ReadUserTimeline(std::vector<Post> &, int64_t, int, int) override;
+//   void Login(std::string &_return, const std::string &username,
+//              const std::string &password) override;
+//   void RegisterUser(const std::string &first_name, const std::string &last_name,
+//                     const std::string &username,
+//                     const std::string &password) override;
+//   void RegisterUserWithId(const std::string &first_name,
+//                           const std::string &last_name,
+//                           const std::string &username,
+//                           const std::string &password,
+//                           const int64_t user_id) override;
+//   void GetFollowers(std::vector<int64_t> &_return,
+//                     const int64_t user_id) override;
+//   void Unfollow(const int64_t user_id, const int64_t followee_id) override;
+//   void UnfollowWithUsername(const std::string &user_usernmae,
+//                             const std::string &followee_username) override;
+//   void Follow(const int64_t user_id, const int64_t followee_id) override;
+//   void FollowWithUsername(const std::string &user_usernmae,
+//                           const std::string &followee_username) override;
+//   void GetFollowees(std::vector<int64_t> &_return,
+//                     const int64_t user_id) override;
+//   void ReadHomeTimeline(std::vector<Post> &_return, const int64_t user_id,
+//                         const int32_t start, const int32_t stop) override;
+//   void UploadMedia(const std::string &filename,
+//                    const std::string &data) override;
+//   void GetMedia(std::string &_return, const std::string &filename) override;
+    RemovePosts(context.Context, int64, int)
     CompostPost(context.Context, string, int64, string, []int64, []string)
     Login(context.Context, string, string, string)
-    // RegisterUser(context.Context)
+    RegisterUser(context.Context, string, string, string, string)
     // ReadUserTimeline(context.Context, )
     // Reverse(context.Context, string) (string, error)
 }
 
 type BackendService struct{
     weaver.Implements[BackendServicer]
+}
+
+func (bs *BackendService) RegisterUser(
+  ctx context.Context, 
+  first_name, 
+  last_name, 
+  username, 
+  password string,
+) {
+  // run UserService
+}
+
+func (bs *BackendService) RemovePosts(user_id int64, start, top int) {
+  // run UserTimelineService
+  // run SocialGraphService
+  // run PostStorageService
+  // run HomeTimelineService
+  // run UrlShortenService
 }
 
 // func (r *reverser) Reverse(_ context.Context, s string) (string, error) {
