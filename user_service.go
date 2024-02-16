@@ -2,13 +2,15 @@ package main
 
 import (
 	"context"
-  "time"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
-  "math/rand"
-  "crypto/sha256"
-  "encoding/hex"
+	"math/rand"
+	"strconv"
+	"time"
 
 	"github.com/ServiceWeaver/weaver"
+	"github.com/golang-jwt/jwt"
 )
 
 type LogErrorCode int
@@ -42,10 +44,11 @@ type UserServicer interface {
     RegisterUserWithId(context.Context, string, string, string, string, int64) 
     RegisterUser(context.Context, string, string, string, string) 
     // TODO: Figure out what is Creator return type
-    // ComposeCreatorWithUsername(string) Creator
-    // ComposeCreatorWithUserId(int64, string) Creator
+    ComposeCreatorWithUsername(context.Context, string) Creator
+    ComposeCreatorWithUserId(context.Context, int64, string) Creator
 
     Login(context.Context, string, string) (string, error)
+    GetUserId(context.Context, string) int64
     
 }
 
@@ -99,16 +102,75 @@ type UserService struct {
     _secret string
 }
 
-// func (us *UserService) Init(context.Context) error {
-//   
-// }
+func (us *UserService) Init(context.Context) error {
+  us.LoadSecretAndMachineId()
+  return nil 
+}
 
 func (us *UserService) LoadSecretAndMachineId() {
   // figure out how to load data from local config file
 }
 
-func (us *UserService) Login(_ context.Context, username, password string) (string, error) {
-  return "", nil
+func (us *UserService) ComposeCreatorWithUsername(ctx context.Context, username string) Creator {
+  storage := us.storage.Get()
+  profile, exist := storage.GetUserProfile(ctx, username)
+  if !exist {
+    fmt.Printf("Failed to find the user profile - username: %s\n", username)
+    // Should handle it as error
+    return Creator{
+      userId: 0,
+      username: "",
+    }
+  }
+
+  return us.ComposeCreatorWithUserId(ctx, profile.userId, username)
+}
+
+func (us *UserService) ComposeCreatorWithUserId(ctx context.Context, userId int64, username string) Creator {
+  return Creator {
+    userId: userId,
+    username: username,
+  }
+}
+
+func (us *UserService) Login(ctx context.Context, username, password string) (string, error) {
+  storage := us.storage.Get()
+  profile, exist := storage.GetUserProfile(ctx, username)
+  if !exist {
+    return "", &LogError{
+      err_code: int(NOT_REGISTERED),
+      err_msg: NOT_REGISTERED.String(),
+    }
+  }
+  var auth bool = HashPassowrd(password, profile.salt) == profile.passwordHashed
+  if !auth {
+    return "", &LogError{
+      err_code: int(WRONG_PASSWORD),
+      err_msg: WRONG_PASSWORD.String(),
+    }
+  }
+
+  userIdStr := strconv.FormatInt(profile.userId, 10)
+	timestampStr := strconv.FormatInt(time.Now().Unix(), 10)
+
+	// Create a new JWT object
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id":   userIdStr,
+		"username":  username,
+		"timestamp": timestampStr,
+		"ttl":       "3600",
+	})
+
+  secret := "mysecret"
+
+	// Sign and get the complete encoded token as a string
+	tokenString, err := token.SignedString(secret)
+	if err != nil {
+		fmt.Println("Error signing token:", err)
+		return "", err
+	}
+
+  return tokenString, nil
 }
 
 func (us *UserService) RegisterUserWithId(ctx context.Context, firstName, lastName, username, password string, userId int64) {
@@ -133,11 +195,15 @@ func (us *UserService) RegisterUser(ctx context.Context, firstName, lastName, us
   us.RegisterUserWithId(ctx, firstName, lastName, username, password, uid)
 }
 
-type UserProfile struct {
-  userId int64
-  firstName string
-  lastName string
-  salt string
-  passwordHashed string
+func (us *UserService) GetUserId(ctx context.Context, username string) int64 {
+  storage := us.storage.Get()
+  profile, exist := storage.GetUserProfile(ctx, username)
+  if !exist {
+    fmt.Printf("Err. no profile associated with username: %s.\n", username)
+    // Should handle it more elegantly.
+    return 0 
+  }
+  return profile.userId
 }
+
 
