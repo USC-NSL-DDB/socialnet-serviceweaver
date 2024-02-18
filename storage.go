@@ -12,6 +12,8 @@ type IStorage interface {
   // GetMap(context.Context, string, key) (HashMap, error)
   PutUserProfile(context.Context, string, UserProfile)
   GetUserProfile(context.Context, string) (UserProfile, bool)
+  PutPost(context.Context, int64, Post)
+  GetPost(context.Context, int64) (Post, bool)
 }
 
 
@@ -31,6 +33,7 @@ type Storage struct {
   data map[string]string
 
   usernameToUserProfileMap *HashMap[string, UserProfile]
+  postIdToPostMap *HashMap[int64, Post]
 }
 
 func (s *Storage) Init(context.Context) error {
@@ -46,3 +49,19 @@ func (s *Storage) GetUserProfile(_ context.Context, key string) (UserProfile, bo
   return s.usernameToUserProfileMap.Get(key)
 }
 
+func (s *Storage) PutPost(_ context.Context, key int64, val Post) {
+  s.postIdToPostMap.Put(key, val)
+}
+
+func (s *Storage) GetPost(_ context.Context, key int64) (Post, bool) {
+  return s.postIdToPostMap.Get(key)
+}
+
+func (s *Storage) RemovePost(_ context.Context, key int64) bool {
+  _, exist := s.postIdToPostMap.Get(key)
+  if !exist {
+    return false
+  }
+  s.postIdToPostMap.Delete(key)
+  return true
+}

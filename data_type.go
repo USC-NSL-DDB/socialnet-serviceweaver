@@ -12,3 +12,23 @@ type UserProfile struct {
   salt string
   passwordHashed string
 }
+
+type PostType int 
+const (
+  POST PostType = 0
+  REPOST PostType = 1
+  REPLY PostType = 2
+  DM PostType = 3
+)
+
+type Post struct {
+  post_id int64
+  creator Creator
+  req_id int64
+  text string
+  // user_mentions []UserMention
+  // media []Media
+  // urls []URL
+  timestamp int64
+  post_type PostType
+}
