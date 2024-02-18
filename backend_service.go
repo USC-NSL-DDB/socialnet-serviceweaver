@@ -44,7 +44,7 @@ type BackendServicer interface {
     CompostPost(context.Context, string, int64, string, []int64, []string)
     Login(context.Context, string, string, string)
     RegisterUser(context.Context, string, string, string, string)
-    // ReadUserTimeline(context.Context, )
+	  ReadUserTimeline(context.Context, int64, int, int)
     // Reverse(context.Context, string) (string, error)
 }
 
@@ -69,6 +69,32 @@ func (bs *BackendService) RemovePosts(user_id int64, start, top int) {
   // run HomeTimelineService
   // run UrlShortenService
 }
+
+func (bs *BackendService) CompostPost(
+	ctx context.Context,
+	username string,
+	user_id int64,
+	text string,
+	media_ids []int64,
+	media_types []string,
+) {
+	// run TextService
+	// run UniqueIdService
+	// run MediaService
+	// run UserSerivce
+	// run UserTimelineService
+	// run HomeTimelineService
+}
+
+
+func (bs *BackendService) ReadUserTimeline(
+    ctx context.Context,
+    user_id int64,
+    start, stop int,
+) {
+    // run ReadUserTimelineService
+}
+
 
 // func (r *reverser) Reverse(_ context.Context, s string) (string, error) {
 //     runes := []rune(s)
