@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"sync"
 
 	"github.com/ServiceWeaver/weaver"
 )
@@ -29,8 +28,8 @@ type Storage struct {
   weaver.Implements[IStorage]
   weaver.WithRouter[StorageRouter]
 
-  mu sync.Mutex
-  data map[string]string
+  // mu sync.Mutex
+  // data map[string]string
 
   usernameToUserProfileMap *HashMap[string, UserProfile]
   postIdToPostMap *HashMap[int64, Post]
@@ -38,6 +37,7 @@ type Storage struct {
 
 func (s *Storage) Init(context.Context) error {
   s.usernameToUserProfileMap = NewHashMap[string, UserProfile]() 
+  s.postIdToPostMap = NewHashMap[int64, Post]()
   return nil
 }
 
