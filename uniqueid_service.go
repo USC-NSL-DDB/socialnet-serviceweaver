@@ -1,8 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"fmt"
+	"log"
+	"os"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -19,21 +24,22 @@ type UniqueIdService struct {
 	mu               sync.Mutex
 	currentTimestamp int64
 	counter          int
-	customEpoch      int64
-	machineId       string
+	// TODO: How to obtain the machine id?
+	machineId        string
 }
+
+// Custom Epoch (January 1, 2018 Midnight GMT = 2018-01-01T00:00:00Z)
+const CustomEpoch = 1514764800000
 
 func (s *UniqueIdService) Init(context.Context) error {
 	s.currentTimestamp = -1
 	s.counter = 0
-	// Custom Epoch (January 1, 2018 Midnight GMT = 2018-01-01T00:00:00Z)
-	s.customEpoch = 1514764800000
 	s.machineId = "0000000000000000"
 	return nil
 }
 
 func (s *UniqueIdService) ComposeUniqueId(_ context.Context, postType PostType) int64 {
-	timestamp := time.Now().UnixNano()/int64(time.Millisecond) - s.customEpoch
+	timestamp := time.Now().UnixNano()/int64(time.Millisecond) - CustomEpoch
 	idx := s.GetCounter(timestamp)
 
 	// Converting timestamp and counter to hex strings and composing the unique ID
@@ -57,6 +63,50 @@ func (s *UniqueIdService) ComposeUniqueId(_ context.Context, postType PostType) 
 	postID = postID & 0x7FFFFFFFFFFFFFFF
 
 	return postID
+}
+
+func GetMachineId(netif string) string {
+	macAddrFilename := "/sys/class/net/" + netif + "/address"
+
+	macAddrFile, err := os.Open(macAddrFilename)
+	if err != nil {
+		log.Fatalf("Cannot read MAC address from net interface %s: %v", netif, err)
+		return ""
+	}
+	defer macAddrFile.Close()
+
+	scanner := bufio.NewScanner(macAddrFile)
+	scanner.Scan()
+	mac := scanner.Text()
+	if mac == "" {
+		log.Fatalf("Cannot read MAC address from net interface %s", netif)
+		return ""
+	}
+
+	log.Printf("MAC address = %s", mac)
+
+	macHash := fmt.Sprintf("%x", HashMacAddressPid(mac))
+
+	if len(macHash) > 3 {
+		macHash = macHash[len(macHash)-3:]
+	} else if len(macHash) < 3 {
+		macHash = strings.Repeat("0", 3-len(macHash)) + macHash
+	}
+
+	return macHash
+}
+
+func HashMacAddressPid(mac string) uint16 {
+	var hash uint16 = 0
+	pid := os.Getpid() // Get the current process ID
+	macPid := mac + strconv.Itoa(pid)
+
+	for i, char := range macPid {
+		if i < len(mac) { // Ensure we only consider the MAC address length for the hash calculation
+			hash += uint16(char) << ((i & 1) * 8)
+		}
+	}
+	return hash
 }
 
 // GetCounter - Manages the incrementation of the counter within the same millisecond timestamp
