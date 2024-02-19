@@ -13,6 +13,9 @@ type IStorage interface {
   GetUserProfile(context.Context, string) (UserProfile, bool)
   PutPost(context.Context, int64, Post)
   GetPost(context.Context, int64) (Post, bool)
+  RemovePost(context.Context, int64) bool
+  PutMediaData(context.Context, string, string)
+  GetMediaData(context.Context, string) (string, bool)
 }
 
 
@@ -33,6 +36,7 @@ type Storage struct {
 
   usernameToUserProfileMap *HashMap[string, UserProfile]
   postIdToPostMap *HashMap[int64, Post]
+  filenameToMediaDataMap *HashMap[string, string]
 }
 
 func (s *Storage) Init(context.Context) error {
@@ -64,4 +68,12 @@ func (s *Storage) RemovePost(_ context.Context, key int64) bool {
   }
   s.postIdToPostMap.Delete(key)
   return true
+}
+
+func (s *Storage) PutMediaData(_ context.Context, key string, val string) {
+  s.filenameToMediaDataMap.Put(key, val)
+}
+
+func (s *Storage) GetMediaData(_ context.Context, key string) (string, bool) {
+  return s.filenameToMediaDataMap.Get(key)
 }
