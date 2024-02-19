@@ -42,6 +42,7 @@ type Storage struct {
 func (s *Storage) Init(context.Context) error {
   s.usernameToUserProfileMap = NewHashMap[string, UserProfile]() 
   s.postIdToPostMap = NewHashMap[int64, Post]()
+  s.filenameToMediaDataMap = NewHashMap[string, string]()
   return nil
 }
 
