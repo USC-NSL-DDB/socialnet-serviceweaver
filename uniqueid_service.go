@@ -25,11 +25,11 @@ type UniqueIdService struct {
 	currentTimestamp int64
 	counter          int
 	// TODO: How to obtain the machine id?
-	machineId        string
+	machineId string
 }
 
-// Custom Epoch (January 1, 2018 Midnight GMT = 2018-01-01T00:00:00Z)
-const CustomEpoch = 1514764800000
+// // Custom Epoch (January 1, 2018 Midnight GMT = 2018-01-01T00:00:00Z)
+// const CustomEpoch = 1514764800000
 
 func (s *UniqueIdService) Init(context.Context) error {
 	s.currentTimestamp = -1
@@ -39,7 +39,7 @@ func (s *UniqueIdService) Init(context.Context) error {
 }
 
 func (s *UniqueIdService) ComposeUniqueId(_ context.Context, postType PostType) int64 {
-	timestamp := time.Now().UnixNano()/int64(time.Millisecond) - CustomEpoch
+	timestamp := time.Now().UnixNano()/int64(time.Millisecond) - int64(CUSTOM_EPOCH)
 	idx := s.GetCounter(timestamp)
 
 	// Converting timestamp and counter to hex strings and composing the unique ID
