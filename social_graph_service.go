@@ -1,10 +1,11 @@
 package main
+
 import (
 	"context"
-	"github.com/ServiceWeaver/weaver"
 	"fmt"
-)
 
+	"github.com/ServiceWeaver/weaver"
+)
 
 type ISocialGraphService interface {
 	GetFollowers(context.Context, int64) []int64
@@ -17,7 +18,7 @@ type ISocialGraphService interface {
 
 type SocialGraphService struct {
 	weaver.Implements[ISocialGraphService]
-	storage weaver.Ref[Storage]
+	storage      weaver.Ref[Storage]
 	user_service weaver.Ref[UserService]
 }
 
@@ -28,7 +29,6 @@ func map_to_list(m map[int64]bool) []int64 {
 	}
 	return l
 }
-
 
 func (s *SocialGraphService) GetFollowers(ctx context.Context, userId int64) []int64 {
 	storage := s.storage.Get()
@@ -60,7 +60,7 @@ func (s *SocialGraphService) Unfollow(ctx context.Context, followerId int64, fol
 
 func (s *SocialGraphService) FollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) {
 	user_service := s.user_service.Get()
-	followerId := user_service.GetUserId(ctx, followerUsername) 
+	followerId := user_service.GetUserId(ctx, followerUsername)
 	followeeId := user_service.GetUserId(ctx, followeeUsername)
 	if followerId == 0 || followeeId == 0 {
 		fmt.Printf("Failed to find the user profile - followerUsername: %s, followeeUsername: %s\n", followerUsername, followeeUsername)
@@ -71,9 +71,27 @@ func (s *SocialGraphService) FollowWithUsername(ctx context.Context, followerUse
 }
 
 func (s *SocialGraphService) UnfollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) {
+	type IdPair struct {
+		followerId int64
+		followeeId int64
+	}
+
+	idChn := make(chan IdPair, 1)
+
 	user_service := s.user_service.Get()
-	followerId := user_service.GetUserId(ctx, followerUsername)  // TODO: change to multithread fetching
-	followeeId := user_service.GetUserId(ctx, followeeUsername)
+	go func(ctx context.Context, followerUsername string) {
+		followerId := user_service.GetUserId(ctx, followerUsername)
+		followeeId := user_service.GetUserId(ctx, followeeUsername)
+		idChn <- IdPair{
+			followerId: followerId,
+			followeeId: followeeId,
+		}
+	}(ctx, followerUsername)
+
+	idPair := <-idChn
+	followerId := idPair.followerId
+	followeeId := idPair.followeeId
+
 	if followerId == 0 || followeeId == 0 {
 		fmt.Printf("Failed to find the user profile - followerUsername: %s, followeeUsername: %s\n", followerUsername, followeeUsername)
 		return
