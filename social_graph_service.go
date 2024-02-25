@@ -71,26 +71,24 @@ func (s *SocialGraphService) FollowWithUsername(ctx context.Context, followerUse
 }
 
 func (s *SocialGraphService) UnfollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) {
-	type IdPair struct {
-		followerId int64
-		followeeId int64
-	}
-
-	idChn := make(chan IdPair, 1)
+	followerIdChn := make(chan int64, 1)
+	followeeIdChn := make(chan int64, 1)
 
 	user_service := s.user_service.Get()
-	go func(ctx context.Context, followerUsername string) {
+	// Sharing the ctx, followerUsername, followeeUsername from environment should be ok?
+	// If not, we can pass them as parameters
+	go func() {
 		followerId := user_service.GetUserId(ctx, followerUsername)
-		followeeId := user_service.GetUserId(ctx, followeeUsername)
-		idChn <- IdPair{
-			followerId: followerId,
-			followeeId: followeeId,
-		}
-	}(ctx, followerUsername)
+		followerIdChn <- followerId
+	}()
 
-	idPair := <-idChn
-	followerId := idPair.followerId
-	followeeId := idPair.followeeId
+	go func() {
+		followeeId := user_service.GetUserId(ctx, followeeUsername)
+		followeeIdChn <- followeeId
+	}()
+
+	followerId := <-followerIdChn
+	followeeId := <-followeeIdChn
 
 	if followerId == 0 || followeeId == 0 {
 		fmt.Printf("Failed to find the user profile - followerUsername: %s, followeeUsername: %s\n", followerUsername, followeeUsername)
