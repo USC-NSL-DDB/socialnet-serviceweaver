@@ -38,3 +38,8 @@ type Media struct {
 	mediaId   int64
 	mediaType string
 }
+
+type Url struct {
+	shortenedUrl string
+	expandedUrl  string
+}
