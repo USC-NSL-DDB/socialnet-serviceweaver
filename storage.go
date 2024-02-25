@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 
+	"fmt"
+
 	"github.com/ServiceWeaver/weaver"
-  "fmt"
 )
 
 type IStorage interface {
@@ -24,10 +25,10 @@ type IStorage interface {
 	GetShortenUrl(context.Context, string) (string, bool)
 	RemoveShortenUrl(context.Context, string)
 
-  Follow(context.Context, int64, int64)
-  Unfollow(context.Context, int64, int64)
-  GetFollowers(context.Context, int64) (map[int64]bool, bool)
-  GetFollowees(context.Context, int64) (map[int64]bool, bool)
+	Follow(context.Context, int64, int64)
+	Unfollow(context.Context, int64, int64)
+	GetFollowers(context.Context, int64) (map[int64]bool, bool)
+	GetFollowees(context.Context, int64) (map[int64]bool, bool)
 }
 
 // Manually routing all request to the same replica.
@@ -45,15 +46,12 @@ type Storage struct {
 
 	// mu sync.Mutex
 	// data map[string]string
-  usernameToUserProfileMap *HashMap[string, UserProfile]
-  postIdToPostMap *HashMap[int64, Post]
-  filenameToMediaDataMap *HashMap[string, string]
+	filenameToMediaDataMap   *HashMap[string, string]
 	usernameToUserProfileMap *HashMap[string, UserProfile]
 	postIdToPostMap          *HashMap[int64, Post]
-	filenameToMediaDataMap   *HashMap[string, string]
 	shortToExtendedMap       *HashMap[string, string]
-  useridToFollowersMap *HashMap[int64, map[int64]bool]
-  useridToFolloweesMap *HashMap[int64, map[int64]bool]
+	useridToFollowersMap     *HashMap[int64, map[int64]bool]
+	useridToFolloweesMap     *HashMap[int64, map[int64]bool]
 }
 
 func (s *Storage) Init(context.Context) error {
@@ -94,57 +92,57 @@ func (s *Storage) PutMediaData(_ context.Context, key string, val string) {
 }
 
 func (s *Storage) GetMediaData(_ context.Context, key string) (string, bool) {
-  return s.filenameToMediaDataMap.Get(key)
+	return s.filenameToMediaDataMap.Get(key)
 }
 
 func (s *Storage) Follow(_ context.Context, userId int64, followeeId int64) {
-  // userId follows followeeId
-  followees, flag := s.useridToFolloweesMap.Get(userId)
-  if !flag {
-    followees = map[int64]bool{followeeId: true}
-  } else {
-    followees[followeeId] = true
-  }
-  s.useridToFolloweesMap.Put(userId, followees)
+	// userId follows followeeId
+	followees, flag := s.useridToFolloweesMap.Get(userId)
+	if !flag {
+		followees = map[int64]bool{followeeId: true}
+	} else {
+		followees[followeeId] = true
+	}
+	s.useridToFolloweesMap.Put(userId, followees)
 
-  followers, flag := s.useridToFollowersMap.Get(followeeId)
-  if !flag {
-    followers = map[int64]bool{userId: true}
-  } else {
-    followers[userId] = true
-  }
-  s.useridToFollowersMap.Put(followeeId, followers)
+	followers, flag := s.useridToFollowersMap.Get(followeeId)
+	if !flag {
+		followers = map[int64]bool{userId: true}
+	} else {
+		followers[userId] = true
+	}
+	s.useridToFollowersMap.Put(followeeId, followers)
 }
 
 func (s *Storage) Unfollow(_ context.Context, userId int64, followeeId int64) {
-  // userId unfollows followeeId
-  followees, flag1 := s.useridToFolloweesMap.Get(userId)
-  followers, flag2 := s.useridToFollowersMap.Get(followeeId)
-  if !flag1 || !flag2 {
-    fmt.Printf("Unfollow: userId %d or followeeId %d does not exist\n", userId, followeeId)
-    return
-  }
+	// userId unfollows followeeId
+	followees, flag1 := s.useridToFolloweesMap.Get(userId)
+	followers, flag2 := s.useridToFollowersMap.Get(followeeId)
+	if !flag1 || !flag2 {
+		fmt.Printf("Unfollow: userId %d or followeeId %d does not exist\n", userId, followeeId)
+		return
+	}
 
-  if _, ok := followees[followeeId]; !ok {
-    fmt.Printf("Unfollow: userId %d does not follow followeeId %d\n", userId, followeeId)
-    return
-  }
+	if _, ok := followees[followeeId]; !ok {
+		fmt.Printf("Unfollow: userId %d does not follow followeeId %d\n", userId, followeeId)
+		return
+	}
 
-  if _, ok := followers[userId]; !ok {
-    fmt.Printf("Unfollow: followeeId %d does not have userId %d as follower\n", followeeId, userId)
-    return
-  }
+	if _, ok := followers[userId]; !ok {
+		fmt.Printf("Unfollow: followeeId %d does not have userId %d as follower\n", followeeId, userId)
+		return
+	}
 
-  delete(followees, followeeId)
-  delete(followers, userId)
+	delete(followees, followeeId)
+	delete(followers, userId)
 }
 
 func (s *Storage) GetFollowers(_ context.Context, userId int64) (map[int64]bool, bool) {
-  return s.useridToFollowersMap.Get(userId)
+	return s.useridToFollowersMap.Get(userId)
 }
 
 func (s *Storage) GetFollowees(_ context.Context, userId int64) (map[int64]bool, bool) {
-  return s.useridToFolloweesMap.Get(userId)
+	return s.useridToFolloweesMap.Get(userId)
 }
 
 func (s *Storage) PutShortenUrl(_ context.Context, key string, val string) {

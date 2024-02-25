@@ -59,7 +59,8 @@ func (us *UrlShortenService) GetExtendedUrls(ctx context.Context, shortUrls []st
 	wg.Wait()
 
 	var result []string
-	for url := range urlChannel {
+	for range shortUrls {
+		url := <-urlChannel
 		result = append(result, url)
 	}
 	close(urlChannel)
