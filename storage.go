@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/ServiceWeaver/weaver"
+	"github.com/google/btree"
 )
 
 type IStorage interface {
@@ -29,6 +30,10 @@ type IStorage interface {
 	Unfollow(context.Context, int64, int64)
 	GetFollowers(context.Context, int64) (map[int64]bool, bool)
 	GetFollowees(context.Context, int64) (map[int64]bool, bool)
+
+	PutPostTimeline(context.Context, int64, int64, int64)
+	GetPostTimeline(context.Context, int64, int, int) []int64
+	RemovePostTimeline(context.Context, int64, int64, int64)
 }
 
 // Manually routing all request to the same replica.
@@ -52,13 +57,19 @@ type Storage struct {
 	shortToExtendedMap       *HashMap[string, string]
 	useridToFollowersMap     *HashMap[int64, map[int64]bool]
 	useridToFolloweesMap     *HashMap[int64, map[int64]bool]
+
+	useridToTimelineMap *HashMap[int64, *btree.BTree]
 }
 
 func (s *Storage) Init(context.Context) error {
+	s.filenameToMediaDataMap = NewHashMap[string, string]()
 	s.usernameToUserProfileMap = NewHashMap[string, UserProfile]()
 	s.postIdToPostMap = NewHashMap[int64, Post]()
-	s.filenameToMediaDataMap = NewHashMap[string, string]()
 	s.shortToExtendedMap = NewHashMap[string, string]()
+	s.useridToFollowersMap = NewHashMap[int64, map[int64]bool]()
+	s.useridToFolloweesMap = NewHashMap[int64, map[int64]bool]()
+
+	s.useridToTimelineMap = NewHashMap[int64, *btree.BTree]()
 	return nil
 }
 
@@ -155,4 +166,67 @@ func (s *Storage) GetShortenUrl(_ context.Context, key string) (string, bool) {
 
 func (s *Storage) RemoveShortenUrl(_ context.Context, key string) {
 	s.shortToExtendedMap.Delete(key)
+}
+
+type PostTimestampPair struct {
+	timestamp int64
+	postId    int64
+}
+
+// Less implements btree.Item.
+func (p PostTimestampPair) Less(than btree.Item) bool {
+	other, ok := than.(PostTimestampPair)
+	if !ok {
+		return false
+	}
+	return p.timestamp < other.timestamp
+}
+
+func (s *Storage) PutPostTimeline(_ context.Context, userId int64, postId int64, timestamp int64) {
+	s.useridToTimelineMap.ApplyWithDefault(
+		userId,
+		func(k int64, v *btree.BTree, args ...interface{}) {
+			timestamp := args[0].(int64)
+			postId := args[1].(int64)
+			v.ReplaceOrInsert(PostTimestampPair{timestamp, postId})
+		},
+		func(k int64) *btree.BTree {
+			return btree.New(2)
+		},
+		timestamp, postId,
+	)
+}
+
+func (s *Storage) GetPostTimeline(_ context.Context, userId int64, start int, stop int) []int64 {
+	return ApplyWithReturn(
+		s.useridToTimelineMap,
+		userId,
+		func(k int64, v *btree.BTree, args ...interface{}) []int64 {
+			start := args[0].(int)
+			stop := args[1].(int)
+			result := make([]int64, 0)
+			v.Ascend(func(item btree.Item) bool {
+				if start <= 0 {
+					result = append(result, item.(PostTimestampPair).postId)
+				}
+				start--
+				stop--
+				return stop > 0
+			})
+			return result
+		},
+		start, stop,
+	)
+}
+
+func (s *Storage) RemovePostTimeline(_ context.Context, userId int64, postId int64, timestamp int64) {
+	s.useridToTimelineMap.Apply(
+		userId,
+		func(k int64, v *btree.BTree, args ...interface{}) {
+			timestamp := args[0].(int64)
+			postId := args[1].(int64)
+			v.Delete(PostTimestampPair{timestamp, postId})
+		},
+		timestamp, postId,
+	)
 }
