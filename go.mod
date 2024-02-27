@@ -17,6 +17,7 @@ require (
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
+	github.com/google/btree v1.1.2 // indirect
 	github.com/google/cel-go v0.17.1 // indirect
 	github.com/google/pprof v0.0.0-20230705174524-200ffdc848b8 // indirect
 	github.com/google/uuid v1.3.1 // indirect
