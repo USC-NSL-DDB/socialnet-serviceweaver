@@ -43,3 +43,8 @@ type Url struct {
 	shortenedUrl string
 	expandedUrl  string
 }
+
+type UserMention struct {
+	userId  int64
+	username string
+}
