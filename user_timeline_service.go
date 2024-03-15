@@ -18,7 +18,7 @@ type UserTimelineService struct {
 	postStorageService weaver.Ref[PostStorageService]
 }
 
-func (uts *UserTimelineService) WriteUserTimeline(ctx context.Context, userId int64, postId int64, timestamp int64) {
+func (uts *UserTimelineService) WriteUserTimeline(ctx context.Context, postId, userId, timestamp int64) {
 	storage := uts.storage.Get()
 	storage.PutPostTimeline(ctx, userId, postId, timestamp)
 }

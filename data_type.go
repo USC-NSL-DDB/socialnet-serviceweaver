@@ -23,15 +23,15 @@ const (
 )
 
 type Post struct {
-	post_id int64
-	creator Creator
-	req_id  int64
-	text    string
-	// user_mentions []UserMention
-	// media []Media
-	// urls []URL
-	timestamp int64
-	post_type PostType
+	post_id       int64
+	creator       Creator
+	req_id        int64
+	text          string
+	user_mentions []UserMention
+	media         []Media
+	urls          []Url
+	timestamp     int64
+	post_type     PostType
 }
 
 type Media struct {
@@ -45,12 +45,12 @@ type Url struct {
 }
 
 type UserMention struct {
-	userId  int64
+	userId   int64
 	username string
 }
 
 type TextServiceReturn struct {
-	text string
+	text          string
 	user_mentions []UserMention
-	urls []Url
+	urls          []Url
 }
