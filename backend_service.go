@@ -51,7 +51,11 @@ type BackendServicer interface {
 type BackendService struct {
 	weaver.Implements[BackendServicer]
 
-	userService weaver.Ref[UserServicer]
+	userService         weaver.Ref[UserServicer]
+	userTimelineService weaver.Ref[UserTimelineService]
+	socialGraphService  weaver.Ref[SocialGraphService]
+	postStorageService  weaver.Ref[PostStorageService]
+	homeTimelineService weaver.Ref[HomeTimelineService]
 }
 
 func (bs *BackendService) Login(ctx context.Context, username string, password string) string {
