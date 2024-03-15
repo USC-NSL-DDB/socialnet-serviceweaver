@@ -43,3 +43,14 @@ type Url struct {
 	shortenedUrl string
 	expandedUrl  string
 }
+
+type UserMention struct {
+	userId  int64
+	username string
+}
+
+type TextServiceReturn struct {
+	text string
+	user_mentions []UserMention
+	urls []Url
+}
