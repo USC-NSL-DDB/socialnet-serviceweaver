@@ -8,38 +8,6 @@ import (
 )
 
 type BackendServicer interface {
-	//   void RemovePosts(int64_t user_id, int start, int stop);
-	//   void ComposePost(const std::string &username, int64_t user_id,
-	//                    const std::string &text,
-	//                    const std::vector<int64_t> &media_ids,
-	//                    const std::vector<std::string> &media_types,
-	//                    PostType::type post_type) override;
-	//   void ReadUserTimeline(std::vector<Post> &, int64_t, int, int) override;
-	//   void Login(std::string &_return, const std::string &username,
-	//              const std::string &password) override;
-	//   void RegisterUser(const std::string &first_name, const std::string &last_name,
-	//                     const std::string &username,
-	//                     const std::string &password) override;
-	//   void RegisterUserWithId(const std::string &first_name,
-	//                           const std::string &last_name,
-	//                           const std::string &username,
-	//                           const std::string &password,
-	//                           const int64_t user_id) override;
-	//   void GetFollowers(std::vector<int64_t> &_return,
-	//                     const int64_t user_id) override;
-	//   void Unfollow(const int64_t user_id, const int64_t followee_id) override;
-	//   void UnfollowWithUsername(const std::string &user_usernmae,
-	//                             const std::string &followee_username) override;
-	//   void Follow(const int64_t user_id, const int64_t followee_id) override;
-	//   void FollowWithUsername(const std::string &user_usernmae,
-	//                           const std::string &followee_username) override;
-	//   void GetFollowees(std::vector<int64_t> &_return,
-	//                     const int64_t user_id) override;
-	//   void ReadHomeTimeline(std::vector<Post> &_return, const int64_t user_id,
-	//                         const int32_t start, const int32_t stop) override;
-	//   void UploadMedia(const std::string &filename,
-	//                    const std::string &data) override;
-	//   void GetMedia(std::string &_return, const std::string &filename) override;
 	RemovePosts(context.Context, int64, int)
 	CompostPost(context.Context, string, int64, string, []int64, []string, PostType)
 	Login(context.Context, string, string) string
@@ -49,6 +17,8 @@ type BackendServicer interface {
 	GetFollowers(context.Context, int64) []int64
 	Unfollow(context.Context, int64, int64)
 	UnfollowWithUsername(context.Context, string, string)
+	Follow(context.Context, int64, int64)
+	FollowWithUsername(context.Context, string, string)
 	GetFollowees(context.Context, int64) []int64
 	ReadHomeTimeline(context.Context, int64, int, int) []Post
 	UploadMedia(context.Context, string, string)
@@ -66,6 +36,7 @@ type BackendService struct {
 	urlShortenService   weaver.Ref[UrlShortenService]
 	textService         weaver.Ref[TextService]
 	uniqueIdService     weaver.Ref[UniqueIdService]
+	mediaStorageService weaver.Ref[MediaStorageService]
 	mediaService        weaver.Ref[MediaService]
 }
 
@@ -252,30 +223,47 @@ func (bs *BackendService) ReadUserTimeline(
 	return utls.ReadUserTimeline(ctx, user_id, start, stop)
 }
 
-func (bs *BackendService) GetFollowers(context.Context, int64) []int64 {
-  
+func (bs *BackendService) GetFollowers(ctx context.Context, user_id int64) []int64 {
+	sgs := bs.socialGraphService.Get()
+	return sgs.GetFollowers(ctx, user_id)
 }
 
-func (bs *BackendService) Unfollow(context.Context, int64, int64) {
-
+func (bs *BackendService) Unfollow(ctx context.Context, user_id int64, followee_id int64) {
+	sgs := bs.socialGraphService.Get()
+	sgs.Unfollow(ctx, user_id, followee_id)
 }
 
-func (bs *BackendService) UnfollowWithUsername(context.Context, string, string) {
-
+func (bs *BackendService) UnfollowWithUsername(ctx context.Context, user_username string, followee_username string) {
+	sgs := bs.socialGraphService.Get()
+	sgs.UnfollowWithUsername(ctx, user_username, followee_username)
 }
 
-func (bs *BackendService) GetFollowees(context.Context, int64) []int64 {
-
+func (bs *BackendService) Follow(ctx context.Context, user_id int64, followee_id int64) {
+	sgs := bs.socialGraphService.Get()
+	sgs.Follow(ctx, user_id, followee_id)
 }
 
-func (bs *BackendService) ReadHomeTimeline(context.Context, int64, int, int) []Post {
-
+func (bs *BackendService) FollowWithUsername(ctx context.Context, user_username string, followee_username string) {
+	sgs := bs.socialGraphService.Get()
+	sgs.FollowWithUsername(ctx, user_username, followee_username)
 }
 
-func (bs *BackendService) UploadMedia(context.Context, string, string) {
-
+func (bs *BackendService) GetFollowees(ctx context.Context, user_id int64) []int64 {
+	sgs := bs.socialGraphService.Get()
+	return sgs.GetFollowees(ctx, user_id)
 }
 
-func (bs *BackendService) GetMedia(context.Context, string) string {
+func (bs *BackendService) ReadHomeTimeline(ctx context.Context, user_id int64, start int, stop int) []Post {
+	htls := bs.homeTimelineService.Get()
+	return htls.ReadHomeTimeline(ctx, user_id, start, stop)
+}
 
+func (bs *BackendService) UploadMedia(ctx context.Context, filename string, data string) {
+	mss := bs.mediaStorageService.Get()
+	mss.UploadMedia(ctx, filename, data)
+}
+
+func (bs *BackendService) GetMedia(ctx context.Context, filename string) string {
+	mss := bs.mediaStorageService.Get()
+	return mss.GetMedia(ctx, filename)
 }
