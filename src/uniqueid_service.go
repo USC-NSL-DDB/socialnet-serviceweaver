@@ -15,7 +15,7 @@ import (
 )
 
 type IUniqueIdService interface {
-	ComposeUniqueId(context.Context, PostType) int64
+	ComposeUniqueId(context.Context, PostType) (int64, error)
 }
 
 type UniqueIdService struct {
@@ -38,7 +38,7 @@ func (s *UniqueIdService) Init(context.Context) error {
 	return nil
 }
 
-func (s *UniqueIdService) ComposeUniqueId(_ context.Context, postType PostType) int64 {
+func (s *UniqueIdService) ComposeUniqueId(_ context.Context, postType PostType) (int64, error) {
 	timestamp := time.Now().UnixNano()/int64(time.Millisecond) - int64(CUSTOM_EPOCH)
 	idx := s.GetCounter(timestamp)
 
@@ -62,7 +62,7 @@ func (s *UniqueIdService) ComposeUniqueId(_ context.Context, postType PostType) 
 	fmt.Sscanf(postIDStr, "%x", &postID)
 	postID = postID & 0x7FFFFFFFFFFFFFFF
 
-	return postID
+	return postID, nil
 }
 
 func GetMachineId(netif string) string {

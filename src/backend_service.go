@@ -10,19 +10,19 @@ import (
 type BackendServicer interface {
 	RemovePosts(context.Context, int64, int)
 	CompostPost(context.Context, string, int64, string, []int64, []string, PostType)
-	Login(context.Context, string, string) string
+	Login(context.Context, string, string) (string, error)
 	RegisterUser(context.Context, string, string, string, string)
 	RegisterUserWithId(context.Context, string, string, string, string, int64)
-	ReadUserTimeline(context.Context, int64, int, int) []Post
-	GetFollowers(context.Context, int64) []int64
+	ReadUserTimeline(context.Context, int64, int, int) ([]Post, error)
+	GetFollowers(context.Context, int64) ([]int64, error)
 	Unfollow(context.Context, int64, int64)
 	UnfollowWithUsername(context.Context, string, string)
 	Follow(context.Context, int64, int64)
 	FollowWithUsername(context.Context, string, string)
-	GetFollowees(context.Context, int64) []int64
-	ReadHomeTimeline(context.Context, int64, int, int) []Post
+	GetFollowees(context.Context, int64) ([]int64, error)
+	ReadHomeTimeline(context.Context, int64, int, int) ([]Post, error)
 	UploadMedia(context.Context, string, string)
-	GetMedia(context.Context, string) string
+	GetMedia(context.Context, string) (string, error)
 }
 
 type BackendService struct {
@@ -40,12 +40,12 @@ type BackendService struct {
 	mediaService        weaver.Ref[MediaService]
 }
 
-func (bs *BackendService) Login(ctx context.Context, username string, password string) string {
+func (bs *BackendService) Login(ctx context.Context, username string, password string) (string, error) {
 	variant, err := bs.userService.Get().Login(ctx, username, password)
 	if err != nil {
 		panic(err)
 	}
-	return variant
+	return variant, nil
 }
 
 func (bs *BackendService) RegisterUser(
@@ -84,11 +84,13 @@ func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start,
 	uss := bs.urlShortenService.Get()
 
 	posts_fu := AsyncExec(func() interface{} {
-		return utls.ReadUserTimeline(ctx, user_id, start, top)
+		r, _ := utls.ReadUserTimeline(ctx, user_id, start, top)
+		return r
 	})
 
 	followers_fu := AsyncExec(func() interface{} {
-		return sgs.GetFollowers(ctx, user_id)
+		r, _ := sgs.GetFollowers(ctx, user_id)
+		return r
 	})
 
 	posts := posts_fu.Await().([]Post)
@@ -100,7 +102,8 @@ func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start,
 
 	for _, post := range posts {
 		remove_posts_fus = append(remove_posts_fus, AsyncExec(func() interface{} {
-			return pss.RemovePost(ctx, post.post_id)
+			result, _ := pss.RemovePost(ctx, post.post_id)
+			return result
 		}).(Future))
 
 		remove_from_timeline_fus = append(remove_from_timeline_fus, AsyncExec(func() interface{} {
@@ -169,10 +172,22 @@ func (bs *BackendService) CompostPost(
 	htls := bs.homeTimelineService.Get()
 	post_storage_service := bs.postStorageService.Get()
 
-	text_fu := AsyncExec(func() interface{} { return text_service.ComposeText(ctx, text) })
-	unique_id_fu := AsyncExec(func() interface{} { return unique_id_service.ComposeUniqueId(ctx, post_type) })
-	medias_fu := AsyncExec(func() interface{} { return media_service.ComposeMedia(ctx, media_types, media_ids) })
-	creator_fu := AsyncExec(func() interface{} { return us.ComposeCreatorWithUserId(ctx, user_id, username) })
+	text_fu := AsyncExec(func() interface{} {
+		r, _ := text_service.ComposeText(ctx, text)
+		return r
+	})
+	unique_id_fu := AsyncExec(func() interface{} {
+		r, _ := unique_id_service.ComposeUniqueId(ctx, post_type)
+		return r
+	})
+	medias_fu := AsyncExec(func() interface{} {
+		r, _ := media_service.ComposeMedia(ctx, media_types, media_ids)
+		return r
+	})
+	creator_fu := AsyncExec(func() interface{} {
+		r, _ := us.ComposeCreatorWithUserId(ctx, user_id, username)
+		return r
+	})
 
 	timestamp := time.Now().Unix()
 	unique_id := unique_id_fu.Await().(int64)
@@ -217,13 +232,13 @@ func (bs *BackendService) ReadUserTimeline(
 	ctx context.Context,
 	user_id int64,
 	start, stop int,
-) []Post {
+) ([]Post, error) {
 	// run ReadUserTimelineService
 	utls := bs.userTimelineService.Get()
 	return utls.ReadUserTimeline(ctx, user_id, start, stop)
 }
 
-func (bs *BackendService) GetFollowers(ctx context.Context, user_id int64) []int64 {
+func (bs *BackendService) GetFollowers(ctx context.Context, user_id int64) ([]int64, error) {
 	sgs := bs.socialGraphService.Get()
 	return sgs.GetFollowers(ctx, user_id)
 }
@@ -248,12 +263,12 @@ func (bs *BackendService) FollowWithUsername(ctx context.Context, user_username 
 	sgs.FollowWithUsername(ctx, user_username, followee_username)
 }
 
-func (bs *BackendService) GetFollowees(ctx context.Context, user_id int64) []int64 {
+func (bs *BackendService) GetFollowees(ctx context.Context, user_id int64) ([]int64, error) {
 	sgs := bs.socialGraphService.Get()
 	return sgs.GetFollowees(ctx, user_id)
 }
 
-func (bs *BackendService) ReadHomeTimeline(ctx context.Context, user_id int64, start int, stop int) []Post {
+func (bs *BackendService) ReadHomeTimeline(ctx context.Context, user_id int64, start int, stop int) ([]Post, error) {
 	htls := bs.homeTimelineService.Get()
 	return htls.ReadHomeTimeline(ctx, user_id, start, stop)
 }
@@ -263,7 +278,7 @@ func (bs *BackendService) UploadMedia(ctx context.Context, filename string, data
 	mss.UploadMedia(ctx, filename, data)
 }
 
-func (bs *BackendService) GetMedia(ctx context.Context, filename string) string {
+func (bs *BackendService) GetMedia(ctx context.Context, filename string) (string, error) {
 	mss := bs.mediaStorageService.Get()
 	return mss.GetMedia(ctx, filename)
 }

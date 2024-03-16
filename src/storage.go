@@ -13,26 +13,26 @@ type IStorage interface {
 	// RegisterMap(context.Context, string) error
 	// GetMap(context.Context, string, key) (HashMap, error)
 	PutUserProfile(context.Context, string, UserProfile)
-	GetUserProfile(context.Context, string) (UserProfile, bool)
+	GetUserProfile(context.Context, string) (UserProfile, bool, error)
 
 	PutPost(context.Context, int64, Post)
 	GetPost(context.Context, int64) (Post, bool)
-	RemovePost(context.Context, int64) bool
+	RemovePost(context.Context, int64) (bool, error)
 
 	PutMediaData(context.Context, string, string)
-	GetMediaData(context.Context, string) (string, bool)
+	GetMediaData(context.Context, string) (string, bool, error)
 
 	PutShortenUrl(context.Context, string, string)
-	GetShortenUrl(context.Context, string) (string, bool)
+	GetShortenUrl(context.Context, string) (string, bool, error)
 	RemoveShortenUrl(context.Context, string)
 
 	Follow(context.Context, int64, int64)
 	Unfollow(context.Context, int64, int64)
-	GetFollowers(context.Context, int64) (map[int64]bool, bool)
-	GetFollowees(context.Context, int64) (map[int64]bool, bool)
+	GetFollowers(context.Context, int64) (map[int64]bool, bool, error)
+	GetFollowees(context.Context, int64) (map[int64]bool, bool, error)
 
 	PutPostTimeline(context.Context, int64, int64, int64)
-	GetPostTimeline(context.Context, int64, int, int) []int64
+	GetPostTimeline(context.Context, int64, int, int) ([]int64, error)
 	RemovePostTimeline(context.Context, int64, int64, int64)
 }
 
@@ -77,33 +77,36 @@ func (s *Storage) PutUserProfile(_ context.Context, key string, val UserProfile)
 	s.usernameToUserProfileMap.Put(key, val)
 }
 
-func (s *Storage) GetUserProfile(_ context.Context, key string) (UserProfile, bool) {
-	return s.usernameToUserProfileMap.Get(key)
+func (s *Storage) GetUserProfile(_ context.Context, key string) (UserProfile, bool, error) {
+	v, e := s.usernameToUserProfileMap.Get(key)
+	return v, e, nil
 }
 
 func (s *Storage) PutPost(_ context.Context, key int64, val Post) {
 	s.postIdToPostMap.Put(key, val)
 }
 
-func (s *Storage) GetPost(_ context.Context, key int64) (Post, bool) {
-	return s.postIdToPostMap.Get(key)
+func (s *Storage) GetPost(_ context.Context, key int64) (Post, bool, error) {
+	v, e := s.postIdToPostMap.Get(key)
+	return v, e, nil
 }
 
-func (s *Storage) RemovePost(_ context.Context, key int64) bool {
+func (s *Storage) RemovePost(_ context.Context, key int64) (bool, error) {
 	_, exist := s.postIdToPostMap.Get(key)
 	if !exist {
-		return false
+		return false, nil
 	}
 	s.postIdToPostMap.Delete(key)
-	return true
+	return true, nil
 }
 
 func (s *Storage) PutMediaData(_ context.Context, key string, val string) {
 	s.filenameToMediaDataMap.Put(key, val)
 }
 
-func (s *Storage) GetMediaData(_ context.Context, key string) (string, bool) {
-	return s.filenameToMediaDataMap.Get(key)
+func (s *Storage) GetMediaData(_ context.Context, key string) (string, bool, error) {
+	v, e := s.filenameToMediaDataMap.Get(key)
+	return v, e, nil
 }
 
 func (s *Storage) Follow(_ context.Context, userId int64, followeeId int64) {
@@ -148,20 +151,23 @@ func (s *Storage) Unfollow(_ context.Context, userId int64, followeeId int64) {
 	delete(followers, userId)
 }
 
-func (s *Storage) GetFollowers(_ context.Context, userId int64) (map[int64]bool, bool) {
-	return s.useridToFollowersMap.Get(userId)
+func (s *Storage) GetFollowers(_ context.Context, userId int64) (map[int64]bool, bool, error) {
+	v, e := s.useridToFollowersMap.Get(userId)
+	return v, e, nil
 }
 
-func (s *Storage) GetFollowees(_ context.Context, userId int64) (map[int64]bool, bool) {
-	return s.useridToFolloweesMap.Get(userId)
+func (s *Storage) GetFollowees(_ context.Context, userId int64) (map[int64]bool, bool, error) {
+	v, e := s.useridToFolloweesMap.Get(userId)
+	return v, e, nil
 }
 
 func (s *Storage) PutShortenUrl(_ context.Context, key string, val string) {
 	s.shortToExtendedMap.Put(key, val)
 }
 
-func (s *Storage) GetShortenUrl(_ context.Context, key string) (string, bool) {
-	return s.shortToExtendedMap.Get(key)
+func (s *Storage) GetShortenUrl(_ context.Context, key string) (string, bool, error) {
+	v, e := s.shortToExtendedMap.Get(key)
+	return v, e, nil
 }
 
 func (s *Storage) RemoveShortenUrl(_ context.Context, key string) {
@@ -197,7 +203,7 @@ func (s *Storage) PutPostTimeline(_ context.Context, userId int64, postId int64,
 	)
 }
 
-func (s *Storage) GetPostTimeline(_ context.Context, userId int64, start int, stop int) []int64 {
+func (s *Storage) GetPostTimeline(_ context.Context, userId int64, start int, stop int) ([]int64, error) {
 	return ApplyWithReturn(
 		s.useridToTimelineMap,
 		userId,
@@ -216,7 +222,7 @@ func (s *Storage) GetPostTimeline(_ context.Context, userId int64, start int, st
 			return result
 		},
 		start, stop,
-	)
+	), nil
 }
 
 func (s *Storage) RemovePostTimeline(_ context.Context, userId int64, postId int64, timestamp int64) {

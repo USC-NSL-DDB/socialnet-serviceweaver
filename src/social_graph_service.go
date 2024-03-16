@@ -8,8 +8,8 @@ import (
 )
 
 type ISocialGraphService interface {
-	GetFollowers(context.Context, int64) []int64
-	GetFollowees(context.Context, int64) []int64
+	GetFollowers(context.Context, int64) ([]int64, error)
+	GetFollowees(context.Context, int64) ([]int64, error)
 	Follow(context.Context, int64, int64)
 	Unfollow(context.Context, int64, int64)
 	FollowWithUsername(context.Context, string, string)
@@ -30,22 +30,22 @@ func map_to_list(m map[int64]bool) []int64 {
 	return l
 }
 
-func (s *SocialGraphService) GetFollowers(ctx context.Context, userId int64) []int64 {
+func (s *SocialGraphService) GetFollowers(ctx context.Context, userId int64) ([]int64, error) {
 	storage := s.storage.Get()
-	follower_maps, ok := storage.GetFollowers(ctx, userId)
+	follower_maps, ok, _ := storage.GetFollowers(ctx, userId)
 	if !ok {
-		return []int64{}
+		return []int64{}, nil
 	}
-	return map_to_list(follower_maps)
+	return map_to_list(follower_maps), nil
 }
 
-func (s *SocialGraphService) GetFollowees(ctx context.Context, userId int64) []int64 {
+func (s *SocialGraphService) GetFollowees(ctx context.Context, userId int64) ([]int64, error) {
 	storage := s.storage.Get()
-	followee_maps, ok := storage.GetFollowees(ctx, userId)
+	followee_maps, ok, _ := storage.GetFollowees(ctx, userId)
 	if !ok {
-		return []int64{}
+		return []int64{}, nil
 	}
-	return map_to_list(followee_maps)
+	return map_to_list(followee_maps), nil
 }
 
 func (s *SocialGraphService) Follow(ctx context.Context, followerId int64, followeeId int64) {
@@ -60,8 +60,8 @@ func (s *SocialGraphService) Unfollow(ctx context.Context, followerId int64, fol
 
 func (s *SocialGraphService) FollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) {
 	user_service := s.user_service.Get()
-	followerId := user_service.GetUserId(ctx, followerUsername)
-	followeeId := user_service.GetUserId(ctx, followeeUsername)
+	followerId, _ := user_service.GetUserId(ctx, followerUsername)
+	followeeId, _ := user_service.GetUserId(ctx, followeeUsername)
 	if followerId == 0 || followeeId == 0 {
 		fmt.Printf("Failed to find the user profile - followerUsername: %s, followeeUsername: %s\n", followerUsername, followeeUsername)
 		return
@@ -78,12 +78,12 @@ func (s *SocialGraphService) UnfollowWithUsername(ctx context.Context, followerU
 	// Sharing the ctx, followerUsername, followeeUsername from environment should be ok?
 	// If not, we can pass them as parameters
 	go func() {
-		followerId := user_service.GetUserId(ctx, followerUsername)
+		followerId, _ := user_service.GetUserId(ctx, followerUsername)
 		followerIdChn <- followerId
 	}()
 
 	go func() {
-		followeeId := user_service.GetUserId(ctx, followeeUsername)
+		followeeId, _ := user_service.GetUserId(ctx, followeeUsername)
 		followeeIdChn <- followeeId
 	}()
 

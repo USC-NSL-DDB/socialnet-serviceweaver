@@ -8,7 +8,7 @@ import (
 )
 
 type IUserMentionService interface {
-	ComposeUserMentions(context.Context, []string) []UserMention
+	ComposeUserMentions(context.Context, []string) ([]UserMention, error)
 }
 
 type UserMentionService struct {
@@ -17,11 +17,11 @@ type UserMentionService struct {
 	storage weaver.Ref[Storage]
 }
 
-func (s *UserMentionService) ComposeUserMentions(ctx context.Context, usernames []string) []UserMention {
+func (s *UserMentionService) ComposeUserMentions(ctx context.Context, usernames []string) ([]UserMention, error) {
 	storage := s.storage.Get()
 	user_mentions := make([]UserMention, 0)
 	for i, username := range usernames {
-		user_profile, exist := storage.GetUserProfile(ctx, username)
+		user_profile, exist, _ := storage.GetUserProfile(ctx, username)
 		if !exist {
 			fmt.Printf("[ComposeUserMentions] User profile not found for username: %s\n", username)
 		} else {
@@ -31,5 +31,5 @@ func (s *UserMentionService) ComposeUserMentions(ctx context.Context, usernames 
 			})
 		}
 	}
-	return user_mentions
+	return user_mentions, nil
 }

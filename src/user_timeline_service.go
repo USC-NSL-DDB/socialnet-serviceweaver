@@ -8,7 +8,7 @@ import (
 
 type IUserTimelineService interface {
 	WriteUserTimeline(context.Context, int64, int64, int64)
-	ReadUserTimeline(context.Context, int64, int, int) []Post
+	ReadUserTimeline(context.Context, int64, int, int) ([]Post, error)
 	RemovePost(context.Context, int64, int64, int64)
 }
 
@@ -23,10 +23,10 @@ func (uts *UserTimelineService) WriteUserTimeline(ctx context.Context, postId, u
 	storage.PutPostTimeline(ctx, userId, postId, timestamp)
 }
 
-func (uts *UserTimelineService) ReadUserTimeline(ctx context.Context, userId int64, start int, stop int) []Post {
+func (uts *UserTimelineService) ReadUserTimeline(ctx context.Context, userId int64, start int, stop int) ([]Post, error) {
 	storage := uts.storage.Get()
 	postStorageService := uts.postStorageService.Get()
-	postIds := storage.GetPostTimeline(ctx, userId, start, stop)
+	postIds, _ := storage.GetPostTimeline(ctx, userId, start, stop)
 	return postStorageService.ReadPosts(ctx, postIds)
 }
 

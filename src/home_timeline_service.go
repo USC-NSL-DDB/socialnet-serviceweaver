@@ -8,7 +8,7 @@ import (
 )
 
 type IHomeTimelineService interface {
-	ReadHomeTimeline(context.Context, int64, int, int) []Post
+	ReadHomeTimeline(context.Context, int64, int, int) ([]Post, error)
 	WriteHomeTimeline(context.Context, int64, int64, int64, []int64)
 	RemovePost(context.Context, int64, int64, int64)
 }
@@ -21,21 +21,21 @@ type HomeTimelineService struct {
 	storage            weaver.Ref[Storage]
 }
 
-func (hts *HomeTimelineService) ReadHomeTimeline(ctx context.Context, userId int64, start int, stop int) []Post {
+func (hts *HomeTimelineService) ReadHomeTimeline(ctx context.Context, userId int64, start int, stop int) ([]Post, error) {
 	if stop <= start || start < 0 {
-		return make([]Post, 0)
+		return make([]Post, 0), nil
 	}
 	storage := hts.storage.Get()
 	postStorageService := hts.postStorageService.Get()
 
-	postIds := storage.GetPostTimeline(ctx, userId, start, stop)
+	postIds, _ := storage.GetPostTimeline(ctx, userId, start, stop)
 	return postStorageService.ReadPosts(ctx, postIds)
 }
 
 func (hts *HomeTimelineService) WriteHomeTimeline(ctx context.Context, postId int64, userId int64, timestamp int64, userMentionIds []int64) {
 	storage := hts.storage.Get()
 	socialGraphService := hts.socialGraphService.Get()
-	ids := socialGraphService.GetFollowers(ctx, userId)
+	ids, _ := socialGraphService.GetFollowers(ctx, userId)
 	var wg sync.WaitGroup
 	for _, id := range ids {
 		wg.Add(1)

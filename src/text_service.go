@@ -8,19 +8,19 @@ import (
 )
 
 type ITextService interface {
-	ComposeText(context.Context, string) TextServiceReturn
+	ComposeText(context.Context, string) (TextServiceReturn, error)
 }
 
 type TextService struct {
 	weaver.Implements[ITextService]
-	url_shorten_service    weaver.Ref[UrlShortenService]
-	user_mention_service    weaver.Ref[UserMentionService]
+	url_shorten_service  weaver.Ref[UrlShortenService]
+	user_mention_service weaver.Ref[UserMentionService]
 }
 
 func iterative_search(text string, pattern string) []string {
 	res := make([]string, 0)
 	reg := regexp.MustCompile(pattern)
-	for i:=0 ; i < len(text) ; {
+	for i := 0; i < len(text); {
 		loc := reg.FindIndex([]byte(text[i:]))
 		st, ed := loc[0], loc[1]
 		if st == -1 {
@@ -32,48 +32,44 @@ func iterative_search(text string, pattern string) []string {
 	return res
 }
 
-
-func (s *TextService) ComposeText(ctx context.Context, text string) TextServiceReturn {
+func (s *TextService) ComposeText(ctx context.Context, text string) (TextServiceReturn, error) {
 	url_pattern := "(http://|https://)([a-zA-Z0-9_!~*'().&=+$%-]+)"
-	mention_pattern :=  "@[a-zA-Z0-9-_]+"
-	
+	mention_pattern := "@[a-zA-Z0-9-_]+"
+
 	// regex search text for urls
 	urls := iterative_search(text, url_pattern)
 
 	// shorten urls
 	url_shorten_service := s.url_shorten_service.Get()
-	shorten_urls := make([]Url, 0)
-	for _, url := range urls {
-		shorten_urls = append(shorten_urls, url_shorten_service.ComposeUrl(ctx, []string{url})[0])
-	}
-	
+	new_urls, _ := url_shorten_service.ComposeUrl(ctx, urls)
+
 	// regex search text for mentions
 	mentions_str := iterative_search(text, mention_pattern)
 
 	// convert mentions to UserMention type
 	user_mention_service := s.user_mention_service.Get()
-	mentions := user_mention_service.ComposeUserMentions(ctx, mentions_str)
+	mentions, _ := user_mention_service.ComposeUserMentions(ctx, mentions_str)
 
 	ret := TextServiceReturn{
-		text: text,
+		text:          text,
 		user_mentions: mentions,
-		urls: shorten_urls,
+		urls:          new_urls,
 	}
 
 	if len(urls) > 0 {
 		reg := regexp.MustCompile(url_pattern)
 		updated_text := ""
-		for i:=0 ; i < len(text) ; {
+		for i := 0; i < len(text); {
 			loc := reg.FindIndex([]byte(text[i:]))
 			st, ed := loc[0], loc[1]
 			if st == -1 {
 				updated_text += text[i:]
 				break
 			}
-			updated_text += text[i:i+st] + shorten_urls[0].shortenedUrl
+			updated_text += text[i:i+st] + new_urls[0].shortenedUrl
 			i += ed
 		}
 		ret.text = updated_text
 	}
-	return ret
+	return ret, nil
 }
