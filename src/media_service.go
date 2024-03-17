@@ -7,7 +7,7 @@ import (
 )
 
 type IMediaService interface {
-	ComposeMedia(context.Context, []string, []int64) []Media
+	ComposeMedia(context.Context, []string, []int64) ([]Media, error)
 }
 
 type MediaService struct {
@@ -15,7 +15,7 @@ type MediaService struct {
 	// storage weaver.Ref[Storage]
 }
 
-func (ms *MediaService) ComposeMedia(ctx context.Context, mediaTypes []string, mediaIds []int64) []Media {
+func (ms *MediaService) ComposeMedia(ctx context.Context, mediaTypes []string, mediaIds []int64) ([]Media, error) {
 	media := make([]Media, 0)
 	for i := 0; i < len(mediaIds); i++ {
 		oneMedia := Media{
@@ -24,5 +24,5 @@ func (ms *MediaService) ComposeMedia(ctx context.Context, mediaTypes []string, m
 		}
 		media = append(media, oneMedia)
 	}
-	return media
+	return media, nil
 }

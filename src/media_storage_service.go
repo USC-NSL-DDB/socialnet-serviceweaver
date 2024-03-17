@@ -3,14 +3,14 @@ package main
 import (
 	"context"
 
-	"github.com/ServiceWeaver/weaver"
 	"fmt"
+
+	"github.com/ServiceWeaver/weaver"
 )
 
-
 type MediaStorageServicer interface {
-	UploadMedia(context.Context, string, string)
-	GetMedia(context.Context, string) string
+	UploadMedia(context.Context, string, string) error
+	GetMedia(context.Context, string) (string, error)
 }
 
 type MediaStorageService struct {
@@ -18,17 +18,18 @@ type MediaStorageService struct {
 	storage weaver.Ref[Storage]
 }
 
-func (m *MediaStorageService) UploadMedia(ctx context.Context, filename string, data string) {
+func (m *MediaStorageService) UploadMedia(ctx context.Context, filename string, data string) error {
 	storage := m.storage.Get()
 	storage.PutMediaData(ctx, filename, data)
+	return nil
 }
 
-func (m *MediaStorageService) GetMedia(ctx context.Context, filename string) string {
+func (m *MediaStorageService) GetMedia(ctx context.Context, filename string) (string, error) {
 	storage := m.storage.Get()
-	data, ok := storage.GetMediaData(ctx, filename)
+	data, ok, _ := storage.GetMediaData(ctx, filename)
 	if !ok {
 		fmt.Printf("Failed to find the media - filename: %s\n", filename)
-		return ""
+		return "", nil
 	}
-	return data
+	return data, nil
 }

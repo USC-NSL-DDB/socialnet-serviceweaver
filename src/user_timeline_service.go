@@ -7,9 +7,9 @@ import (
 )
 
 type IUserTimelineService interface {
-	WriteUserTimeline(context.Context, int64, int64, int64)
-	ReadUserTimeline(context.Context, int64, int, int) []Post
-	RemovePost(context.Context, int64, int64, int64)
+	WriteUserTimeline(context.Context, int64, int64, int64) error
+	ReadUserTimeline(context.Context, int64, int, int) ([]Post, error)
+	RemovePost(context.Context, int64, int64, int64) error
 }
 
 type UserTimelineService struct {
@@ -18,19 +18,21 @@ type UserTimelineService struct {
 	postStorageService weaver.Ref[PostStorageService]
 }
 
-func (uts *UserTimelineService) WriteUserTimeline(ctx context.Context, postId, userId, timestamp int64) {
+func (uts *UserTimelineService) WriteUserTimeline(ctx context.Context, postId, userId, timestamp int64) error {
 	storage := uts.storage.Get()
 	storage.PutPostTimeline(ctx, userId, postId, timestamp)
+	return nil
 }
 
-func (uts *UserTimelineService) ReadUserTimeline(ctx context.Context, userId int64, start int, stop int) []Post {
+func (uts *UserTimelineService) ReadUserTimeline(ctx context.Context, userId int64, start int, stop int) ([]Post, error) {
 	storage := uts.storage.Get()
 	postStorageService := uts.postStorageService.Get()
-	postIds := storage.GetPostTimeline(ctx, userId, start, stop)
+	postIds, _ := storage.GetPostTimeline(ctx, userId, start, stop)
 	return postStorageService.ReadPosts(ctx, postIds)
 }
 
-func (uts *UserTimelineService) RemovePost(ctx context.Context, userId int64, postId int64, timestamp int64) {
+func (uts *UserTimelineService) RemovePost(ctx context.Context, userId int64, postId int64, timestamp int64) error {
 	storage := uts.storage.Get()
 	storage.RemovePostTimeline(ctx, userId, postId, timestamp)
+	return nil
 }

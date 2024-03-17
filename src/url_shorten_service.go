@@ -9,9 +9,9 @@ import (
 )
 
 type IUrlShortenService interface {
-	ComposeUrl(context.Context, []string) []Url
-	GetExtendedUrls(context.Context, []string) []string
-	RemoveUrls(context.Context, []string)
+	ComposeUrl(context.Context, []string) ([]Url, error)
+	GetExtendedUrls(context.Context, []string) ([]string, error)
+	RemoveUrls(context.Context, []string) error
 }
 
 type UrlShortenService struct {
@@ -20,7 +20,7 @@ type UrlShortenService struct {
 	storage weaver.Ref[Storage]
 }
 
-func (us *UrlShortenService) ComposeUrl(ctx context.Context, urls []string) []Url {
+func (us *UrlShortenService) ComposeUrl(ctx context.Context, urls []string) ([]Url, error) {
 	targetUrls := make([]Url, 0)
 	for _, url := range urls {
 		shortUrl := SHORTEN_URL_HOSTNAME + us.GenRandomStr(10)
@@ -39,10 +39,10 @@ func (us *UrlShortenService) ComposeUrl(ctx context.Context, urls []string) []Ur
 		}(url)
 	}
 	wg.Wait()
-	return targetUrls
+	return targetUrls, nil
 }
 
-func (us *UrlShortenService) GetExtendedUrls(ctx context.Context, shortUrls []string) []string {
+func (us *UrlShortenService) GetExtendedUrls(ctx context.Context, shortUrls []string) ([]string, error) {
 	var wg sync.WaitGroup
 	urlChannel := make(chan string)
 	storage := us.storage.Get()
@@ -50,7 +50,7 @@ func (us *UrlShortenService) GetExtendedUrls(ctx context.Context, shortUrls []st
 		wg.Add(1)
 		go func(url string) {
 			defer wg.Done()
-			extendedUrl, exist := storage.GetShortenUrl(ctx, url)
+			extendedUrl, exist, _ := storage.GetShortenUrl(ctx, url)
 			if exist {
 				urlChannel <- extendedUrl
 			}
@@ -64,10 +64,10 @@ func (us *UrlShortenService) GetExtendedUrls(ctx context.Context, shortUrls []st
 		result = append(result, url)
 	}
 	close(urlChannel)
-	return result
+	return result, nil
 }
 
-func (us *UrlShortenService) RemoveUrls(ctx context.Context, shortUrls []string) {
+func (us *UrlShortenService) RemoveUrls(ctx context.Context, shortUrls []string) error {
 	var wg sync.WaitGroup
 	storage := us.storage.Get()
 	for _, url := range shortUrls {
@@ -78,6 +78,7 @@ func (us *UrlShortenService) RemoveUrls(ctx context.Context, shortUrls []string)
 		}(url)
 	}
 	wg.Wait()
+	return nil
 }
 
 func (us *UrlShortenService) GenRandomStr(length int) string {

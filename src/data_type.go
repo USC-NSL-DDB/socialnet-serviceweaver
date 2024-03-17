@@ -1,11 +1,15 @@
 package main
 
+import "github.com/ServiceWeaver/weaver"
+
 type Creator struct {
+	weaver.AutoMarshal
 	userId   int64
 	username string
 }
 
 type UserProfile struct {
+	weaver.AutoMarshal
 	userId         int64
 	firstName      string
 	lastName       string
@@ -23,6 +27,7 @@ const (
 )
 
 type Post struct {
+	weaver.AutoMarshal
 	post_id       int64
 	creator       Creator
 	req_id        int64
@@ -35,21 +40,25 @@ type Post struct {
 }
 
 type Media struct {
+	weaver.AutoMarshal
 	mediaId   int64
 	mediaType string
 }
 
 type Url struct {
+	weaver.AutoMarshal
 	shortenedUrl string
 	expandedUrl  string
 }
 
 type UserMention struct {
+	weaver.AutoMarshal
 	userId   int64
 	username string
 }
 
 type TextServiceReturn struct {
+	weaver.AutoMarshal
 	text          string
 	user_mentions []UserMention
 	urls          []Url
