@@ -10,10 +10,10 @@ import (
 type ISocialGraphService interface {
 	GetFollowers(context.Context, int64) ([]int64, error)
 	GetFollowees(context.Context, int64) ([]int64, error)
-	Follow(context.Context, int64, int64)
-	Unfollow(context.Context, int64, int64)
-	FollowWithUsername(context.Context, string, string)
-	UnfollowWithUsername(context.Context, string, string)
+	Follow(context.Context, int64, int64) error
+	Unfollow(context.Context, int64, int64) error
+	FollowWithUsername(context.Context, string, string) error
+	UnfollowWithUsername(context.Context, string, string) error
 }
 
 type SocialGraphService struct {
@@ -48,52 +48,51 @@ func (s *SocialGraphService) GetFollowees(ctx context.Context, userId int64) ([]
 	return map_to_list(followee_maps), nil
 }
 
-func (s *SocialGraphService) Follow(ctx context.Context, followerId int64, followeeId int64) {
+func (s *SocialGraphService) Follow(ctx context.Context, followerId int64, followeeId int64) error {
 	storage := s.storage.Get()
 	storage.Follow(ctx, followerId, followeeId)
+	return nil
 }
 
-func (s *SocialGraphService) Unfollow(ctx context.Context, followerId int64, followeeId int64) {
+func (s *SocialGraphService) Unfollow(ctx context.Context, followerId int64, followeeId int64) error {
 	storage := s.storage.Get()
 	storage.Unfollow(ctx, followerId, followeeId)
+	return nil
 }
 
-func (s *SocialGraphService) FollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) {
+func (s *SocialGraphService) FollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) error {
 	user_service := s.user_service.Get()
 	followerId, _ := user_service.GetUserId(ctx, followerUsername)
 	followeeId, _ := user_service.GetUserId(ctx, followeeUsername)
 	if followerId == 0 || followeeId == 0 {
 		fmt.Printf("Failed to find the user profile - followerUsername: %s, followeeUsername: %s\n", followerUsername, followeeUsername)
-		return
+		return nil
 	}
 	storage := s.storage.Get()
 	storage.Follow(ctx, followerId, followeeId)
+	return nil
 }
 
-func (s *SocialGraphService) UnfollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) {
-	followerIdChn := make(chan int64, 1)
-	followeeIdChn := make(chan int64, 1)
-
+func (s *SocialGraphService) UnfollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) error {
 	user_service := s.user_service.Get()
-	// Sharing the ctx, followerUsername, followeeUsername from environment should be ok?
-	// If not, we can pass them as parameters
-	go func() {
+	follower_id_fu := AsyncExec(func() interface{} {
 		followerId, _ := user_service.GetUserId(ctx, followerUsername)
-		followerIdChn <- followerId
-	}()
+		return followerId
+	})
 
-	go func() {
+	followee_id_fu := AsyncExec(func() interface{} {
 		followeeId, _ := user_service.GetUserId(ctx, followeeUsername)
-		followeeIdChn <- followeeId
-	}()
+		return followeeId
+	})
 
-	followerId := <-followerIdChn
-	followeeId := <-followeeIdChn
+	followerId := follower_id_fu.Await().(int64)
+	followeeId := followee_id_fu.Await().(int64)
 
 	if followerId == 0 || followeeId == 0 {
 		fmt.Printf("Failed to find the user profile - followerUsername: %s, followeeUsername: %s\n", followerUsername, followeeUsername)
-		return
+		return nil
 	}
 	storage := s.storage.Get()
 	storage.Unfollow(ctx, followerId, followeeId)
+	return nil
 }

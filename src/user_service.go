@@ -41,8 +41,8 @@ func (le *LogError) Error() string {
 }
 
 type UserServicer interface {
-	RegisterUserWithId(context.Context, string, string, string, string, int64)
-	RegisterUser(context.Context, string, string, string, string)
+	RegisterUserWithId(context.Context, string, string, string, string, int64) error
+	RegisterUser(context.Context, string, string, string, string) error
 	// TODO: Figure out what is Creator return type
 	ComposeCreatorWithUsername(context.Context, string) (Creator, error)
 	ComposeCreatorWithUserId(context.Context, int64, string) (Creator, error)
@@ -172,7 +172,7 @@ func (us *UserService) Login(ctx context.Context, username, password string) (st
 	return tokenString, nil
 }
 
-func (us *UserService) RegisterUserWithId(ctx context.Context, firstName, lastName, username, password string, userId int64) {
+func (us *UserService) RegisterUserWithId(ctx context.Context, firstName, lastName, username, password string, userId int64) error {
 	salt := GenRandomString(32)
 	userProfile := UserProfile{
 		userId:         userId,
@@ -184,14 +184,15 @@ func (us *UserService) RegisterUserWithId(ctx context.Context, firstName, lastNa
 	// update the map
 	var s Storage = us.storage.Get()
 	s.PutUserProfile(ctx, username, userProfile)
+	return nil
 }
 
-func (us *UserService) RegisterUser(ctx context.Context, firstName, lastName, username, password string) {
+func (us *UserService) RegisterUser(ctx context.Context, firstName, lastName, username, password string) error {
 	// Generate a user id
 	uid := GenerateUniqueId()
 
 	// Call RegisterUserWithId
-	us.RegisterUserWithId(ctx, firstName, lastName, username, password, uid)
+	return us.RegisterUserWithId(ctx, firstName, lastName, username, password, uid)
 }
 
 func (us *UserService) GetUserId(ctx context.Context, username string) (int64, error) {

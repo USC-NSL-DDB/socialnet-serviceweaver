@@ -11,7 +11,7 @@ import (
 type PostStorageServicer interface {
 	RemovePost(context.Context, int64) (bool, error)
 	ReadPost(context.Context, int64) (Post, error)
-	StorePost(context.Context, Post)
+	StorePost(context.Context, Post) error
 	ReadPosts(context.Context, []int64) ([]Post, error)
 }
 
@@ -20,9 +20,10 @@ type PostStorageService struct {
 	storage weaver.Ref[Storage]
 }
 
-func (pss *PostStorageService) StorePost(ctx context.Context, post Post) {
+func (pss *PostStorageService) StorePost(ctx context.Context, post Post) error {
 	storage := pss.storage.Get()
 	storage.PutPost(ctx, post.post_id, post)
+	return nil
 }
 
 func (pss *PostStorageService) ReadPost(ctx context.Context, postId int64) (Post, error) {

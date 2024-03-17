@@ -9,7 +9,7 @@ import (
 )
 
 type MediaStorageServicer interface {
-	UploadMedia(context.Context, string, string)
+	UploadMedia(context.Context, string, string) error
 	GetMedia(context.Context, string) (string, error)
 }
 
@@ -18,9 +18,10 @@ type MediaStorageService struct {
 	storage weaver.Ref[Storage]
 }
 
-func (m *MediaStorageService) UploadMedia(ctx context.Context, filename string, data string) {
+func (m *MediaStorageService) UploadMedia(ctx context.Context, filename string, data string) error {
 	storage := m.storage.Get()
 	storage.PutMediaData(ctx, filename, data)
+	return nil
 }
 
 func (m *MediaStorageService) GetMedia(ctx context.Context, filename string) (string, error) {

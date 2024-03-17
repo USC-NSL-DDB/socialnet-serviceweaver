@@ -11,7 +11,7 @@ import (
 type IUrlShortenService interface {
 	ComposeUrl(context.Context, []string) ([]Url, error)
 	GetExtendedUrls(context.Context, []string) ([]string, error)
-	RemoveUrls(context.Context, []string)
+	RemoveUrls(context.Context, []string) error
 }
 
 type UrlShortenService struct {
@@ -67,7 +67,7 @@ func (us *UrlShortenService) GetExtendedUrls(ctx context.Context, shortUrls []st
 	return result, nil
 }
 
-func (us *UrlShortenService) RemoveUrls(ctx context.Context, shortUrls []string) {
+func (us *UrlShortenService) RemoveUrls(ctx context.Context, shortUrls []string) error {
 	var wg sync.WaitGroup
 	storage := us.storage.Get()
 	for _, url := range shortUrls {
@@ -78,6 +78,7 @@ func (us *UrlShortenService) RemoveUrls(ctx context.Context, shortUrls []string)
 		}(url)
 	}
 	wg.Wait()
+	return nil
 }
 
 func (us *UrlShortenService) GenRandomStr(length int) string {

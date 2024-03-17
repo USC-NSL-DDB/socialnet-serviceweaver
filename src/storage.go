@@ -12,36 +12,73 @@ import (
 type IStorage interface {
 	// RegisterMap(context.Context, string) error
 	// GetMap(context.Context, string, key) (HashMap, error)
-	PutUserProfile(context.Context, string, UserProfile)
+	PutUserProfile(context.Context, string, UserProfile) error
 	GetUserProfile(context.Context, string) (UserProfile, bool, error)
 
-	PutPost(context.Context, int64, Post)
-	GetPost(context.Context, int64) (Post, bool)
+	PutPost(context.Context, int64, Post) error
+	GetPost(context.Context, int64) (Post, bool, error)
 	RemovePost(context.Context, int64) (bool, error)
 
-	PutMediaData(context.Context, string, string)
+	PutMediaData(context.Context, string, string) error
 	GetMediaData(context.Context, string) (string, bool, error)
 
-	PutShortenUrl(context.Context, string, string)
+	PutShortenUrl(context.Context, string, string) error
 	GetShortenUrl(context.Context, string) (string, bool, error)
-	RemoveShortenUrl(context.Context, string)
+	RemoveShortenUrl(context.Context, string) error
 
-	Follow(context.Context, int64, int64)
-	Unfollow(context.Context, int64, int64)
+	Follow(context.Context, int64, int64) error
+	Unfollow(context.Context, int64, int64) error
 	GetFollowers(context.Context, int64) (map[int64]bool, bool, error)
 	GetFollowees(context.Context, int64) (map[int64]bool, bool, error)
 
-	PutPostTimeline(context.Context, int64, int64, int64)
+	PutPostTimeline(context.Context, int64, int64, int64) error
 	GetPostTimeline(context.Context, int64, int, int) ([]int64, error)
-	RemovePostTimeline(context.Context, int64, int64, int64)
+	RemovePostTimeline(context.Context, int64, int64, int64) error
 }
 
 // Manually routing all request to the same replica.
 // But it's not guaranteed by the documentation.
 type StorageRouter struct{}
 
-func (StorageRouter) Get(_ context.Context, key string) string        { return "storage" }
-func (StorageRouter) Put(_ context.Context, key, value string) string { return "storage" }
+const ROUTE_KEY string = "storage"
+
+func (StorageRouter) PutUserProfile(context.Context, string, UserProfile) string  { return ROUTE_KEY }
+func (StorageRouter) GetUserProfile(context.Context, string) string               { return ROUTE_KEY }
+func (StorageRouter) PutPost(context.Context, int64, Post) string                 { return ROUTE_KEY }
+func (StorageRouter) GetPost(context.Context, int64) string                       { return ROUTE_KEY }
+func (StorageRouter) RemovePost(context.Context, int64) string                    { return ROUTE_KEY }
+func (StorageRouter) PutMediaData(context.Context, string, string) string         { return ROUTE_KEY }
+func (StorageRouter) GetMediaData(context.Context, string) string                 { return ROUTE_KEY }
+func (StorageRouter) PutShortenUrl(context.Context, string, string) string        { return ROUTE_KEY }
+func (StorageRouter) GetShortenUrl(context.Context, string) string                { return ROUTE_KEY }
+func (StorageRouter) RemoveShortenUrl(context.Context, string) string             { return ROUTE_KEY }
+func (StorageRouter) Follow(context.Context, int64, int64) string                 { return ROUTE_KEY }
+func (StorageRouter) Unfollow(context.Context, int64, int64) string               { return ROUTE_KEY }
+func (StorageRouter) GetFollowers(context.Context, int64) string                  { return ROUTE_KEY }
+func (StorageRouter) GetFollowees(context.Context, int64) string                  { return ROUTE_KEY }
+func (StorageRouter) PutPostTimeline(context.Context, int64, int64, int64) string { return ROUTE_KEY }
+func (StorageRouter) GetPostTimeline(context.Context, int64, int, int) string     { return ROUTE_KEY }
+func (StorageRouter) RemovePostTimeline(context.Context, int64, int64, int64) string {
+	return ROUTE_KEY
+}
+
+//  PutUserProfile(_ context.Context, key string) string
+//  GetUserProfile(_ context.Context, key, value string) string
+//  PutPost(_ context.Context, key string) string
+//  GetPost(_ context.Context, key, value string) string
+//  RemovePost(_ context.Context, key string) string
+//  PutMediaData(_ context.Context, key, value string) string
+//  GetMediaData(_ context.Context, key string) string
+//  PutShortenUrl(_ context.Context, key, value string) string
+//  GetShortenUrl(_ context.Context, key string) string
+//  RemoveShortenUrl(_ context.Context, key, value string) string
+//  Follow(_ context.Context, key string) string
+//  Unfollow(_ context.Context, key, value string) string
+//  GetFollowers(_ context.Context, key string) string
+//  GetFollowees(_ context.Context, key, value string) string
+//  PutPostTimeline(_ context.Context, key string) string
+//  GetPostTimeline(_ context.Context, key, value string) string
+//  RemovePostTimeline(_ context.Context, key, value string) string
 
 // the hashtable needs to be manually managed so that it has only one instance and no replicas.
 // Later on, for distributed sharded hastable, we can have more replicas as shards.
@@ -73,8 +110,9 @@ func (s *Storage) Init(context.Context) error {
 	return nil
 }
 
-func (s *Storage) PutUserProfile(_ context.Context, key string, val UserProfile) {
+func (s *Storage) PutUserProfile(_ context.Context, key string, val UserProfile) error {
 	s.usernameToUserProfileMap.Put(key, val)
+	return nil
 }
 
 func (s *Storage) GetUserProfile(_ context.Context, key string) (UserProfile, bool, error) {
@@ -82,8 +120,9 @@ func (s *Storage) GetUserProfile(_ context.Context, key string) (UserProfile, bo
 	return v, e, nil
 }
 
-func (s *Storage) PutPost(_ context.Context, key int64, val Post) {
+func (s *Storage) PutPost(_ context.Context, key int64, val Post) error {
 	s.postIdToPostMap.Put(key, val)
+	return nil
 }
 
 func (s *Storage) GetPost(_ context.Context, key int64) (Post, bool, error) {
@@ -100,8 +139,9 @@ func (s *Storage) RemovePost(_ context.Context, key int64) (bool, error) {
 	return true, nil
 }
 
-func (s *Storage) PutMediaData(_ context.Context, key string, val string) {
+func (s *Storage) PutMediaData(_ context.Context, key string, val string) error {
 	s.filenameToMediaDataMap.Put(key, val)
+	return nil
 }
 
 func (s *Storage) GetMediaData(_ context.Context, key string) (string, bool, error) {
@@ -109,7 +149,7 @@ func (s *Storage) GetMediaData(_ context.Context, key string) (string, bool, err
 	return v, e, nil
 }
 
-func (s *Storage) Follow(_ context.Context, userId int64, followeeId int64) {
+func (s *Storage) Follow(_ context.Context, userId int64, followeeId int64) error {
 	// userId follows followeeId
 	followees, flag := s.useridToFolloweesMap.Get(userId)
 	if !flag {
@@ -126,29 +166,31 @@ func (s *Storage) Follow(_ context.Context, userId int64, followeeId int64) {
 		followers[userId] = true
 	}
 	s.useridToFollowersMap.Put(followeeId, followers)
+	return nil
 }
 
-func (s *Storage) Unfollow(_ context.Context, userId int64, followeeId int64) {
+func (s *Storage) Unfollow(_ context.Context, userId int64, followeeId int64) error {
 	// userId unfollows followeeId
 	followees, flag1 := s.useridToFolloweesMap.Get(userId)
 	followers, flag2 := s.useridToFollowersMap.Get(followeeId)
 	if !flag1 || !flag2 {
 		fmt.Printf("Unfollow: userId %d or followeeId %d does not exist\n", userId, followeeId)
-		return
+		return nil
 	}
 
 	if _, ok := followees[followeeId]; !ok {
 		fmt.Printf("Unfollow: userId %d does not follow followeeId %d\n", userId, followeeId)
-		return
+		return nil
 	}
 
 	if _, ok := followers[userId]; !ok {
 		fmt.Printf("Unfollow: followeeId %d does not have userId %d as follower\n", followeeId, userId)
-		return
+		return nil
 	}
 
 	delete(followees, followeeId)
 	delete(followers, userId)
+	return nil
 }
 
 func (s *Storage) GetFollowers(_ context.Context, userId int64) (map[int64]bool, bool, error) {
@@ -161,8 +203,9 @@ func (s *Storage) GetFollowees(_ context.Context, userId int64) (map[int64]bool,
 	return v, e, nil
 }
 
-func (s *Storage) PutShortenUrl(_ context.Context, key string, val string) {
+func (s *Storage) PutShortenUrl(_ context.Context, key string, val string) error {
 	s.shortToExtendedMap.Put(key, val)
+	return nil
 }
 
 func (s *Storage) GetShortenUrl(_ context.Context, key string) (string, bool, error) {
@@ -170,8 +213,9 @@ func (s *Storage) GetShortenUrl(_ context.Context, key string) (string, bool, er
 	return v, e, nil
 }
 
-func (s *Storage) RemoveShortenUrl(_ context.Context, key string) {
+func (s *Storage) RemoveShortenUrl(_ context.Context, key string) error {
 	s.shortToExtendedMap.Delete(key)
+	return nil
 }
 
 type PostTimestampPair struct {
@@ -188,7 +232,7 @@ func (p PostTimestampPair) Less(than btree.Item) bool {
 	return p.timestamp < other.timestamp
 }
 
-func (s *Storage) PutPostTimeline(_ context.Context, userId int64, postId int64, timestamp int64) {
+func (s *Storage) PutPostTimeline(_ context.Context, userId int64, postId int64, timestamp int64) error {
 	s.useridToTimelineMap.ApplyWithDefault(
 		userId,
 		func(k int64, v *btree.BTree, args ...interface{}) {
@@ -201,6 +245,7 @@ func (s *Storage) PutPostTimeline(_ context.Context, userId int64, postId int64,
 		},
 		timestamp, postId,
 	)
+	return nil
 }
 
 func (s *Storage) GetPostTimeline(_ context.Context, userId int64, start int, stop int) ([]int64, error) {
@@ -225,7 +270,7 @@ func (s *Storage) GetPostTimeline(_ context.Context, userId int64, start int, st
 	), nil
 }
 
-func (s *Storage) RemovePostTimeline(_ context.Context, userId int64, postId int64, timestamp int64) {
+func (s *Storage) RemovePostTimeline(_ context.Context, userId int64, postId int64, timestamp int64) error {
 	s.useridToTimelineMap.Apply(
 		userId,
 		func(k int64, v *btree.BTree, args ...interface{}) {
@@ -235,4 +280,5 @@ func (s *Storage) RemovePostTimeline(_ context.Context, userId int64, postId int
 		},
 		timestamp, postId,
 	)
+	return nil
 }

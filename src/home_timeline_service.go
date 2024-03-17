@@ -9,8 +9,8 @@ import (
 
 type IHomeTimelineService interface {
 	ReadHomeTimeline(context.Context, int64, int, int) ([]Post, error)
-	WriteHomeTimeline(context.Context, int64, int64, int64, []int64)
-	RemovePost(context.Context, int64, int64, int64)
+	WriteHomeTimeline(context.Context, int64, int64, int64, []int64) error
+	RemovePost(context.Context, int64, int64, int64) error
 }
 
 type HomeTimelineService struct {
@@ -32,7 +32,7 @@ func (hts *HomeTimelineService) ReadHomeTimeline(ctx context.Context, userId int
 	return postStorageService.ReadPosts(ctx, postIds)
 }
 
-func (hts *HomeTimelineService) WriteHomeTimeline(ctx context.Context, postId int64, userId int64, timestamp int64, userMentionIds []int64) {
+func (hts *HomeTimelineService) WriteHomeTimeline(ctx context.Context, postId int64, userId int64, timestamp int64, userMentionIds []int64) error {
 	storage := hts.storage.Get()
 	socialGraphService := hts.socialGraphService.Get()
 	ids, _ := socialGraphService.GetFollowers(ctx, userId)
@@ -45,9 +45,11 @@ func (hts *HomeTimelineService) WriteHomeTimeline(ctx context.Context, postId in
 		}(ctx, id, postId, timestamp)
 	}
 	wg.Wait()
+	return nil
 }
 
-func (hts *HomeTimelineService) RemovePost(ctx context.Context, userId int64, postId int64, timestamp int64) {
+func (hts *HomeTimelineService) RemovePost(ctx context.Context, userId int64, postId int64, timestamp int64) error {
 	storage := hts.storage.Get()
 	storage.RemovePostTimeline(ctx, userId, postId, timestamp)
+	return nil
 }

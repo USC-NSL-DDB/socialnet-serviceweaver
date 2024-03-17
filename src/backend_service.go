@@ -8,20 +8,20 @@ import (
 )
 
 type BackendServicer interface {
-	RemovePosts(context.Context, int64, int)
-	CompostPost(context.Context, string, int64, string, []int64, []string, PostType)
+	RemovePosts(context.Context, int64, int, int) error
+	CompostPost(context.Context, string, int64, string, []int64, []string, PostType) error
 	Login(context.Context, string, string) (string, error)
-	RegisterUser(context.Context, string, string, string, string)
-	RegisterUserWithId(context.Context, string, string, string, string, int64)
+	RegisterUser(context.Context, string, string, string, string) error
+	RegisterUserWithId(context.Context, string, string, string, string, int64) error
 	ReadUserTimeline(context.Context, int64, int, int) ([]Post, error)
 	GetFollowers(context.Context, int64) ([]int64, error)
-	Unfollow(context.Context, int64, int64)
-	UnfollowWithUsername(context.Context, string, string)
-	Follow(context.Context, int64, int64)
-	FollowWithUsername(context.Context, string, string)
+	Unfollow(context.Context, int64, int64) error
+	UnfollowWithUsername(context.Context, string, string) error
+	Follow(context.Context, int64, int64) error
+	FollowWithUsername(context.Context, string, string) error
 	GetFollowees(context.Context, int64) ([]int64, error)
 	ReadHomeTimeline(context.Context, int64, int, int) ([]Post, error)
-	UploadMedia(context.Context, string, string)
+	UploadMedia(context.Context, string, string) error
 	GetMedia(context.Context, string) (string, error)
 }
 
@@ -54,9 +54,10 @@ func (bs *BackendService) RegisterUser(
 	last_name,
 	username,
 	password string,
-) {
+) error {
 	// run UserService
 	bs.userService.Get().RegisterUser(ctx, first_name, last_name, username, password)
+	return nil
 }
 
 func (bs *BackendService) RegisterUserWithId(
@@ -66,12 +67,13 @@ func (bs *BackendService) RegisterUserWithId(
 	username,
 	password string,
 	user_id int64,
-) {
+) error {
 	// run UserService
 	bs.userService.Get().RegisterUserWithId(ctx, first_name, last_name, username, password, user_id)
+	return nil
 }
 
-func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start, top int) {
+func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start, top int) error {
 	// run UserTimelineService
 	// run SocialGraphService
 	// run PostStorageService
@@ -146,6 +148,8 @@ func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start,
 	for _, fu := range remove_short_url_fus {
 		fu.Await()
 	}
+
+	return nil
 }
 
 func (bs *BackendService) CompostPost(
@@ -156,7 +160,7 @@ func (bs *BackendService) CompostPost(
 	media_ids []int64,
 	media_types []string,
 	post_type PostType,
-) {
+) error {
 	// run TextService
 	// run UniqueIdService
 	// run MediaService
@@ -226,6 +230,7 @@ func (bs *BackendService) CompostPost(
 	write_user_timeline_fu.Await()
 	post_fu.Await()
 	write_home_timeline_fu.Await()
+	return nil
 }
 
 func (bs *BackendService) ReadUserTimeline(
@@ -243,24 +248,28 @@ func (bs *BackendService) GetFollowers(ctx context.Context, user_id int64) ([]in
 	return sgs.GetFollowers(ctx, user_id)
 }
 
-func (bs *BackendService) Unfollow(ctx context.Context, user_id int64, followee_id int64) {
+func (bs *BackendService) Unfollow(ctx context.Context, user_id int64, followee_id int64) error {
 	sgs := bs.socialGraphService.Get()
 	sgs.Unfollow(ctx, user_id, followee_id)
+	return nil
 }
 
-func (bs *BackendService) UnfollowWithUsername(ctx context.Context, user_username string, followee_username string) {
+func (bs *BackendService) UnfollowWithUsername(ctx context.Context, user_username string, followee_username string) error {
 	sgs := bs.socialGraphService.Get()
 	sgs.UnfollowWithUsername(ctx, user_username, followee_username)
+	return nil
 }
 
-func (bs *BackendService) Follow(ctx context.Context, user_id int64, followee_id int64) {
+func (bs *BackendService) Follow(ctx context.Context, user_id int64, followee_id int64) error {
 	sgs := bs.socialGraphService.Get()
 	sgs.Follow(ctx, user_id, followee_id)
+	return nil
 }
 
-func (bs *BackendService) FollowWithUsername(ctx context.Context, user_username string, followee_username string) {
+func (bs *BackendService) FollowWithUsername(ctx context.Context, user_username string, followee_username string) error {
 	sgs := bs.socialGraphService.Get()
 	sgs.FollowWithUsername(ctx, user_username, followee_username)
+	return nil
 }
 
 func (bs *BackendService) GetFollowees(ctx context.Context, user_id int64) ([]int64, error) {
@@ -273,9 +282,10 @@ func (bs *BackendService) ReadHomeTimeline(ctx context.Context, user_id int64, s
 	return htls.ReadHomeTimeline(ctx, user_id, start, stop)
 }
 
-func (bs *BackendService) UploadMedia(ctx context.Context, filename string, data string) {
+func (bs *BackendService) UploadMedia(ctx context.Context, filename string, data string) error {
 	mss := bs.mediaStorageService.Get()
 	mss.UploadMedia(ctx, filename, data)
+	return nil
 }
 
 func (bs *BackendService) GetMedia(ctx context.Context, filename string) (string, error) {
