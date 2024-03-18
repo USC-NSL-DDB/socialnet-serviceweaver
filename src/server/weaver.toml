@@ -1,0 +1,5 @@
+[serviceweaver]
+binary = "./server.out"
+
+[multi]
+# listeners.hello = {address = "localhost:12345"}

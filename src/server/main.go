@@ -43,14 +43,16 @@ func reg_listener_action(
 	listener weaver.Listener,
 	endpoint string,
 	action func(http.ResponseWriter, *http.Request),
+	error_collector chan error,
 ) {
 	go func() {
 		fmt.Printf("%v available on %v\n", endpoint, listener)
 		http.HandleFunc(endpoint, action)
 		err := http.Serve(listener, nil)
-		if err != nil {
-			log.Fatal(err)
-		}
+		error_collector <- err
+		// if err != nil {
+		// 	log.Fatal(err)
+		// }
 	}()
 	// fmt.Printf("%v available on %v\n", endpoint, listener)
 	// http.HandleFunc(endpoint, action)
@@ -63,14 +65,21 @@ func reg_listener_action(
 // serve is called by weaver.Run and contains the body of the application.
 func serve(ctx context.Context, app *app) error {
 	// var backend BackendService = app.backend_service.Get()
+	err_collector := make(chan error)
 
 	reg_listener_action(app.remove_posts, "/remove_posts", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "remove_posts")
-	})
+		fmt.Fprintf(w, "remove_posts\n")
+	}, err_collector)
 
-	// reg_listener_action(app.compose_post, "/compose_post", func(w http.ResponseWriter, r *http.Request) {
-	// 	fmt.Fprintf(w, "compose_post")
-	// })
+	reg_listener_action(app.compose_post, "/compose_post", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	for err := range err_collector {
+		log.Fatal(err)
+		return err
+	}
+
 	// var r Reverser = app.reverser.Get()
 	// reversed, err := r.Reverse(ctx, "!dlroW ,olleH")
 	// if err != nil {
