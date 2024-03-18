@@ -22,21 +22,21 @@ type app struct {
 	// reverser weaver.Ref[Reverser]
 	backend_service weaver.Ref[BackendServicer]
 
-	remove_posts weaver.Listener
-	compose_post weaver.Listener
-	// login                  weaver.Listener
-	// register_user          weaver.Listener
-	// register_user_with_id  weaver.Listener
-	// read_user_timeline     weaver.Listener
-	// get_followers          weaver.Listener
-	// unfollow               weaver.Listener
-	// unfollow_with_username weaver.Listener
-	// follow                 weaver.Listener
-	// follow_with_username   weaver.Listener
-	// get_followees          weaver.Listener
-	// read_home_timeline     weaver.Listener
-	// upload_media           weaver.Listener
-	// get_media              weaver.Listener
+	remove_posts           weaver.Listener
+	compose_post           weaver.Listener
+	login                  weaver.Listener
+	register_user          weaver.Listener
+	register_user_with_id  weaver.Listener
+	read_user_timeline     weaver.Listener
+	get_followers          weaver.Listener
+	unfollow               weaver.Listener
+	unfollow_with_username weaver.Listener
+	follow                 weaver.Listener
+	follow_with_username   weaver.Listener
+	get_followees          weaver.Listener
+	read_home_timeline     weaver.Listener
+	upload_media           weaver.Listener
+	get_media              weaver.Listener
 }
 
 func reg_listener_action(
@@ -50,16 +50,7 @@ func reg_listener_action(
 		http.HandleFunc(endpoint, action)
 		err := http.Serve(listener, nil)
 		error_collector <- err
-		// if err != nil {
-		// 	log.Fatal(err)
-		// }
 	}()
-	// fmt.Printf("%v available on %v\n", endpoint, listener)
-	// http.HandleFunc(endpoint, action)
-	// err := http.Serve(listener, nil)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
 }
 
 // serve is called by weaver.Run and contains the body of the application.
@@ -72,6 +63,58 @@ func serve(ctx context.Context, app *app) error {
 	}, err_collector)
 
 	reg_listener_action(app.compose_post, "/compose_post", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.login, "/login", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.register_user, "/register_user", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.register_user_with_id, "/register_user_with_id", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.read_user_timeline, "/read_user_timeline", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.get_followers, "/get_followers", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.unfollow, "/unfollow", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.unfollow_with_username, "/unfollow_with_username", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.follow, "/follow", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.follow_with_username, "/follow_with_username", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.get_followees, "/get_followees", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.read_home_timeline, "/read_home_timeline", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.upload_media, "/upload_media", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "compose_post\n")
+	}, err_collector)
+
+	reg_listener_action(app.get_media, "/get_media", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "compose_post\n")
 	}, err_collector)
 

@@ -14,3 +14,7 @@ popd
 pushd $script_dir/src/server
 weaver generate .
 popd
+
+pushd $script_dir/src
+go mod tidy
+popd

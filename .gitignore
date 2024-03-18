@@ -20,6 +20,9 @@
 # Go workspace file
 go.work
 
+# weaver generated files
+weaver_gen.go
+
 # Binary file
 SocialNetwork
 

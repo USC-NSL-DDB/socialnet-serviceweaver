@@ -200,7 +200,7 @@ func init() {
 		Name:      "github.com/ServiceWeaver/weaver/Main",
 		Iface:     reflect.TypeOf((*weaver.Main)(nil)).Elem(),
 		Impl:      reflect.TypeOf(app{}),
-		Listeners: []string{"compose_post", "remove_posts"},
+		Listeners: []string{"compose_post", "follow", "follow_with_username", "get_followees", "get_followers", "get_media", "login", "read_home_timeline", "read_user_timeline", "register_user", "register_user_with_id", "remove_posts", "unfollow", "unfollow_with_username", "upload_media"},
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
 			return main_local_stub{impl: impl.(weaver.Main), tracer: tracer}
 		},
@@ -211,7 +211,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return main_reflect_stub{caller: caller}
 		},
-		RefData: "⟦9906f744:wEaVeReDgE:github.com/ServiceWeaver/weaver/Main→SocialNetwork/server/BackendServicer⟧\n⟦076385ea:wEaVeRlIsTeNeRs:github.com/ServiceWeaver/weaver/Main→compose_post,remove_posts⟧\n",
+		RefData: "⟦9906f744:wEaVeReDgE:github.com/ServiceWeaver/weaver/Main→SocialNetwork/server/BackendServicer⟧\n⟦cf6dae9d:wEaVeRlIsTeNeRs:github.com/ServiceWeaver/weaver/Main→compose_post,follow,follow_with_username,get_followees,get_followers,get_media,login,read_home_timeline,read_user_timeline,register_user,register_user_with_id,remove_posts,unfollow,unfollow_with_username,upload_media⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/MediaStorageServicer",
