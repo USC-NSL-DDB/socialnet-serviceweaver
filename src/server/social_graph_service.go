@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	. "SocialNetwork/shared/common"
+
 	"github.com/ServiceWeaver/weaver"
 )
 

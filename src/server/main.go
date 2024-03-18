@@ -18,10 +18,13 @@ func main() {
 type app struct {
 	weaver.Implements[weaver.Main]
 	// reverser weaver.Ref[Reverser]
+	backend_service weaver.Ref[BackendService]
 }
 
 // serve is called by weaver.Run and contains the body of the application.
 func serve(ctx context.Context, app *app) error {
+	var backend BackendService = app.backend_service.Get()
+	backend.Follow(ctx, 1, 2)
 	// var r Reverser = app.reverser.Get()
 	// reversed, err := r.Reverse(ctx, "!dlroW ,olleH")
 	// if err != nil {

@@ -22,7 +22,7 @@ type PostStorageService struct {
 
 func (pss *PostStorageService) StorePost(ctx context.Context, post Post) error {
 	storage := pss.storage.Get()
-	storage.PutPost(ctx, post.post_id, post)
+	storage.PutPost(ctx, post.Post_id, post)
 	return nil
 }
 

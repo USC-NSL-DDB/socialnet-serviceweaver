@@ -117,18 +117,18 @@ func (us *UserService) ComposeCreatorWithUsername(ctx context.Context, username 
 		fmt.Printf("Failed to find the user profile - username: %s\n", username)
 		// Should handle it as error
 		return Creator{
-			userId:   0,
-			username: "",
+			UserId:   0,
+			Username: "",
 		}, nil
 	}
 
-	return us.ComposeCreatorWithUserId(ctx, profile.userId, username)
+	return us.ComposeCreatorWithUserId(ctx, profile.UserId, username)
 }
 
 func (us *UserService) ComposeCreatorWithUserId(ctx context.Context, userId int64, username string) (Creator, error) {
 	return Creator{
-		userId:   userId,
-		username: username,
+		UserId:   userId,
+		Username: username,
 	}, nil
 }
 
@@ -141,7 +141,7 @@ func (us *UserService) Login(ctx context.Context, username, password string) (st
 			err_msg:  NOT_REGISTERED.String(),
 		}
 	}
-	var auth bool = HashPassowrd(password, profile.salt) == profile.passwordHashed
+	var auth bool = HashPassowrd(password, profile.Salt) == profile.PasswordHashed
 	if !auth {
 		return "", &LogError{
 			err_code: int(WRONG_PASSWORD),
@@ -149,7 +149,7 @@ func (us *UserService) Login(ctx context.Context, username, password string) (st
 		}
 	}
 
-	userIdStr := strconv.FormatInt(profile.userId, 10)
+	userIdStr := strconv.FormatInt(profile.UserId, 10)
 	timestampStr := strconv.FormatInt(time.Now().Unix(), 10)
 
 	// Create a new JWT object
@@ -175,11 +175,11 @@ func (us *UserService) Login(ctx context.Context, username, password string) (st
 func (us *UserService) RegisterUserWithId(ctx context.Context, firstName, lastName, username, password string, userId int64) error {
 	salt := GenRandomString(32)
 	userProfile := UserProfile{
-		userId:         userId,
-		firstName:      firstName,
-		lastName:       lastName,
-		salt:           salt,
-		passwordHashed: HashPassowrd(password, salt),
+		UserId:         userId,
+		FirstName:      firstName,
+		LastName:       lastName,
+		Salt:           salt,
+		PasswordHashed: HashPassowrd(password, salt),
 	}
 	// update the map
 	var s Storage = us.storage.Get()
@@ -203,5 +203,5 @@ func (us *UserService) GetUserId(ctx context.Context, username string) (int64, e
 		// Should handle it more elegantly.
 		return 0, nil
 	}
-	return profile.userId, nil
+	return profile.UserId, nil
 }

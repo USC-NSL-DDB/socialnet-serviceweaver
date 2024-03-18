@@ -25,8 +25,8 @@ func (us *UrlShortenService) ComposeUrl(ctx context.Context, urls []string) ([]U
 	for _, url := range urls {
 		shortUrl := SHORTEN_URL_HOSTNAME + us.GenRandomStr(10)
 		targetUrls = append(targetUrls, Url{
-			shortenedUrl: shortUrl,
-			expandedUrl:  url,
+			ShortenedUrl: shortUrl,
+			ExpandedUrl:  url,
 		})
 	}
 	var wg sync.WaitGroup
@@ -35,7 +35,7 @@ func (us *UrlShortenService) ComposeUrl(ctx context.Context, urls []string) ([]U
 		wg.Add(1)
 		go func(url Url) {
 			defer wg.Done()
-			storage.PutShortenUrl(ctx, url.shortenedUrl, url.expandedUrl)
+			storage.PutShortenUrl(ctx, url.ShortenedUrl, url.ExpandedUrl)
 		}(url)
 	}
 	wg.Wait()

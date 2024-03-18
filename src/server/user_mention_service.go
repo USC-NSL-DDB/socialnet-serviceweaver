@@ -26,8 +26,8 @@ func (s *UserMentionService) ComposeUserMentions(ctx context.Context, usernames 
 			fmt.Printf("[ComposeUserMentions] User profile not found for username: %s\n", username)
 		} else {
 			user_mentions = append(user_mentions, UserMention{
-				userId:   user_profile.userId,
-				username: usernames[i],
+				UserId:   user_profile.UserId,
+				Username: usernames[i],
 			})
 		}
 	}

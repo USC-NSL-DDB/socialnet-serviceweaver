@@ -51,9 +51,9 @@ func (s *TextService) ComposeText(ctx context.Context, text string) (TextService
 	mentions, _ := user_mention_service.ComposeUserMentions(ctx, mentions_str)
 
 	ret := TextServiceReturn{
-		text:          text,
-		user_mentions: mentions,
-		urls:          new_urls,
+		Text:          text,
+		User_mentions: mentions,
+		Urls:          new_urls,
 	}
 
 	if len(urls) > 0 {
@@ -66,10 +66,10 @@ func (s *TextService) ComposeText(ctx context.Context, text string) (TextService
 				updated_text += text[i:]
 				break
 			}
-			updated_text += text[i:i+st] + new_urls[0].shortenedUrl
+			updated_text += text[i:i+st] + new_urls[0].ShortenedUrl
 			i += ed
 		}
-		ret.text = updated_text
+		ret.Text = updated_text
 	}
 	return ret, nil
 }

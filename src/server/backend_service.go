@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	. "SocialNetwork/shared/common"
+
 	"github.com/ServiceWeaver/weaver"
 )
 
@@ -104,32 +106,32 @@ func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start,
 
 	for _, post := range posts {
 		remove_posts_fus = append(remove_posts_fus, AsyncExec(func() interface{} {
-			result, _ := pss.RemovePost(ctx, post.post_id)
+			result, _ := pss.RemovePost(ctx, post.Post_id)
 			return result
 		}).(Future))
 
 		remove_from_timeline_fus = append(remove_from_timeline_fus, AsyncExec(func() interface{} {
-			utls.RemovePost(ctx, user_id, post.post_id, post.timestamp)
+			utls.RemovePost(ctx, user_id, post.Post_id, post.Timestamp)
 			return nil
 		}).(Future))
 
-		for _, mention := range post.user_mentions {
+		for _, mention := range post.User_mentions {
 			remove_short_url_fus = append(remove_short_url_fus, AsyncExec(func() interface{} {
-				htls.RemovePost(ctx, mention.userId, post.post_id, post.timestamp)
+				htls.RemovePost(ctx, mention.UserId, post.Post_id, post.Timestamp)
 				return nil
 			}).(Future))
 		}
 
 		for _, user_id := range followers {
 			remove_from_timeline_fus = append(remove_from_timeline_fus, AsyncExec(func() interface{} {
-				utls.RemovePost(ctx, user_id, post.post_id, post.timestamp)
+				utls.RemovePost(ctx, user_id, post.Post_id, post.Timestamp)
 				return nil
 			}).(Future))
 		}
 
 		shortened_urls := make([]string, 0)
-		for _, url := range post.urls {
-			shortened_urls = append(shortened_urls, url.shortenedUrl)
+		for _, url := range post.Urls {
+			shortened_urls = append(shortened_urls, url.ShortenedUrl)
 		}
 
 		remove_short_url_fus = append(remove_short_url_fus, AsyncExec(func() interface{} {
@@ -203,8 +205,8 @@ func (bs *BackendService) CompostPost(
 
 	text_service_return := text_fu.Await().(TextServiceReturn)
 	user_mention_ids := make([]int64, 0)
-	for _, item := range text_service_return.user_mentions {
-		user_mention_ids = append(user_mention_ids, item.userId)
+	for _, item := range text_service_return.User_mentions {
+		user_mention_ids = append(user_mention_ids, item.UserId)
 	}
 	write_home_timeline_fu := AsyncExec(func() interface{} {
 		htls.WriteHomeTimeline(ctx, unique_id, user_id, timestamp, user_mention_ids)
@@ -212,15 +214,15 @@ func (bs *BackendService) CompostPost(
 	})
 
 	post := Post{
-		post_id:       unique_id,
-		creator:       creator_fu.Await().(Creator),
-		req_id:        0,
-		text:          text_service_return.text,
-		user_mentions: text_service_return.user_mentions,
-		media:         medias_fu.Await().([]Media),
-		urls:          text_service_return.urls,
-		timestamp:     timestamp,
-		post_type:     post_type,
+		Post_id:       unique_id,
+		Creator:       creator_fu.Await().(Creator),
+		Req_id:        0,
+		Text:          text_service_return.Text,
+		User_mentions: text_service_return.User_mentions,
+		Media:         medias_fu.Await().([]Media),
+		Urls:          text_service_return.Urls,
+		Timestamp:     timestamp,
+		Post_type:     post_type,
 	}
 
 	post_fu := AsyncExec(func() interface{} {

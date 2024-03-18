@@ -16,14 +16,14 @@ import (
 
 func init() {
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/BackendServicer",
+		Name:  "SocialNetwork/server/BackendServicer",
 		Iface: reflect.TypeOf((*BackendServicer)(nil)).Elem(),
 		Impl:  reflect.TypeOf(BackendService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return backendServicer_local_stub{impl: impl.(BackendServicer), tracer: tracer, compostPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "CompostPost", Remote: false}), followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "Follow", Remote: false}), followWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "FollowWithUsername", Remote: false}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "GetFollowees", Remote: false}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "GetFollowers", Remote: false}), getMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "GetMedia", Remote: false}), loginMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "Login", Remote: false}), readHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "ReadHomeTimeline", Remote: false}), readUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "ReadUserTimeline", Remote: false}), registerUserMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "RegisterUser", Remote: false}), registerUserWithIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "RegisterUserWithId", Remote: false}), removePostsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "RemovePosts", Remote: false}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "Unfollow", Remote: false}), unfollowWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "UnfollowWithUsername", Remote: false}), uploadMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "UploadMedia", Remote: false})}
+			return backendServicer_local_stub{impl: impl.(BackendServicer), tracer: tracer, compostPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "CompostPost", Remote: false}), followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "Follow", Remote: false}), followWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "FollowWithUsername", Remote: false}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "GetFollowees", Remote: false}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "GetFollowers", Remote: false}), getMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "GetMedia", Remote: false}), loginMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "Login", Remote: false}), readHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "ReadHomeTimeline", Remote: false}), readUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "ReadUserTimeline", Remote: false}), registerUserMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "RegisterUser", Remote: false}), registerUserWithIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "RegisterUserWithId", Remote: false}), removePostsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "RemovePosts", Remote: false}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "Unfollow", Remote: false}), unfollowWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "UnfollowWithUsername", Remote: false}), uploadMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "UploadMedia", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return backendServicer_client_stub{stub: stub, compostPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "CompostPost", Remote: true}), followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "Follow", Remote: true}), followWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "FollowWithUsername", Remote: true}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "GetFollowees", Remote: true}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "GetFollowers", Remote: true}), getMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "GetMedia", Remote: true}), loginMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "Login", Remote: true}), readHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "ReadHomeTimeline", Remote: true}), readUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "ReadUserTimeline", Remote: true}), registerUserMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "RegisterUser", Remote: true}), registerUserWithIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "RegisterUserWithId", Remote: true}), removePostsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "RemovePosts", Remote: true}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "Unfollow", Remote: true}), unfollowWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "UnfollowWithUsername", Remote: true}), uploadMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/BackendServicer", Method: "UploadMedia", Remote: true})}
+			return backendServicer_client_stub{stub: stub, compostPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "CompostPost", Remote: true}), followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "Follow", Remote: true}), followWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "FollowWithUsername", Remote: true}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "GetFollowees", Remote: true}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "GetFollowers", Remote: true}), getMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "GetMedia", Remote: true}), loginMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "Login", Remote: true}), readHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "ReadHomeTimeline", Remote: true}), readUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "ReadUserTimeline", Remote: true}), registerUserMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "RegisterUser", Remote: true}), registerUserWithIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "RegisterUserWithId", Remote: true}), removePostsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "RemovePosts", Remote: true}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "Unfollow", Remote: true}), unfollowWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "UnfollowWithUsername", Remote: true}), uploadMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/BackendServicer", Method: "UploadMedia", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return backendServicer_server_stub{impl: impl.(BackendServicer), addLoad: addLoad}
@@ -31,17 +31,17 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return backendServicer_reflect_stub{caller: caller}
 		},
-		RefData: "⟦b0a5a7cc:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/UserServicer⟧\n⟦1f26b12b:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/UserTimelineService⟧\n⟦4e3c27b4:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/SocialGraphService⟧\n⟦4c0ab740:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/PostStorageService⟧\n⟦55481209:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/HomeTimelineService⟧\n⟦fb7bc53c:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/UrlShortenService⟧\n⟦1d868093:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/TextService⟧\n⟦6bad28ce:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/UniqueIdService⟧\n⟦f2f42d2f:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/MediaStorageService⟧\n⟦97521e7a:wEaVeReDgE:SocialNetwork/BackendServicer→SocialNetwork/MediaService⟧\n",
+		RefData: "⟦676f096e:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UserServicer⟧\n⟦038509c4:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UserTimelineService⟧\n⟦639fa799:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/SocialGraphService⟧\n⟦9acd8647:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/PostStorageService⟧\n⟦00817391:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/HomeTimelineService⟧\n⟦e3bd2d8d:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UrlShortenService⟧\n⟦895ed4e0:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/TextService⟧\n⟦86e46199:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UniqueIdService⟧\n⟦b5bcf36a:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/MediaStorageService⟧\n⟦08eefbec:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/MediaService⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/IHomeTimelineService",
+		Name:  "SocialNetwork/server/IHomeTimelineService",
 		Iface: reflect.TypeOf((*IHomeTimelineService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(HomeTimelineService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iHomeTimelineService_local_stub{impl: impl.(IHomeTimelineService), tracer: tracer, readHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IHomeTimelineService", Method: "ReadHomeTimeline", Remote: false}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IHomeTimelineService", Method: "RemovePost", Remote: false}), writeHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IHomeTimelineService", Method: "WriteHomeTimeline", Remote: false})}
+			return iHomeTimelineService_local_stub{impl: impl.(IHomeTimelineService), tracer: tracer, readHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IHomeTimelineService", Method: "ReadHomeTimeline", Remote: false}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IHomeTimelineService", Method: "RemovePost", Remote: false}), writeHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IHomeTimelineService", Method: "WriteHomeTimeline", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iHomeTimelineService_client_stub{stub: stub, readHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IHomeTimelineService", Method: "ReadHomeTimeline", Remote: true}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IHomeTimelineService", Method: "RemovePost", Remote: true}), writeHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IHomeTimelineService", Method: "WriteHomeTimeline", Remote: true})}
+			return iHomeTimelineService_client_stub{stub: stub, readHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IHomeTimelineService", Method: "ReadHomeTimeline", Remote: true}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IHomeTimelineService", Method: "RemovePost", Remote: true}), writeHomeTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IHomeTimelineService", Method: "WriteHomeTimeline", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iHomeTimelineService_server_stub{impl: impl.(IHomeTimelineService), addLoad: addLoad}
@@ -49,17 +49,17 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iHomeTimelineService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦431241d7:wEaVeReDgE:SocialNetwork/IHomeTimelineService→SocialNetwork/PostStorageService⟧\n⟦3b5ee157:wEaVeReDgE:SocialNetwork/IHomeTimelineService→SocialNetwork/SocialGraphService⟧\n⟦2aa1c531:wEaVeReDgE:SocialNetwork/IHomeTimelineService→SocialNetwork/Storage⟧\n",
+		RefData: "⟦b18f8682:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/PostStorageService⟧\n⟦ed8bfb0a:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/SocialGraphService⟧\n⟦d9d12882:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/Storage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/IMediaService",
+		Name:  "SocialNetwork/server/IMediaService",
 		Iface: reflect.TypeOf((*IMediaService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(MediaService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iMediaService_local_stub{impl: impl.(IMediaService), tracer: tracer, composeMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IMediaService", Method: "ComposeMedia", Remote: false})}
+			return iMediaService_local_stub{impl: impl.(IMediaService), tracer: tracer, composeMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IMediaService", Method: "ComposeMedia", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iMediaService_client_stub{stub: stub, composeMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IMediaService", Method: "ComposeMedia", Remote: true})}
+			return iMediaService_client_stub{stub: stub, composeMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IMediaService", Method: "ComposeMedia", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iMediaService_server_stub{impl: impl.(IMediaService), addLoad: addLoad}
@@ -70,14 +70,14 @@ func init() {
 		RefData: "",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/ISocialGraphService",
+		Name:  "SocialNetwork/server/ISocialGraphService",
 		Iface: reflect.TypeOf((*ISocialGraphService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(SocialGraphService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iSocialGraphService_local_stub{impl: impl.(ISocialGraphService), tracer: tracer, followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "Follow", Remote: false}), followWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "FollowWithUsername", Remote: false}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "GetFollowees", Remote: false}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "GetFollowers", Remote: false}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "Unfollow", Remote: false}), unfollowWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "UnfollowWithUsername", Remote: false})}
+			return iSocialGraphService_local_stub{impl: impl.(ISocialGraphService), tracer: tracer, followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "Follow", Remote: false}), followWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "FollowWithUsername", Remote: false}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "GetFollowees", Remote: false}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "GetFollowers", Remote: false}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "Unfollow", Remote: false}), unfollowWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "UnfollowWithUsername", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iSocialGraphService_client_stub{stub: stub, followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "Follow", Remote: true}), followWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "FollowWithUsername", Remote: true}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "GetFollowees", Remote: true}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "GetFollowers", Remote: true}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "Unfollow", Remote: true}), unfollowWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ISocialGraphService", Method: "UnfollowWithUsername", Remote: true})}
+			return iSocialGraphService_client_stub{stub: stub, followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "Follow", Remote: true}), followWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "FollowWithUsername", Remote: true}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "GetFollowees", Remote: true}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "GetFollowers", Remote: true}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "Unfollow", Remote: true}), unfollowWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ISocialGraphService", Method: "UnfollowWithUsername", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iSocialGraphService_server_stub{impl: impl.(ISocialGraphService), addLoad: addLoad}
@@ -85,18 +85,18 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iSocialGraphService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦b47284af:wEaVeReDgE:SocialNetwork/ISocialGraphService→SocialNetwork/Storage⟧\n⟦7c57c04b:wEaVeReDgE:SocialNetwork/ISocialGraphService→SocialNetwork/UserService⟧\n",
+		RefData: "⟦81b9c69f:wEaVeReDgE:SocialNetwork/server/ISocialGraphService→SocialNetwork/server/Storage⟧\n⟦f8cf9cbd:wEaVeReDgE:SocialNetwork/server/ISocialGraphService→SocialNetwork/server/UserService⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:   "SocialNetwork/IStorage",
+		Name:   "SocialNetwork/server/IStorage",
 		Iface:  reflect.TypeOf((*IStorage)(nil)).Elem(),
 		Impl:   reflect.TypeOf(Storage{}),
 		Routed: true,
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iStorage_local_stub{impl: impl.(IStorage), tracer: tracer, followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "Follow", Remote: false}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetFollowees", Remote: false}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetFollowers", Remote: false}), getMediaDataMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetMediaData", Remote: false}), getPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetPost", Remote: false}), getPostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetPostTimeline", Remote: false}), getShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetShortenUrl", Remote: false}), getUserProfileMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetUserProfile", Remote: false}), putMediaDataMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutMediaData", Remote: false}), putPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutPost", Remote: false}), putPostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutPostTimeline", Remote: false}), putShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutShortenUrl", Remote: false}), putUserProfileMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutUserProfile", Remote: false}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "RemovePost", Remote: false}), removePostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "RemovePostTimeline", Remote: false}), removeShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "RemoveShortenUrl", Remote: false}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "Unfollow", Remote: false})}
+			return iStorage_local_stub{impl: impl.(IStorage), tracer: tracer, followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "Follow", Remote: false}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetFollowees", Remote: false}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetFollowers", Remote: false}), getMediaDataMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetMediaData", Remote: false}), getPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetPost", Remote: false}), getPostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetPostTimeline", Remote: false}), getShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetShortenUrl", Remote: false}), getUserProfileMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetUserProfile", Remote: false}), putMediaDataMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutMediaData", Remote: false}), putPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutPost", Remote: false}), putPostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutPostTimeline", Remote: false}), putShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutShortenUrl", Remote: false}), putUserProfileMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutUserProfile", Remote: false}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "RemovePost", Remote: false}), removePostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "RemovePostTimeline", Remote: false}), removeShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "RemoveShortenUrl", Remote: false}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "Unfollow", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iStorage_client_stub{stub: stub, followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "Follow", Remote: true}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetFollowees", Remote: true}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetFollowers", Remote: true}), getMediaDataMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetMediaData", Remote: true}), getPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetPost", Remote: true}), getPostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetPostTimeline", Remote: true}), getShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetShortenUrl", Remote: true}), getUserProfileMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "GetUserProfile", Remote: true}), putMediaDataMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutMediaData", Remote: true}), putPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutPost", Remote: true}), putPostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutPostTimeline", Remote: true}), putShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutShortenUrl", Remote: true}), putUserProfileMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "PutUserProfile", Remote: true}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "RemovePost", Remote: true}), removePostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "RemovePostTimeline", Remote: true}), removeShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "RemoveShortenUrl", Remote: true}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IStorage", Method: "Unfollow", Remote: true})}
+			return iStorage_client_stub{stub: stub, followMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "Follow", Remote: true}), getFolloweesMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetFollowees", Remote: true}), getFollowersMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetFollowers", Remote: true}), getMediaDataMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetMediaData", Remote: true}), getPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetPost", Remote: true}), getPostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetPostTimeline", Remote: true}), getShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetShortenUrl", Remote: true}), getUserProfileMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "GetUserProfile", Remote: true}), putMediaDataMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutMediaData", Remote: true}), putPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutPost", Remote: true}), putPostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutPostTimeline", Remote: true}), putShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutShortenUrl", Remote: true}), putUserProfileMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "PutUserProfile", Remote: true}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "RemovePost", Remote: true}), removePostTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "RemovePostTimeline", Remote: true}), removeShortenUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "RemoveShortenUrl", Remote: true}), unfollowMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IStorage", Method: "Unfollow", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iStorage_server_stub{impl: impl.(IStorage), addLoad: addLoad}
@@ -107,14 +107,14 @@ func init() {
 		RefData: "",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/ITextService",
+		Name:  "SocialNetwork/server/ITextService",
 		Iface: reflect.TypeOf((*ITextService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(TextService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iTextService_local_stub{impl: impl.(ITextService), tracer: tracer, composeTextMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ITextService", Method: "ComposeText", Remote: false})}
+			return iTextService_local_stub{impl: impl.(ITextService), tracer: tracer, composeTextMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ITextService", Method: "ComposeText", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iTextService_client_stub{stub: stub, composeTextMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/ITextService", Method: "ComposeText", Remote: true})}
+			return iTextService_client_stub{stub: stub, composeTextMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/ITextService", Method: "ComposeText", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iTextService_server_stub{impl: impl.(ITextService), addLoad: addLoad}
@@ -122,17 +122,17 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iTextService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦be8e300b:wEaVeReDgE:SocialNetwork/ITextService→SocialNetwork/UrlShortenService⟧\n⟦85bec259:wEaVeReDgE:SocialNetwork/ITextService→SocialNetwork/UserMentionService⟧\n",
+		RefData: "⟦af32d802:wEaVeReDgE:SocialNetwork/server/ITextService→SocialNetwork/server/UrlShortenService⟧\n⟦dfab4079:wEaVeReDgE:SocialNetwork/server/ITextService→SocialNetwork/server/UserMentionService⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/IUniqueIdService",
+		Name:  "SocialNetwork/server/IUniqueIdService",
 		Iface: reflect.TypeOf((*IUniqueIdService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(UniqueIdService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iUniqueIdService_local_stub{impl: impl.(IUniqueIdService), tracer: tracer, composeUniqueIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUniqueIdService", Method: "ComposeUniqueId", Remote: false})}
+			return iUniqueIdService_local_stub{impl: impl.(IUniqueIdService), tracer: tracer, composeUniqueIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUniqueIdService", Method: "ComposeUniqueId", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iUniqueIdService_client_stub{stub: stub, composeUniqueIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUniqueIdService", Method: "ComposeUniqueId", Remote: true})}
+			return iUniqueIdService_client_stub{stub: stub, composeUniqueIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUniqueIdService", Method: "ComposeUniqueId", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iUniqueIdService_server_stub{impl: impl.(IUniqueIdService), addLoad: addLoad}
@@ -143,14 +143,14 @@ func init() {
 		RefData: "",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/IUrlShortenService",
+		Name:  "SocialNetwork/server/IUrlShortenService",
 		Iface: reflect.TypeOf((*IUrlShortenService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(UrlShortenService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iUrlShortenService_local_stub{impl: impl.(IUrlShortenService), tracer: tracer, composeUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUrlShortenService", Method: "ComposeUrl", Remote: false}), getExtendedUrlsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUrlShortenService", Method: "GetExtendedUrls", Remote: false}), removeUrlsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUrlShortenService", Method: "RemoveUrls", Remote: false})}
+			return iUrlShortenService_local_stub{impl: impl.(IUrlShortenService), tracer: tracer, composeUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUrlShortenService", Method: "ComposeUrl", Remote: false}), getExtendedUrlsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUrlShortenService", Method: "GetExtendedUrls", Remote: false}), removeUrlsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUrlShortenService", Method: "RemoveUrls", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iUrlShortenService_client_stub{stub: stub, composeUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUrlShortenService", Method: "ComposeUrl", Remote: true}), getExtendedUrlsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUrlShortenService", Method: "GetExtendedUrls", Remote: true}), removeUrlsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUrlShortenService", Method: "RemoveUrls", Remote: true})}
+			return iUrlShortenService_client_stub{stub: stub, composeUrlMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUrlShortenService", Method: "ComposeUrl", Remote: true}), getExtendedUrlsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUrlShortenService", Method: "GetExtendedUrls", Remote: true}), removeUrlsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUrlShortenService", Method: "RemoveUrls", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iUrlShortenService_server_stub{impl: impl.(IUrlShortenService), addLoad: addLoad}
@@ -158,17 +158,17 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iUrlShortenService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦058b0a98:wEaVeReDgE:SocialNetwork/IUrlShortenService→SocialNetwork/Storage⟧\n",
+		RefData: "⟦02f9e238:wEaVeReDgE:SocialNetwork/server/IUrlShortenService→SocialNetwork/server/Storage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/IUserMentionService",
+		Name:  "SocialNetwork/server/IUserMentionService",
 		Iface: reflect.TypeOf((*IUserMentionService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(UserMentionService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iUserMentionService_local_stub{impl: impl.(IUserMentionService), tracer: tracer, composeUserMentionsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUserMentionService", Method: "ComposeUserMentions", Remote: false})}
+			return iUserMentionService_local_stub{impl: impl.(IUserMentionService), tracer: tracer, composeUserMentionsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUserMentionService", Method: "ComposeUserMentions", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iUserMentionService_client_stub{stub: stub, composeUserMentionsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUserMentionService", Method: "ComposeUserMentions", Remote: true})}
+			return iUserMentionService_client_stub{stub: stub, composeUserMentionsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUserMentionService", Method: "ComposeUserMentions", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iUserMentionService_server_stub{impl: impl.(IUserMentionService), addLoad: addLoad}
@@ -176,17 +176,17 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iUserMentionService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦3c207ece:wEaVeReDgE:SocialNetwork/IUserMentionService→SocialNetwork/Storage⟧\n",
+		RefData: "⟦88f5570e:wEaVeReDgE:SocialNetwork/server/IUserMentionService→SocialNetwork/server/Storage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/IUserTimelineService",
+		Name:  "SocialNetwork/server/IUserTimelineService",
 		Iface: reflect.TypeOf((*IUserTimelineService)(nil)).Elem(),
 		Impl:  reflect.TypeOf(UserTimelineService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return iUserTimelineService_local_stub{impl: impl.(IUserTimelineService), tracer: tracer, readUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUserTimelineService", Method: "ReadUserTimeline", Remote: false}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUserTimelineService", Method: "RemovePost", Remote: false}), writeUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUserTimelineService", Method: "WriteUserTimeline", Remote: false})}
+			return iUserTimelineService_local_stub{impl: impl.(IUserTimelineService), tracer: tracer, readUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUserTimelineService", Method: "ReadUserTimeline", Remote: false}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUserTimelineService", Method: "RemovePost", Remote: false}), writeUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUserTimelineService", Method: "WriteUserTimeline", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return iUserTimelineService_client_stub{stub: stub, readUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUserTimelineService", Method: "ReadUserTimeline", Remote: true}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUserTimelineService", Method: "RemovePost", Remote: true}), writeUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/IUserTimelineService", Method: "WriteUserTimeline", Remote: true})}
+			return iUserTimelineService_client_stub{stub: stub, readUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUserTimelineService", Method: "ReadUserTimeline", Remote: true}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUserTimelineService", Method: "RemovePost", Remote: true}), writeUserTimelineMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/IUserTimelineService", Method: "WriteUserTimeline", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return iUserTimelineService_server_stub{impl: impl.(IUserTimelineService), addLoad: addLoad}
@@ -194,7 +194,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iUserTimelineService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦4278d04a:wEaVeReDgE:SocialNetwork/IUserTimelineService→SocialNetwork/Storage⟧\n⟦ee6c381c:wEaVeReDgE:SocialNetwork/IUserTimelineService→SocialNetwork/PostStorageService⟧\n",
+		RefData: "⟦fffc0390:wEaVeReDgE:SocialNetwork/server/IUserTimelineService→SocialNetwork/server/Storage⟧\n⟦31292fed:wEaVeReDgE:SocialNetwork/server/IUserTimelineService→SocialNetwork/server/PostStorageService⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "github.com/ServiceWeaver/weaver/Main",
@@ -210,17 +210,17 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return main_reflect_stub{caller: caller}
 		},
-		RefData: "",
+		RefData: "⟦45b6bbf3:wEaVeReDgE:github.com/ServiceWeaver/weaver/Main→SocialNetwork/server/BackendService⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/MediaStorageServicer",
+		Name:  "SocialNetwork/server/MediaStorageServicer",
 		Iface: reflect.TypeOf((*MediaStorageServicer)(nil)).Elem(),
 		Impl:  reflect.TypeOf(MediaStorageService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return mediaStorageServicer_local_stub{impl: impl.(MediaStorageServicer), tracer: tracer, getMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/MediaStorageServicer", Method: "GetMedia", Remote: false}), uploadMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/MediaStorageServicer", Method: "UploadMedia", Remote: false})}
+			return mediaStorageServicer_local_stub{impl: impl.(MediaStorageServicer), tracer: tracer, getMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/MediaStorageServicer", Method: "GetMedia", Remote: false}), uploadMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/MediaStorageServicer", Method: "UploadMedia", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return mediaStorageServicer_client_stub{stub: stub, getMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/MediaStorageServicer", Method: "GetMedia", Remote: true}), uploadMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/MediaStorageServicer", Method: "UploadMedia", Remote: true})}
+			return mediaStorageServicer_client_stub{stub: stub, getMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/MediaStorageServicer", Method: "GetMedia", Remote: true}), uploadMediaMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/MediaStorageServicer", Method: "UploadMedia", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return mediaStorageServicer_server_stub{impl: impl.(MediaStorageServicer), addLoad: addLoad}
@@ -228,17 +228,17 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return mediaStorageServicer_reflect_stub{caller: caller}
 		},
-		RefData: "⟦c7c06e61:wEaVeReDgE:SocialNetwork/MediaStorageServicer→SocialNetwork/Storage⟧\n",
+		RefData: "⟦d3d19711:wEaVeReDgE:SocialNetwork/server/MediaStorageServicer→SocialNetwork/server/Storage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/PostStorageServicer",
+		Name:  "SocialNetwork/server/PostStorageServicer",
 		Iface: reflect.TypeOf((*PostStorageServicer)(nil)).Elem(),
 		Impl:  reflect.TypeOf(PostStorageService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return postStorageServicer_local_stub{impl: impl.(PostStorageServicer), tracer: tracer, readPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/PostStorageServicer", Method: "ReadPost", Remote: false}), readPostsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/PostStorageServicer", Method: "ReadPosts", Remote: false}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/PostStorageServicer", Method: "RemovePost", Remote: false}), storePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/PostStorageServicer", Method: "StorePost", Remote: false})}
+			return postStorageServicer_local_stub{impl: impl.(PostStorageServicer), tracer: tracer, readPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/PostStorageServicer", Method: "ReadPost", Remote: false}), readPostsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/PostStorageServicer", Method: "ReadPosts", Remote: false}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/PostStorageServicer", Method: "RemovePost", Remote: false}), storePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/PostStorageServicer", Method: "StorePost", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return postStorageServicer_client_stub{stub: stub, readPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/PostStorageServicer", Method: "ReadPost", Remote: true}), readPostsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/PostStorageServicer", Method: "ReadPosts", Remote: true}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/PostStorageServicer", Method: "RemovePost", Remote: true}), storePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/PostStorageServicer", Method: "StorePost", Remote: true})}
+			return postStorageServicer_client_stub{stub: stub, readPostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/PostStorageServicer", Method: "ReadPost", Remote: true}), readPostsMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/PostStorageServicer", Method: "ReadPosts", Remote: true}), removePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/PostStorageServicer", Method: "RemovePost", Remote: true}), storePostMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/PostStorageServicer", Method: "StorePost", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return postStorageServicer_server_stub{impl: impl.(PostStorageServicer), addLoad: addLoad}
@@ -246,17 +246,17 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return postStorageServicer_reflect_stub{caller: caller}
 		},
-		RefData: "⟦2637326b:wEaVeReDgE:SocialNetwork/PostStorageServicer→SocialNetwork/Storage⟧\n",
+		RefData: "⟦0854cb41:wEaVeReDgE:SocialNetwork/server/PostStorageServicer→SocialNetwork/server/Storage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "SocialNetwork/UserServicer",
+		Name:  "SocialNetwork/server/UserServicer",
 		Iface: reflect.TypeOf((*UserServicer)(nil)).Elem(),
 		Impl:  reflect.TypeOf(UserService{}),
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
-			return userServicer_local_stub{impl: impl.(UserServicer), tracer: tracer, composeCreatorWithUserIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "ComposeCreatorWithUserId", Remote: false}), composeCreatorWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "ComposeCreatorWithUsername", Remote: false}), getUserIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "GetUserId", Remote: false}), loginMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "Login", Remote: false}), registerUserMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "RegisterUser", Remote: false}), registerUserWithIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "RegisterUserWithId", Remote: false})}
+			return userServicer_local_stub{impl: impl.(UserServicer), tracer: tracer, composeCreatorWithUserIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "ComposeCreatorWithUserId", Remote: false}), composeCreatorWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "ComposeCreatorWithUsername", Remote: false}), getUserIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "GetUserId", Remote: false}), loginMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "Login", Remote: false}), registerUserMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "RegisterUser", Remote: false}), registerUserWithIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "RegisterUserWithId", Remote: false})}
 		},
 		ClientStubFn: func(stub codegen.Stub, caller string) any {
-			return userServicer_client_stub{stub: stub, composeCreatorWithUserIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "ComposeCreatorWithUserId", Remote: true}), composeCreatorWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "ComposeCreatorWithUsername", Remote: true}), getUserIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "GetUserId", Remote: true}), loginMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "Login", Remote: true}), registerUserMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "RegisterUser", Remote: true}), registerUserWithIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/UserServicer", Method: "RegisterUserWithId", Remote: true})}
+			return userServicer_client_stub{stub: stub, composeCreatorWithUserIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "ComposeCreatorWithUserId", Remote: true}), composeCreatorWithUsernameMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "ComposeCreatorWithUsername", Remote: true}), getUserIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "GetUserId", Remote: true}), loginMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "Login", Remote: true}), registerUserMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "RegisterUser", Remote: true}), registerUserWithIdMetrics: codegen.MethodMetricsFor(codegen.MethodLabels{Caller: caller, Component: "SocialNetwork/server/UserServicer", Method: "RegisterUserWithId", Remote: true})}
 		},
 		ServerStubFn: func(impl any, addLoad func(uint64, float64)) codegen.Server {
 			return userServicer_server_stub{impl: impl.(UserServicer), addLoad: addLoad}
@@ -264,7 +264,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return userServicer_reflect_stub{caller: caller}
 		},
-		RefData: "⟦ddd7c2c9:wEaVeReDgE:SocialNetwork/UserServicer→SocialNetwork/Storage⟧\n",
+		RefData: "⟦60384a12:wEaVeReDgE:SocialNetwork/server/UserServicer→SocialNetwork/server/Storage⟧\n",
 	})
 }
 
@@ -2230,7 +2230,7 @@ func (s backendServicer_client_stub) ReadHomeTimeline(ctx context.Context, a0 in
 
 	// Decode the results.
 	dec := codegen.NewDecoder(results)
-	r0 = serviceweaver_dec_slice_Post_c549ae9c(dec)
+	r0 = serviceweaver_dec_slice_Post_92420d4c(dec)
 	err = dec.Error()
 	return
 }
@@ -2290,7 +2290,7 @@ func (s backendServicer_client_stub) ReadUserTimeline(ctx context.Context, a0 in
 
 	// Decode the results.
 	dec := codegen.NewDecoder(results)
-	r0 = serviceweaver_dec_slice_Post_c549ae9c(dec)
+	r0 = serviceweaver_dec_slice_Post_92420d4c(dec)
 	err = dec.Error()
 	return
 }
@@ -2714,7 +2714,7 @@ func (s iHomeTimelineService_client_stub) ReadHomeTimeline(ctx context.Context, 
 
 	// Decode the results.
 	dec := codegen.NewDecoder(results)
-	r0 = serviceweaver_dec_slice_Post_c549ae9c(dec)
+	r0 = serviceweaver_dec_slice_Post_92420d4c(dec)
 	err = dec.Error()
 	return
 }
@@ -2894,7 +2894,7 @@ func (s iMediaService_client_stub) ComposeMedia(ctx context.Context, a0 []string
 
 	// Decode the results.
 	dec := codegen.NewDecoder(results)
-	r0 = serviceweaver_dec_slice_Media_34eab653(dec)
+	r0 = serviceweaver_dec_slice_Media_7ba3b576(dec)
 	err = dec.Error()
 	return
 }
@@ -4027,7 +4027,7 @@ func (s iStorage_client_stub) PutUserProfile(ctx context.Context, a0 string, a1 
 	// Preallocate a buffer of the right size.
 	size := 0
 	size += (4 + len(a0))
-	size += serviceweaver_size_UserProfile_ace4b5e0(&a1)
+	size += serviceweaver_size_UserProfile_fea8d204(&a1)
 	enc := codegen.NewEncoder()
 	enc.Reset(size)
 
@@ -4478,7 +4478,7 @@ func (s iUrlShortenService_client_stub) ComposeUrl(ctx context.Context, a0 []str
 
 	// Decode the results.
 	dec := codegen.NewDecoder(results)
-	r0 = serviceweaver_dec_slice_Url_cd43bd2b(dec)
+	r0 = serviceweaver_dec_slice_Url_b557e127(dec)
 	err = dec.Error()
 	return
 }
@@ -4638,7 +4638,7 @@ func (s iUserMentionService_client_stub) ComposeUserMentions(ctx context.Context
 
 	// Decode the results.
 	dec := codegen.NewDecoder(results)
-	r0 = serviceweaver_dec_slice_UserMention_0e8176b1(dec)
+	r0 = serviceweaver_dec_slice_UserMention_4c1e0334(dec)
 	err = dec.Error()
 	return
 }
@@ -4708,7 +4708,7 @@ func (s iUserTimelineService_client_stub) ReadUserTimeline(ctx context.Context, 
 
 	// Decode the results.
 	dec := codegen.NewDecoder(results)
-	r0 = serviceweaver_dec_slice_Post_c549ae9c(dec)
+	r0 = serviceweaver_dec_slice_Post_92420d4c(dec)
 	err = dec.Error()
 	return
 }
@@ -5078,7 +5078,7 @@ func (s postStorageServicer_client_stub) ReadPosts(ctx context.Context, a0 []int
 
 	// Decode the results.
 	dec := codegen.NewDecoder(results)
-	r0 = serviceweaver_dec_slice_Post_c549ae9c(dec)
+	r0 = serviceweaver_dec_slice_Post_92420d4c(dec)
 	err = dec.Error()
 	return
 }
@@ -5837,7 +5837,7 @@ func (s backendServicer_server_stub) readHomeTimeline(ctx context.Context, args 
 
 	// Encode the results.
 	enc := codegen.NewEncoder()
-	serviceweaver_enc_slice_Post_c549ae9c(enc, r0)
+	serviceweaver_enc_slice_Post_92420d4c(enc, r0)
 	enc.Error(appErr)
 	return enc.Data(), nil
 }
@@ -5866,7 +5866,7 @@ func (s backendServicer_server_stub) readUserTimeline(ctx context.Context, args 
 
 	// Encode the results.
 	enc := codegen.NewEncoder()
-	serviceweaver_enc_slice_Post_c549ae9c(enc, r0)
+	serviceweaver_enc_slice_Post_92420d4c(enc, r0)
 	enc.Error(appErr)
 	return enc.Data(), nil
 }
@@ -6085,7 +6085,7 @@ func (s iHomeTimelineService_server_stub) readHomeTimeline(ctx context.Context, 
 
 	// Encode the results.
 	enc := codegen.NewEncoder()
-	serviceweaver_enc_slice_Post_c549ae9c(enc, r0)
+	serviceweaver_enc_slice_Post_92420d4c(enc, r0)
 	enc.Error(appErr)
 	return enc.Data(), nil
 }
@@ -6188,7 +6188,7 @@ func (s iMediaService_server_stub) composeMedia(ctx context.Context, args []byte
 
 	// Encode the results.
 	enc := codegen.NewEncoder()
-	serviceweaver_enc_slice_Media_34eab653(enc, r0)
+	serviceweaver_enc_slice_Media_7ba3b576(enc, r0)
 	enc.Error(appErr)
 	return enc.Data(), nil
 }
@@ -7033,7 +7033,7 @@ func (s iUrlShortenService_server_stub) composeUrl(ctx context.Context, args []b
 
 	// Encode the results.
 	enc := codegen.NewEncoder()
-	serviceweaver_enc_slice_Url_cd43bd2b(enc, r0)
+	serviceweaver_enc_slice_Url_b557e127(enc, r0)
 	enc.Error(appErr)
 	return enc.Data(), nil
 }
@@ -7125,7 +7125,7 @@ func (s iUserMentionService_server_stub) composeUserMentions(ctx context.Context
 
 	// Encode the results.
 	enc := codegen.NewEncoder()
-	serviceweaver_enc_slice_UserMention_0e8176b1(enc, r0)
+	serviceweaver_enc_slice_UserMention_4c1e0334(enc, r0)
 	enc.Error(appErr)
 	return enc.Data(), nil
 }
@@ -7176,7 +7176,7 @@ func (s iUserTimelineService_server_stub) readUserTimeline(ctx context.Context, 
 
 	// Encode the results.
 	enc := codegen.NewEncoder()
-	serviceweaver_enc_slice_Post_c549ae9c(enc, r0)
+	serviceweaver_enc_slice_Post_92420d4c(enc, r0)
 	enc.Error(appErr)
 	return enc.Data(), nil
 }
@@ -7393,7 +7393,7 @@ func (s postStorageServicer_server_stub) readPosts(ctx context.Context, args []b
 
 	// Encode the results.
 	enc := codegen.NewEncoder()
-	serviceweaver_enc_slice_Post_c549ae9c(enc, r0)
+	serviceweaver_enc_slice_Post_92420d4c(enc, r0)
 	enc.Error(appErr)
 	return enc.Data(), nil
 }
@@ -8062,8 +8062,8 @@ var _ codegen.AutoMarshal = (*Creator)(nil)
 
 type __is_Creator[T ~struct {
 	weaver.AutoMarshal
-	userId   int64
-	username string
+	UserId   int64
+	Username string
 }] struct{}
 
 var _ __is_Creator[Creator]
@@ -8072,24 +8072,24 @@ func (x *Creator) WeaverMarshal(enc *codegen.Encoder) {
 	if x == nil {
 		panic(fmt.Errorf("Creator.WeaverMarshal: nil receiver"))
 	}
-	enc.Int64(x.userId)
-	enc.String(x.username)
+	enc.Int64(x.UserId)
+	enc.String(x.Username)
 }
 
 func (x *Creator) WeaverUnmarshal(dec *codegen.Decoder) {
 	if x == nil {
 		panic(fmt.Errorf("Creator.WeaverUnmarshal: nil receiver"))
 	}
-	x.userId = dec.Int64()
-	x.username = dec.String()
+	x.UserId = dec.Int64()
+	x.Username = dec.String()
 }
 
 var _ codegen.AutoMarshal = (*Media)(nil)
 
 type __is_Media[T ~struct {
 	weaver.AutoMarshal
-	mediaId   int64
-	mediaType string
+	MediaId   int64
+	MediaType string
 }] struct{}
 
 var _ __is_Media[Media]
@@ -8098,31 +8098,31 @@ func (x *Media) WeaverMarshal(enc *codegen.Encoder) {
 	if x == nil {
 		panic(fmt.Errorf("Media.WeaverMarshal: nil receiver"))
 	}
-	enc.Int64(x.mediaId)
-	enc.String(x.mediaType)
+	enc.Int64(x.MediaId)
+	enc.String(x.MediaType)
 }
 
 func (x *Media) WeaverUnmarshal(dec *codegen.Decoder) {
 	if x == nil {
 		panic(fmt.Errorf("Media.WeaverUnmarshal: nil receiver"))
 	}
-	x.mediaId = dec.Int64()
-	x.mediaType = dec.String()
+	x.MediaId = dec.Int64()
+	x.MediaType = dec.String()
 }
 
 var _ codegen.AutoMarshal = (*Post)(nil)
 
 type __is_Post[T ~struct {
 	weaver.AutoMarshal
-	post_id       int64
-	creator       Creator
-	req_id        int64
-	text          string
-	user_mentions []UserMention
-	media         []Media
-	urls          []Url
-	timestamp     int64
-	post_type     PostType
+	Post_id       int64
+	Creator       Creator
+	Req_id        int64
+	Text          string
+	User_mentions []UserMention
+	Media         []Media
+	Urls          []Url
+	Timestamp     int64
+	Post_type     PostType
 }] struct{}
 
 var _ __is_Post[Post]
@@ -8131,33 +8131,33 @@ func (x *Post) WeaverMarshal(enc *codegen.Encoder) {
 	if x == nil {
 		panic(fmt.Errorf("Post.WeaverMarshal: nil receiver"))
 	}
-	enc.Int64(x.post_id)
-	(x.creator).WeaverMarshal(enc)
-	enc.Int64(x.req_id)
-	enc.String(x.text)
-	serviceweaver_enc_slice_UserMention_0e8176b1(enc, x.user_mentions)
-	serviceweaver_enc_slice_Media_34eab653(enc, x.media)
-	serviceweaver_enc_slice_Url_cd43bd2b(enc, x.urls)
-	enc.Int64(x.timestamp)
-	enc.Int((int)(x.post_type))
+	enc.Int64(x.Post_id)
+	(x.Creator).WeaverMarshal(enc)
+	enc.Int64(x.Req_id)
+	enc.String(x.Text)
+	serviceweaver_enc_slice_UserMention_4c1e0334(enc, x.User_mentions)
+	serviceweaver_enc_slice_Media_7ba3b576(enc, x.Media)
+	serviceweaver_enc_slice_Url_b557e127(enc, x.Urls)
+	enc.Int64(x.Timestamp)
+	enc.Int((int)(x.Post_type))
 }
 
 func (x *Post) WeaverUnmarshal(dec *codegen.Decoder) {
 	if x == nil {
 		panic(fmt.Errorf("Post.WeaverUnmarshal: nil receiver"))
 	}
-	x.post_id = dec.Int64()
-	(&x.creator).WeaverUnmarshal(dec)
-	x.req_id = dec.Int64()
-	x.text = dec.String()
-	x.user_mentions = serviceweaver_dec_slice_UserMention_0e8176b1(dec)
-	x.media = serviceweaver_dec_slice_Media_34eab653(dec)
-	x.urls = serviceweaver_dec_slice_Url_cd43bd2b(dec)
-	x.timestamp = dec.Int64()
-	*(*int)(&x.post_type) = dec.Int()
+	x.Post_id = dec.Int64()
+	(&x.Creator).WeaverUnmarshal(dec)
+	x.Req_id = dec.Int64()
+	x.Text = dec.String()
+	x.User_mentions = serviceweaver_dec_slice_UserMention_4c1e0334(dec)
+	x.Media = serviceweaver_dec_slice_Media_7ba3b576(dec)
+	x.Urls = serviceweaver_dec_slice_Url_b557e127(dec)
+	x.Timestamp = dec.Int64()
+	*(*int)(&x.Post_type) = dec.Int()
 }
 
-func serviceweaver_enc_slice_UserMention_0e8176b1(enc *codegen.Encoder, arg []UserMention) {
+func serviceweaver_enc_slice_UserMention_4c1e0334(enc *codegen.Encoder, arg []UserMention) {
 	if arg == nil {
 		enc.Len(-1)
 		return
@@ -8168,7 +8168,7 @@ func serviceweaver_enc_slice_UserMention_0e8176b1(enc *codegen.Encoder, arg []Us
 	}
 }
 
-func serviceweaver_dec_slice_UserMention_0e8176b1(dec *codegen.Decoder) []UserMention {
+func serviceweaver_dec_slice_UserMention_4c1e0334(dec *codegen.Decoder) []UserMention {
 	n := dec.Len()
 	if n == -1 {
 		return nil
@@ -8180,7 +8180,7 @@ func serviceweaver_dec_slice_UserMention_0e8176b1(dec *codegen.Decoder) []UserMe
 	return res
 }
 
-func serviceweaver_enc_slice_Media_34eab653(enc *codegen.Encoder, arg []Media) {
+func serviceweaver_enc_slice_Media_7ba3b576(enc *codegen.Encoder, arg []Media) {
 	if arg == nil {
 		enc.Len(-1)
 		return
@@ -8191,7 +8191,7 @@ func serviceweaver_enc_slice_Media_34eab653(enc *codegen.Encoder, arg []Media) {
 	}
 }
 
-func serviceweaver_dec_slice_Media_34eab653(dec *codegen.Decoder) []Media {
+func serviceweaver_dec_slice_Media_7ba3b576(dec *codegen.Decoder) []Media {
 	n := dec.Len()
 	if n == -1 {
 		return nil
@@ -8203,7 +8203,7 @@ func serviceweaver_dec_slice_Media_34eab653(dec *codegen.Decoder) []Media {
 	return res
 }
 
-func serviceweaver_enc_slice_Url_cd43bd2b(enc *codegen.Encoder, arg []Url) {
+func serviceweaver_enc_slice_Url_b557e127(enc *codegen.Encoder, arg []Url) {
 	if arg == nil {
 		enc.Len(-1)
 		return
@@ -8214,7 +8214,7 @@ func serviceweaver_enc_slice_Url_cd43bd2b(enc *codegen.Encoder, arg []Url) {
 	}
 }
 
-func serviceweaver_dec_slice_Url_cd43bd2b(dec *codegen.Decoder) []Url {
+func serviceweaver_dec_slice_Url_b557e127(dec *codegen.Decoder) []Url {
 	n := dec.Len()
 	if n == -1 {
 		return nil
@@ -8230,9 +8230,9 @@ var _ codegen.AutoMarshal = (*TextServiceReturn)(nil)
 
 type __is_TextServiceReturn[T ~struct {
 	weaver.AutoMarshal
-	text          string
-	user_mentions []UserMention
-	urls          []Url
+	Text          string
+	User_mentions []UserMention
+	Urls          []Url
 }] struct{}
 
 var _ __is_TextServiceReturn[TextServiceReturn]
@@ -8241,26 +8241,26 @@ func (x *TextServiceReturn) WeaverMarshal(enc *codegen.Encoder) {
 	if x == nil {
 		panic(fmt.Errorf("TextServiceReturn.WeaverMarshal: nil receiver"))
 	}
-	enc.String(x.text)
-	serviceweaver_enc_slice_UserMention_0e8176b1(enc, x.user_mentions)
-	serviceweaver_enc_slice_Url_cd43bd2b(enc, x.urls)
+	enc.String(x.Text)
+	serviceweaver_enc_slice_UserMention_4c1e0334(enc, x.User_mentions)
+	serviceweaver_enc_slice_Url_b557e127(enc, x.Urls)
 }
 
 func (x *TextServiceReturn) WeaverUnmarshal(dec *codegen.Decoder) {
 	if x == nil {
 		panic(fmt.Errorf("TextServiceReturn.WeaverUnmarshal: nil receiver"))
 	}
-	x.text = dec.String()
-	x.user_mentions = serviceweaver_dec_slice_UserMention_0e8176b1(dec)
-	x.urls = serviceweaver_dec_slice_Url_cd43bd2b(dec)
+	x.Text = dec.String()
+	x.User_mentions = serviceweaver_dec_slice_UserMention_4c1e0334(dec)
+	x.Urls = serviceweaver_dec_slice_Url_b557e127(dec)
 }
 
 var _ codegen.AutoMarshal = (*Url)(nil)
 
 type __is_Url[T ~struct {
 	weaver.AutoMarshal
-	shortenedUrl string
-	expandedUrl  string
+	ShortenedUrl string
+	ExpandedUrl  string
 }] struct{}
 
 var _ __is_Url[Url]
@@ -8269,24 +8269,24 @@ func (x *Url) WeaverMarshal(enc *codegen.Encoder) {
 	if x == nil {
 		panic(fmt.Errorf("Url.WeaverMarshal: nil receiver"))
 	}
-	enc.String(x.shortenedUrl)
-	enc.String(x.expandedUrl)
+	enc.String(x.ShortenedUrl)
+	enc.String(x.ExpandedUrl)
 }
 
 func (x *Url) WeaverUnmarshal(dec *codegen.Decoder) {
 	if x == nil {
 		panic(fmt.Errorf("Url.WeaverUnmarshal: nil receiver"))
 	}
-	x.shortenedUrl = dec.String()
-	x.expandedUrl = dec.String()
+	x.ShortenedUrl = dec.String()
+	x.ExpandedUrl = dec.String()
 }
 
 var _ codegen.AutoMarshal = (*UserMention)(nil)
 
 type __is_UserMention[T ~struct {
 	weaver.AutoMarshal
-	userId   int64
-	username string
+	UserId   int64
+	Username string
 }] struct{}
 
 var _ __is_UserMention[UserMention]
@@ -8295,27 +8295,27 @@ func (x *UserMention) WeaverMarshal(enc *codegen.Encoder) {
 	if x == nil {
 		panic(fmt.Errorf("UserMention.WeaverMarshal: nil receiver"))
 	}
-	enc.Int64(x.userId)
-	enc.String(x.username)
+	enc.Int64(x.UserId)
+	enc.String(x.Username)
 }
 
 func (x *UserMention) WeaverUnmarshal(dec *codegen.Decoder) {
 	if x == nil {
 		panic(fmt.Errorf("UserMention.WeaverUnmarshal: nil receiver"))
 	}
-	x.userId = dec.Int64()
-	x.username = dec.String()
+	x.UserId = dec.Int64()
+	x.Username = dec.String()
 }
 
 var _ codegen.AutoMarshal = (*UserProfile)(nil)
 
 type __is_UserProfile[T ~struct {
 	weaver.AutoMarshal
-	userId         int64
-	firstName      string
-	lastName       string
-	salt           string
-	passwordHashed string
+	UserId         int64
+	FirstName      string
+	LastName       string
+	Salt           string
+	PasswordHashed string
 }] struct{}
 
 var _ __is_UserProfile[UserProfile]
@@ -8324,22 +8324,22 @@ func (x *UserProfile) WeaverMarshal(enc *codegen.Encoder) {
 	if x == nil {
 		panic(fmt.Errorf("UserProfile.WeaverMarshal: nil receiver"))
 	}
-	enc.Int64(x.userId)
-	enc.String(x.firstName)
-	enc.String(x.lastName)
-	enc.String(x.salt)
-	enc.String(x.passwordHashed)
+	enc.Int64(x.UserId)
+	enc.String(x.FirstName)
+	enc.String(x.LastName)
+	enc.String(x.Salt)
+	enc.String(x.PasswordHashed)
 }
 
 func (x *UserProfile) WeaverUnmarshal(dec *codegen.Decoder) {
 	if x == nil {
 		panic(fmt.Errorf("UserProfile.WeaverUnmarshal: nil receiver"))
 	}
-	x.userId = dec.Int64()
-	x.firstName = dec.String()
-	x.lastName = dec.String()
-	x.salt = dec.String()
-	x.passwordHashed = dec.String()
+	x.UserId = dec.Int64()
+	x.FirstName = dec.String()
+	x.LastName = dec.String()
+	x.Salt = dec.String()
+	x.PasswordHashed = dec.String()
 }
 
 // Router methods.
@@ -8406,7 +8406,7 @@ func serviceweaver_dec_slice_string_4af10117(dec *codegen.Decoder) []string {
 	return res
 }
 
-func serviceweaver_enc_slice_Post_c549ae9c(enc *codegen.Encoder, arg []Post) {
+func serviceweaver_enc_slice_Post_92420d4c(enc *codegen.Encoder, arg []Post) {
 	if arg == nil {
 		enc.Len(-1)
 		return
@@ -8417,7 +8417,7 @@ func serviceweaver_enc_slice_Post_c549ae9c(enc *codegen.Encoder, arg []Post) {
 	}
 }
 
-func serviceweaver_dec_slice_Post_c549ae9c(dec *codegen.Decoder) []Post {
+func serviceweaver_dec_slice_Post_92420d4c(dec *codegen.Decoder) []Post {
 	n := dec.Len()
 	if n == -1 {
 		return nil
@@ -8459,15 +8459,15 @@ func serviceweaver_dec_map_int64_bool_7caa5f14(dec *codegen.Decoder) map[int64]b
 
 // Size implementations.
 
-// serviceweaver_size_UserProfile_ace4b5e0 returns the size (in bytes) of the serialization
+// serviceweaver_size_UserProfile_fea8d204 returns the size (in bytes) of the serialization
 // of the provided type.
-func serviceweaver_size_UserProfile_ace4b5e0(x *UserProfile) int {
+func serviceweaver_size_UserProfile_fea8d204(x *UserProfile) int {
 	size := 0
 	size += 0
 	size += 8
-	size += (4 + len(x.firstName))
-	size += (4 + len(x.lastName))
-	size += (4 + len(x.salt))
-	size += (4 + len(x.passwordHashed))
+	size += (4 + len(x.FirstName))
+	size += (4 + len(x.LastName))
+	size += (4 + len(x.Salt))
+	size += (4 + len(x.PasswordHashed))
 	return size
 }

@@ -19,8 +19,8 @@ func (ms *MediaService) ComposeMedia(ctx context.Context, mediaTypes []string, m
 	media := make([]Media, 0)
 	for i := 0; i < len(mediaIds); i++ {
 		oneMedia := Media{
-			mediaId:   mediaIds[i],
-			mediaType: mediaTypes[i],
+			MediaId:   mediaIds[i],
+			MediaType: mediaTypes[i],
 		}
 		media = append(media, oneMedia)
 	}
