@@ -17,7 +17,7 @@ type PostStorageServicer interface {
 
 type PostStorageService struct {
 	weaver.Implements[PostStorageServicer]
-	storage weaver.Ref[Storage]
+	storage weaver.Ref[IStorage]
 }
 
 func (pss *PostStorageService) StorePost(ctx context.Context, post Post) error {

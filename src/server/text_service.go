@@ -13,8 +13,8 @@ type ITextService interface {
 
 type TextService struct {
 	weaver.Implements[ITextService]
-	url_shorten_service  weaver.Ref[UrlShortenService]
-	user_mention_service weaver.Ref[UserMentionService]
+	url_shorten_service  weaver.Ref[IUrlShortenService]
+	user_mention_service weaver.Ref[IUserMentionService]
 }
 
 func iterative_search(text string, pattern string) []string {

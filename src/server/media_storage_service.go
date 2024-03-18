@@ -15,7 +15,7 @@ type MediaStorageServicer interface {
 
 type MediaStorageService struct {
 	weaver.Implements[MediaStorageServicer]
-	storage weaver.Ref[Storage]
+	storage weaver.Ref[IStorage]
 }
 
 func (m *MediaStorageService) UploadMedia(ctx context.Context, filename string, data string) error {

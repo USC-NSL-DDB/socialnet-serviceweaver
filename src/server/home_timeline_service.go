@@ -16,9 +16,9 @@ type IHomeTimelineService interface {
 type HomeTimelineService struct {
 	weaver.Implements[IHomeTimelineService]
 
-	postStorageService weaver.Ref[PostStorageService]
-	socialGraphService weaver.Ref[SocialGraphService]
-	storage            weaver.Ref[Storage]
+	postStorageService weaver.Ref[PostStorageServicer]
+	socialGraphService weaver.Ref[ISocialGraphService]
+	storage            weaver.Ref[IStorage]
 }
 
 func (hts *HomeTimelineService) ReadHomeTimeline(ctx context.Context, userId int64, start int, stop int) ([]Post, error) {

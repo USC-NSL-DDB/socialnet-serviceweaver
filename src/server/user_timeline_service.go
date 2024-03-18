@@ -14,8 +14,8 @@ type IUserTimelineService interface {
 
 type UserTimelineService struct {
 	weaver.Implements[IUserTimelineService]
-	storage            weaver.Ref[Storage]
-	postStorageService weaver.Ref[PostStorageService]
+	storage            weaver.Ref[IStorage]
+	postStorageService weaver.Ref[PostStorageServicer]
 }
 
 func (uts *UserTimelineService) WriteUserTimeline(ctx context.Context, postId, userId, timestamp int64) error {

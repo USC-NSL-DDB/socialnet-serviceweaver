@@ -20,8 +20,8 @@ type ISocialGraphService interface {
 
 type SocialGraphService struct {
 	weaver.Implements[ISocialGraphService]
-	storage      weaver.Ref[Storage]
-	user_service weaver.Ref[UserService]
+	storage      weaver.Ref[IStorage]
+	user_service weaver.Ref[UserServicer]
 }
 
 func map_to_list(m map[int64]bool) []int64 {

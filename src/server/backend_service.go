@@ -31,15 +31,15 @@ type BackendService struct {
 	weaver.Implements[BackendServicer]
 
 	userService         weaver.Ref[UserServicer]
-	userTimelineService weaver.Ref[UserTimelineService]
-	socialGraphService  weaver.Ref[SocialGraphService]
-	postStorageService  weaver.Ref[PostStorageService]
-	homeTimelineService weaver.Ref[HomeTimelineService]
-	urlShortenService   weaver.Ref[UrlShortenService]
-	textService         weaver.Ref[TextService]
-	uniqueIdService     weaver.Ref[UniqueIdService]
-	mediaStorageService weaver.Ref[MediaStorageService]
-	mediaService        weaver.Ref[MediaService]
+	userTimelineService weaver.Ref[IUserTimelineService]
+	socialGraphService  weaver.Ref[ISocialGraphService]
+	postStorageService  weaver.Ref[PostStorageServicer]
+	homeTimelineService weaver.Ref[IHomeTimelineService]
+	urlShortenService   weaver.Ref[IUrlShortenService]
+	textService         weaver.Ref[ITextService]
+	uniqueIdService     weaver.Ref[IUniqueIdService]
+	mediaStorageService weaver.Ref[MediaStorageServicer]
+	mediaService        weaver.Ref[IMediaService]
 }
 
 func (bs *BackendService) Login(ctx context.Context, username string, password string) (string, error) {

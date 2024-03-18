@@ -31,7 +31,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return backendServicer_reflect_stub{caller: caller}
 		},
-		RefData: "⟦676f096e:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UserServicer⟧\n⟦038509c4:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UserTimelineService⟧\n⟦639fa799:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/SocialGraphService⟧\n⟦9acd8647:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/PostStorageService⟧\n⟦00817391:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/HomeTimelineService⟧\n⟦e3bd2d8d:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UrlShortenService⟧\n⟦895ed4e0:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/TextService⟧\n⟦86e46199:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UniqueIdService⟧\n⟦b5bcf36a:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/MediaStorageService⟧\n⟦08eefbec:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/MediaService⟧\n",
+		RefData: "⟦676f096e:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/UserServicer⟧\n⟦f87e7ca2:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/IUserTimelineService⟧\n⟦230e4fdc:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/ISocialGraphService⟧\n⟦5f5491db:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/PostStorageServicer⟧\n⟦0e49efff:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/IHomeTimelineService⟧\n⟦4bf2ebc2:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/IUrlShortenService⟧\n⟦0d65c789:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/ITextService⟧\n⟦be87b33f:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/IUniqueIdService⟧\n⟦4b1af254:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/MediaStorageServicer⟧\n⟦968417fa:wEaVeReDgE:SocialNetwork/server/BackendServicer→SocialNetwork/server/IMediaService⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/IHomeTimelineService",
@@ -49,7 +49,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iHomeTimelineService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦b18f8682:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/PostStorageService⟧\n⟦ed8bfb0a:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/SocialGraphService⟧\n⟦d9d12882:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/Storage⟧\n",
+		RefData: "⟦7b07cd90:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/PostStorageServicer⟧\n⟦c27eaeb4:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/ISocialGraphService⟧\n⟦2ae5bf71:wEaVeReDgE:SocialNetwork/server/IHomeTimelineService→SocialNetwork/server/IStorage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/IMediaService",
@@ -85,7 +85,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iSocialGraphService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦81b9c69f:wEaVeReDgE:SocialNetwork/server/ISocialGraphService→SocialNetwork/server/Storage⟧\n⟦f8cf9cbd:wEaVeReDgE:SocialNetwork/server/ISocialGraphService→SocialNetwork/server/UserService⟧\n",
+		RefData: "⟦2384019b:wEaVeReDgE:SocialNetwork/server/ISocialGraphService→SocialNetwork/server/IStorage⟧\n⟦5b500a3e:wEaVeReDgE:SocialNetwork/server/ISocialGraphService→SocialNetwork/server/UserServicer⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:   "SocialNetwork/server/IStorage",
@@ -122,7 +122,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iTextService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦af32d802:wEaVeReDgE:SocialNetwork/server/ITextService→SocialNetwork/server/UrlShortenService⟧\n⟦dfab4079:wEaVeReDgE:SocialNetwork/server/ITextService→SocialNetwork/server/UserMentionService⟧\n",
+		RefData: "⟦f30330ab:wEaVeReDgE:SocialNetwork/server/ITextService→SocialNetwork/server/IUrlShortenService⟧\n⟦6ef9efab:wEaVeReDgE:SocialNetwork/server/ITextService→SocialNetwork/server/IUserMentionService⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/IUniqueIdService",
@@ -158,7 +158,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iUrlShortenService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦02f9e238:wEaVeReDgE:SocialNetwork/server/IUrlShortenService→SocialNetwork/server/Storage⟧\n",
+		RefData: "⟦e39be756:wEaVeReDgE:SocialNetwork/server/IUrlShortenService→SocialNetwork/server/IStorage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/IUserMentionService",
@@ -176,7 +176,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iUserMentionService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦88f5570e:wEaVeReDgE:SocialNetwork/server/IUserMentionService→SocialNetwork/server/Storage⟧\n",
+		RefData: "⟦b4fbfc1c:wEaVeReDgE:SocialNetwork/server/IUserMentionService→SocialNetwork/server/IStorage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/IUserTimelineService",
@@ -194,12 +194,13 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return iUserTimelineService_reflect_stub{caller: caller}
 		},
-		RefData: "⟦fffc0390:wEaVeReDgE:SocialNetwork/server/IUserTimelineService→SocialNetwork/server/Storage⟧\n⟦31292fed:wEaVeReDgE:SocialNetwork/server/IUserTimelineService→SocialNetwork/server/PostStorageService⟧\n",
+		RefData: "⟦2cea09c0:wEaVeReDgE:SocialNetwork/server/IUserTimelineService→SocialNetwork/server/IStorage⟧\n⟦9a64454b:wEaVeReDgE:SocialNetwork/server/IUserTimelineService→SocialNetwork/server/PostStorageServicer⟧\n",
 	})
 	codegen.Register(codegen.Registration{
-		Name:  "github.com/ServiceWeaver/weaver/Main",
-		Iface: reflect.TypeOf((*weaver.Main)(nil)).Elem(),
-		Impl:  reflect.TypeOf(app{}),
+		Name:      "github.com/ServiceWeaver/weaver/Main",
+		Iface:     reflect.TypeOf((*weaver.Main)(nil)).Elem(),
+		Impl:      reflect.TypeOf(app{}),
+		Listeners: []string{"compose_post", "remove_posts"},
 		LocalStubFn: func(impl any, caller string, tracer trace.Tracer) any {
 			return main_local_stub{impl: impl.(weaver.Main), tracer: tracer}
 		},
@@ -210,7 +211,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return main_reflect_stub{caller: caller}
 		},
-		RefData: "⟦45b6bbf3:wEaVeReDgE:github.com/ServiceWeaver/weaver/Main→SocialNetwork/server/BackendService⟧\n",
+		RefData: "⟦9906f744:wEaVeReDgE:github.com/ServiceWeaver/weaver/Main→SocialNetwork/server/BackendServicer⟧\n⟦076385ea:wEaVeRlIsTeNeRs:github.com/ServiceWeaver/weaver/Main→compose_post,remove_posts⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/MediaStorageServicer",
@@ -228,7 +229,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return mediaStorageServicer_reflect_stub{caller: caller}
 		},
-		RefData: "⟦d3d19711:wEaVeReDgE:SocialNetwork/server/MediaStorageServicer→SocialNetwork/server/Storage⟧\n",
+		RefData: "⟦68fe92df:wEaVeReDgE:SocialNetwork/server/MediaStorageServicer→SocialNetwork/server/IStorage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/PostStorageServicer",
@@ -246,7 +247,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return postStorageServicer_reflect_stub{caller: caller}
 		},
-		RefData: "⟦0854cb41:wEaVeReDgE:SocialNetwork/server/PostStorageServicer→SocialNetwork/server/Storage⟧\n",
+		RefData: "⟦c068965c:wEaVeReDgE:SocialNetwork/server/PostStorageServicer→SocialNetwork/server/IStorage⟧\n",
 	})
 	codegen.Register(codegen.Registration{
 		Name:  "SocialNetwork/server/UserServicer",
@@ -264,7 +265,7 @@ func init() {
 		ReflectStubFn: func(caller func(string, context.Context, []any, []any) error) any {
 			return userServicer_reflect_stub{caller: caller}
 		},
-		RefData: "⟦60384a12:wEaVeReDgE:SocialNetwork/server/UserServicer→SocialNetwork/server/Storage⟧\n",
+		RefData: "⟦a9b4c4bc:wEaVeReDgE:SocialNetwork/server/UserServicer→SocialNetwork/server/IStorage⟧\n",
 	})
 }
 

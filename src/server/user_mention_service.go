@@ -14,7 +14,7 @@ type IUserMentionService interface {
 type UserMentionService struct {
 	weaver.Implements[IUserMentionService]
 
-	storage weaver.Ref[Storage]
+	storage weaver.Ref[IStorage]
 }
 
 func (s *UserMentionService) ComposeUserMentions(ctx context.Context, usernames []string) ([]UserMention, error) {

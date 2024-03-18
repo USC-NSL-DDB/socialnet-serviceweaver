@@ -17,7 +17,7 @@ type IUrlShortenService interface {
 type UrlShortenService struct {
 	weaver.Implements[IUrlShortenService]
 
-	storage weaver.Ref[Storage]
+	storage weaver.Ref[IStorage]
 }
 
 func (us *UrlShortenService) ComposeUrl(ctx context.Context, urls []string) ([]Url, error) {

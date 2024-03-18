@@ -95,7 +95,7 @@ func GenerateUniqueId() int64 {
 
 type UserService struct {
 	weaver.Implements[UserServicer]
-	storage weaver.Ref[Storage]
+	storage weaver.Ref[IStorage]
 
 	_machineId string
 	_secret    string
@@ -182,7 +182,7 @@ func (us *UserService) RegisterUserWithId(ctx context.Context, firstName, lastNa
 		PasswordHashed: HashPassowrd(password, salt),
 	}
 	// update the map
-	var s Storage = us.storage.Get()
+	s := us.storage.Get()
 	s.PutUserProfile(ctx, username, userProfile)
 	return nil
 }
