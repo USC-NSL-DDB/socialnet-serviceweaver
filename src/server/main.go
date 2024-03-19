@@ -3,10 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
+	. "SocialNetwork/shared/common"
+
 	"github.com/ServiceWeaver/weaver"
+	"github.com/ServiceWeaver/weaver/runtime/codegen"
 )
 
 func main() {
@@ -15,11 +19,8 @@ func main() {
 	}
 }
 
-// app is the main component of the application. weaver.Run creates
-// it and passes it to serve.
 type app struct {
 	weaver.Implements[weaver.Main]
-	// reverser weaver.Ref[Reverser]
 	backend_service weaver.Ref[BackendServicer]
 
 	remove_posts           weaver.Listener
@@ -53,16 +54,72 @@ func reg_listener_action(
 	}()
 }
 
+func decode_request_body(r *http.Request, action func(*codegen.Decoder)) error {
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
+	dec := codegen.NewDecoder(body)
+	action(dec)
+	return nil
+}
+
+func encode_response_body(w http.ResponseWriter, action func(*codegen.Encoder)) {
+	w.Header().Set("Content-Type", "application/custom")
+	enc := codegen.NewEncoder()
+	action(enc)
+	w.Write(enc.Data())
+}
+
 // serve is called by weaver.Run and contains the body of the application.
 func serve(ctx context.Context, app *app) error {
-	// var backend BackendService = app.backend_service.Get()
+	var backend = app.backend_service.Get()
 	err_collector := make(chan error)
 
 	reg_listener_action(app.remove_posts, "/remove_posts", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "remove_posts\n")
+		var user_id int64
+		var start int
+		var stop int
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			user_id = dec.Int64()
+			start = dec.Int()
+			stop = dec.Int()
+		})
+
+		err := backend.RemovePosts(context.Background(), user_id, start, stop)
+		if err != nil {
+			log.Default().Println(err)
+		}
+		// fmt.Fprintf(w, "remove_posts\n")
 	}, err_collector)
 
 	reg_listener_action(app.compose_post, "/compose_post", func(w http.ResponseWriter, r *http.Request) {
+		var username string
+		var user_id int64
+		var text string
+		var media_ids []int64
+		var media_types []string
+		var post_type PostType
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			username = dec.String()
+			user_id = dec.Int64()
+			text = dec.String()
+			media_ids = Decode_slice_int64(dec)
+			media_types = Decode_slice_string(dec)
+			post_type = (PostType)(dec.Int())
+		})
+
+		err := backend.CompostPost(
+			context.Background(),
+			username, user_id, text, media_ids, media_types, post_type,
+		)
+		if err != nil {
+			log.Default().Println(err)
+			// r.Response.StatusCode = 500
+		}
 		fmt.Fprintf(w, "compose_post\n")
 	}, err_collector)
 
@@ -123,12 +180,5 @@ func serve(ctx context.Context, app *app) error {
 		return err
 	}
 
-	// var r Reverser = app.reverser.Get()
-	// reversed, err := r.Reverse(ctx, "!dlroW ,olleH")
-	// if err != nil {
-	//   return err
-	// }
-	// fmt.Println(reversed)
-	// return nil
 	return nil
 }

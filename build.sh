@@ -7,3 +7,7 @@ script_dir="$(dirname "$0")"
 pushd $script_dir/src/server
 go build -o server.out
 popd
+
+pushd $script_dir/src/client
+go build -o client.out
+popd
