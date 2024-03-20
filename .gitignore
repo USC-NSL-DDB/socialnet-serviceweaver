@@ -22,3 +22,7 @@ go.work
 
 # weaver generated files
 weaver_gen.go
+
+# Copied files
+src/client/data_type.go
+src/server/data_type.go
