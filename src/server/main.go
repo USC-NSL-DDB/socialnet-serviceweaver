@@ -124,55 +124,309 @@ func serve(ctx context.Context, app *app) error {
 	}, err_collector)
 
 	reg_listener_action(app.login, "/login", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var username string
+		var password string
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			username = dec.String()
+			password = dec.String()
+		})
+
+		token, err := backend.Login(context.Background(), username, password)
+		if err != nil {
+			log.Default().Println(err)  // never triggered
+		} else {
+			encode_response_body(w, func(enc *codegen.Encoder) {
+				enc.String(token)
+			})
+		}
+
+		fmt.Fprintf(w, "login\n")
 	}, err_collector)
 
 	reg_listener_action(app.register_user, "/register_user", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var first_name string
+		var last_name string
+		var username string
+		var password string
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			first_name = dec.String()
+			last_name = dec.String()
+			username = dec.String()
+			password = dec.String()
+		})
+
+		err := backend.RegisterUser(context.Background(), first_name, last_name, username, password)
+		if err != nil {
+			log.Default().Println(err) // never triggered
+		}
+
+		fmt.Fprintf(w, "register_user\n")
 	}, err_collector)
 
 	reg_listener_action(app.register_user_with_id, "/register_user_with_id", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var first_name string
+		var last_name string
+		var username string
+		var password string
+		var user_id int64
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			first_name = dec.String()
+			last_name = dec.String()
+			username = dec.String()
+			password = dec.String()
+			user_id = dec.Int64()
+		})
+
+		err := backend.RegisterUserWithId(context.Background(), first_name, last_name, username, password, user_id)
+		if err != nil {
+			log.Default().Println(err) // never triggered
+		}
+		
+		fmt.Fprintf(w, "register_user_with_id\n")
 	}, err_collector)
 
 	reg_listener_action(app.read_user_timeline, "/read_user_timeline", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var user_id int64
+		var start int
+		var stop int
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			user_id = dec.Int64()
+			start = dec.Int()
+			stop = dec.Int()
+		})
+
+		posts, err := backend.ReadUserTimeline(context.Background(), user_id, start, stop)
+		if err != nil {
+			log.Default().Println(err)
+		} else {
+			encode_response_body(w, func(enc *codegen.Encoder) {
+				enc.Int(len(posts)) // TODO: repeated code in read_home_timeline
+				for _, post := range posts {  
+					enc.Int64(post.Post_id)
+					enc.Int64(post.Creator.UserId)
+					enc.String(post.Creator.Username)
+					enc.Int64(post.Req_id)
+					enc.String(post.Text)
+					enc.Int64(post.Timestamp)
+					enc.Int(int(post.Post_type))
+
+					enc.Int(len(post.User_mentions))
+					enc.Int(len(post.Media))
+					enc.Int(len(post.Urls))
+					for _, user_mention := range post.User_mentions {
+						enc.Int64(user_mention.UserId)
+						enc.String(user_mention.Username)
+					}
+					for _, media := range post.Media {
+						enc.Int64(media.MediaId)
+						enc.String(media.MediaType)
+					}
+					for _, url := range post.Urls {
+						enc.String(url.ShortenedUrl)  // send only shortened url, check if it is correct
+					}
+				}
+			})
+		}
+		
+		fmt.Fprintf(w, "read_user_timeline\n")
 	}, err_collector)
 
 	reg_listener_action(app.get_followers, "/get_followers", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var user_id int64
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			user_id = dec.Int64()
+		})
+
+		followers, err := backend.GetFollowers(context.Background(), user_id)
+		if err != nil {
+			log.Default().Println(err)
+		} else {
+			encode_response_body(w, func(enc *codegen.Encoder) {
+				enc.Int(len(followers))
+				for _, follower_id := range followers {
+					enc.Int64(follower_id)
+				}
+			})
+		}
+		
+		fmt.Fprintf(w, "get_followers\n")
 	}, err_collector)
 
 	reg_listener_action(app.unfollow, "/unfollow", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var id int64
+		var followee_id int64
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			id = dec.Int64()
+			followee_id = dec.Int64()
+		})
+
+		err := backend.Unfollow(context.Background(), id, followee_id)
+		if err != nil {
+			log.Default().Println(err)  // never triggered
+		}
+		
+		fmt.Fprintf(w, "unfollow\n")
 	}, err_collector)
 
 	reg_listener_action(app.unfollow_with_username, "/unfollow_with_username", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var username string
+		var followee_username string
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			username = dec.String()
+			followee_username = dec.String()
+		})
+
+		err := backend.UnfollowWithUsername(context.Background(), username, followee_username)
+		if err != nil {
+			log.Default().Println(err)  // never triggered
+		}
+		
+		fmt.Fprintf(w, "unfollow_with_username\n")
 	}, err_collector)
 
 	reg_listener_action(app.follow, "/follow", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var id int64
+		var followee_id int64
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			id = dec.Int64()
+			followee_id = dec.Int64()
+		})
+
+		err := backend.Follow(context.Background(), id, followee_id)
+		if err != nil {
+			log.Default().Println(err)  // never triggered
+		}
+
+		fmt.Fprintf(w, "follow\n")
 	}, err_collector)
 
 	reg_listener_action(app.follow_with_username, "/follow_with_username", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var username string
+		var followee_username string
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			username = dec.String()
+			followee_username = dec.String()
+		})
+
+		err := backend.FollowWithUsername(context.Background(), username, followee_username)
+		if err != nil {
+			log.Default().Println(err) // never triggered
+		}
+		
+		fmt.Fprintf(w, "follow_with_username\n")
 	}, err_collector)
 
 	reg_listener_action(app.get_followees, "/get_followees", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var user_id int64
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			user_id = dec.Int64()
+		})
+
+		followees, err := backend.GetFollowees(context.Background(), user_id)
+		if err != nil {
+			log.Default().Println(err)
+		} else {
+			encode_response_body(w, func(enc *codegen.Encoder) {
+				enc.Int(len(followees))
+				for _, followee_id := range followees {
+					enc.Int64(followee_id)
+				}
+			})
+		}		
+		
+		fmt.Fprintf(w, "get_followees\n")
 	}, err_collector)
 
 	reg_listener_action(app.read_home_timeline, "/read_home_timeline", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var user_id int64
+		var start int
+		var stop int
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			user_id = dec.Int64()
+			start = dec.Int()
+			stop = dec.Int()
+		})
+
+		posts, err := backend.ReadHomeTimeline(context.Background(), user_id, start, stop)
+		if err != nil {
+			log.Default().Println(err)
+		} else {
+			encode_response_body(w, func(enc *codegen.Encoder) {  
+				enc.Int(len(posts)) // TODO: repeated code in read_user_timeline
+				for _, post := range posts {  
+					enc.Int64(post.Post_id)
+					enc.Int64(post.Creator.UserId)
+					enc.String(post.Creator.Username)
+					enc.Int64(post.Req_id)
+					enc.String(post.Text)
+					enc.Int64(post.Timestamp)
+					enc.Int(int(post.Post_type))
+
+					enc.Int(len(post.User_mentions))
+					enc.Int(len(post.Media))
+					enc.Int(len(post.Urls))
+					for _, user_mention := range post.User_mentions {
+						enc.Int64(user_mention.UserId)
+						enc.String(user_mention.Username)
+					}
+					for _, media := range post.Media {
+						enc.Int64(media.MediaId)
+						enc.String(media.MediaType)
+					}
+					for _, url := range post.Urls {
+						enc.String(url.ShortenedUrl)  // send only shortened url, check if it is correct
+					}
+				}
+			})
+		}
+
+		fmt.Fprintf(w, "read_home_timeline\n")
 	}, err_collector)
 
 	reg_listener_action(app.upload_media, "/upload_media", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var filename string
+		var data string
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			filename = dec.String()
+			data = dec.String()
+		})
+
+		err := backend.UploadMedia(context.Background(), filename, data)
+		if err != nil {
+			log.Default().Println(err) // never triggered
+		}
+		fmt.Fprintf(w, "upload_media\n")
 	}, err_collector)
 
 	reg_listener_action(app.get_media, "/get_media", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "compose_post\n")
+		var filename string
+
+		decode_request_body(r, func(dec *codegen.Decoder) {
+			filename = dec.String()
+		})
+
+		media, err := backend.GetMedia(context.Background(), filename)
+		if err != nil {
+			log.Default().Println(err)
+		} else {
+			encode_response_body(w, func(enc *codegen.Encoder) {
+				enc.String(media)
+			})
+		}
+
+		fmt.Fprintf(w, "get_media\n")
 	}, err_collector)
 
 	for err := range err_collector {
