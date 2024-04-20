@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"sync"
 )
 
@@ -87,12 +88,14 @@ func ApplyWithReturn[K comparable, V any, R any](
 	key K,
 	applyFn func(K, V, ...interface{}) R,
 	args ...interface{},
-) R {
+) (R, error) {
 	h.mu.Lock()
 	defer h.mu.Unlock()
 	val, exist := h.buckets[key]
 	if exist {
-		return applyFn(key, val, args...)
+		return applyFn(key, val, args...), nil
+	} else {
+		var zeroR R
+		return zeroR, errors.New("key does not exist")
 	}
-	panic("Key does not exist")
 }

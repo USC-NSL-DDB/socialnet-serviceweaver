@@ -266,7 +266,7 @@ func (s *Storage) GetPostTimeline(_ context.Context, userId int64, start int, st
 			return result
 		},
 		start, stop,
-	), nil
+	)
 }
 
 func (s *Storage) RemovePostTimeline(_ context.Context, userId int64, postId int64, timestamp int64) error {

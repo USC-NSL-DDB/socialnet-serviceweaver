@@ -108,6 +108,7 @@ func (client *SingleThreadClient) GenRequest() (ClientRequest, string) {
 
 func (client *SingleThreadClient) SendRequest(req ClientRequest, address string) {
 	data := req.encode(codegen.NewEncoder())
+	fmt.Println("Sending request to", address, "with data", data)
 	response, err := send_request(address, data)
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -149,7 +150,7 @@ func (htr *HomeTimelineRequest) encode(enc *codegen.Encoder) []byte {
 func (htr *HomeTimelineRequest) generate(client *SingleThreadClient) {
 	htr.user_id = client._gen_user_id()
 	htr.start = client._gen_timeline_int()
-	htr.stop = client._gen_timeline_int()
+	htr.stop = htr.start + 1
 }
 
 type UserTimelineRequest struct {
@@ -168,12 +169,12 @@ func (utr *UserTimelineRequest) encode(enc *codegen.Encoder) []byte {
 func (utr *UserTimelineRequest) generate(client *SingleThreadClient) {
 	utr.user_id = client._gen_user_id()
 	utr.start = client._gen_timeline_int()
-	utr.stop = client._gen_timeline_int()
+	utr.stop = utr.start + 1
 }
 
 type ComposePostRequest struct {
-	user_id int64
 	username string
+	user_id int64
 	text string
 	media_ids []int64
 	media_types []string
@@ -181,8 +182,8 @@ type ComposePostRequest struct {
 }
 
 func (cpr *ComposePostRequest) encode(enc *codegen.Encoder) []byte {
-	enc.Int64(cpr.user_id)
 	enc.String(cpr.username)
+	enc.Int64(cpr.user_id)
 	enc.String(cpr.text)
 	Encode_slice_int64(enc, cpr.media_ids)
 	Encode_slice_string(enc, cpr.media_types)
