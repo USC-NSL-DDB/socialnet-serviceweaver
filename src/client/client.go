@@ -95,7 +95,7 @@ func send_compose_post(
 	// fmt.Println("Status Code:", response.StatusCode)
 }
 
-func main() {
-	// send_compose_post()
-	send_remove_posts(0, 1, 2)
-}
+// func main() {
+// 	// send_compose_post()
+// 	send_remove_posts(0, 1, 2)
+// }
