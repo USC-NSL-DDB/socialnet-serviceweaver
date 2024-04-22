@@ -66,7 +66,7 @@ func (s *SocialGraphService) FollowWithUsername(ctx context.Context, followerUse
 	user_service := s.user_service.Get()
 	followerId, _ := user_service.GetUserId(ctx, followerUsername)
 	followeeId, _ := user_service.GetUserId(ctx, followeeUsername)
-	if followerId == 0 || followeeId == 0 {
+	if followerId <= 0 || followeeId <= 0 {
 		fmt.Printf("Failed to find the user profile - followerUsername: %s, followeeUsername: %s\n", followerUsername, followeeUsername)
 		return nil
 	}
@@ -90,7 +90,7 @@ func (s *SocialGraphService) UnfollowWithUsername(ctx context.Context, followerU
 	followerId := follower_id_fu.Await().(int64)
 	followeeId := followee_id_fu.Await().(int64)
 
-	if followerId == 0 || followeeId == 0 {
+	if followerId <= 0 || followeeId <= 0 {
 		fmt.Printf("Failed to find the user profile - followerUsername: %s, followeeUsername: %s\n", followerUsername, followeeUsername)
 		return nil
 	}

@@ -199,9 +199,17 @@ func (us *UserService) GetUserId(ctx context.Context, username string) (int64, e
 	storage := us.storage.Get()
 	profile, exist, _ := storage.GetUserProfile(ctx, username)
 	if !exist {
+		for range []int{1, 2, 3} {
+			profile, exist, _ = storage.GetUserProfile(ctx, username)
+			if exist {
+				break
+			}
+		}
+	}
+	if !exist {
 		fmt.Printf("Err. no profile associated with username: %s.\n", username)
 		// Should handle it more elegantly.
-		return 0, nil
+		return -1, nil
 	}
 	return profile.UserId, nil
 }
