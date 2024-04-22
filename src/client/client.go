@@ -29,6 +29,8 @@ const (
 	PERCENT_FOLLOW        = 100 - PERCENT_USER_TIMELINE - PERCENT_HOME_TIMELINE - PERCENT_COMPOSE_POST - PERCENT_REMOVE_POSTS
 
 	INTERVAL_BETWEEN_REQUESTS = 50 * time.Millisecond
+
+	BASE_URL = "http://localhost:49555"
 )
 
 type SingleThreadClient struct {
@@ -55,46 +57,47 @@ func (client *SingleThreadClient) Init() {
 
 func (client *SingleThreadClient) GenRequest() (api.ClientRequest, string) {
 	rand_int := client.rand_request_type_generator.Int() % 100
+	address := BASE_URL
 	if rand_int <= PERCENT_USER_TIMELINE {
 		req := &api.ReadUserTimelineRequest{}
 		GenReadUserTimelineReq(req, client)
-		endpoint := common.READ_USER_TIMELINE_ENDPOINT
-		return req, endpoint
+		address += common.READ_USER_TIMELINE_ENDPOINT
+		return req, address
 	}
 	rand_int -= PERCENT_USER_TIMELINE
 	if rand_int < PERCENT_HOME_TIMELINE {
 		req := &api.ReadHomeTimelineRequest{}
 		GenReadHomeTimelineReq(req, client)
-		endpoint := common.READ_HOME_TIMELINE_ENDPOINT
-		return req, endpoint
+		address += common.READ_HOME_TIMELINE_ENDPOINT
+		return req, address
 	}
 
 	rand_int -= PERCENT_HOME_TIMELINE
 	if rand_int < PERCENT_COMPOSE_POST {
 		req := &api.ComposePostRequest{}
 		GenComposePostReq(req, client)
-		endpoint := common.COMPOSE_POST_ENDPOINT
-		return req, endpoint
+		address += common.COMPOSE_POST_ENDPOINT
+		return req, address
 	}
 
 	rand_int -= PERCENT_COMPOSE_POST
 	if rand_int < PERCENT_REMOVE_POSTS {
 		req := &api.RemovePostsRequest{}
 		GenRemovePostsReq(req, client)
-		endpoint := common.REMOVE_POSTS_ENDPOINT
-		return req, endpoint
+		address += common.REMOVE_POSTS_ENDPOINT
+		return req, address
 	}
 
 	req := &api.FollowRequest{}
 	GenFollowReq(req, client)
-	endpoint := common.FOLLOW_ENDPOINT
-	return req, endpoint
+	address += common.FOLLOW_ENDPOINT
+	return req, address
 }
 
-func (client *SingleThreadClient) SendRequest(req api.ClientRequest, endpoint string) {
+func (client *SingleThreadClient) SendRequest(req api.ClientRequest, address string) {
 	data := req.Encode(codegen.NewEncoder())
-	fmt.Println("Sending request to ", endpoint, " with data: ", data)
-	response, err := api.InitRequest(endpoint, data)
+	fmt.Println("Sending request to ", address, " with data: ", data)
+	response, err := api.SendRequest(address, data)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return

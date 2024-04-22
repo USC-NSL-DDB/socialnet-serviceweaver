@@ -46,6 +46,20 @@ func (h *HashMap[K, V]) Size() int {
 	return len(h.buckets)
 }
 
+// Convert to regular maps
+func (h *HashMap[K, V]) Clone() map[K]V {
+	if h == nil {
+		return nil
+	}
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	newMap := make(map[K]V)
+	for k, v := range h.buckets {
+		newMap[k] = v
+	}
+	return newMap
+}
+
 // ApplyWithDefault applies a function to the value associated with the given key in the hash table.
 // If the key exists, the applyFn function is called with the key, value, and additional arguments.
 // If the key does not exist, the assignDefault function is called with the key to assign a default value,

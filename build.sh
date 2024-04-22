@@ -11,3 +11,7 @@ popd
 pushd $script_dir/src/client
 go build -o client.out
 popd
+
+pushd $script_dir/src/bench
+go build -o init_social.out
+popd

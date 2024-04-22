@@ -23,21 +23,6 @@ type app struct {
 	weaver.Implements[weaver.Main]
 	backend_service weaver.Ref[BackendServicer]
 
-	// remove_posts           weaver.Listener
-	// compose_post           weaver.Listener
-	// login                  weaver.Listener
-	// register_user          weaver.Listener
-	// register_user_with_id  weaver.Listener
-	// read_user_timeline     weaver.Listener
-	// get_followers          weaver.Listener
-	// unfollow               weaver.Listener
-	// unfollow_with_username weaver.Listener
-	// follow                 weaver.Listener
-	// follow_with_username   weaver.Listener
-	// get_followees          weaver.Listener
-	// read_home_timeline     weaver.Listener
-	// upload_media           weaver.Listener
-	// get_media              weaver.Listener
 	api_listener weaver.Listener
 }
 
