@@ -7,7 +7,7 @@ import (
 	"log"
 	"net/http"
 
-	. "SocialNetwork/shared/common"
+	"SocialNetwork/shared/common"
 
 	"github.com/ServiceWeaver/weaver"
 	"github.com/ServiceWeaver/weaver/runtime/codegen"
@@ -78,7 +78,7 @@ func serve(ctx context.Context, app *app) error {
 	var backend = app.backend_service.Get()
 	err_collector := make(chan error)
 
-	reg_listener_action(app.api_listener, REMOVE_POSTS_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.REMOVE_POSTS_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var user_id int64
 		var start int
 		var stop int
@@ -96,7 +96,7 @@ func serve(ctx context.Context, app *app) error {
 		// fmt.Fprintf(w, "remove_posts\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, COMPOSE_POST_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.COMPOSE_POST_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var username string
 		var user_id int64
 		var text string
@@ -108,8 +108,8 @@ func serve(ctx context.Context, app *app) error {
 			username = dec.String()
 			user_id = dec.Int64()
 			text = dec.String()
-			media_ids = Decode_slice_int64(dec)
-			media_types = Decode_slice_string(dec)
+			media_ids = common.Decode_slice_int64(dec)
+			media_types = common.Decode_slice_string(dec)
 			post_type = (PostType)(dec.Int())
 		})
 
@@ -124,7 +124,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "compose_post\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, LOGIN_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.LOGIN_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var username string
 		var password string
 
@@ -145,7 +145,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "login\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, REGISTER_USER_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.REGISTER_USER_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var first_name string
 		var last_name string
 		var username string
@@ -166,7 +166,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "register_user\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, REGISTER_USER_WITH_ID_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.REGISTER_USER_WITH_ID_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var first_name string
 		var last_name string
 		var username string
@@ -189,7 +189,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "register_user_with_id\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, READ_USER_TIMELINE_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.READ_USER_TIMELINE_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var user_id int64
 		var start int
 		var stop int
@@ -236,7 +236,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "read_user_timeline\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, GET_FOLLOWERS_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.GET_FOLLOWERS_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var user_id int64
 
 		decode_request_body(r, func(dec *codegen.Decoder) {
@@ -258,7 +258,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "get_followers\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, UNFOLLOW_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.UNFOLLOW_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var id int64
 		var followee_id int64
 
@@ -275,7 +275,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "unfollow\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, UNFOLLOW_WITH_USERNAME_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.UNFOLLOW_WITH_USERNAME_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var username string
 		var followee_username string
 
@@ -292,7 +292,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "unfollow_with_username\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, FOLLOW_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.FOLLOW_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var id int64
 		var followee_id int64
 
@@ -309,7 +309,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "follow\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, FOLLOW_WITH_USERNAME_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.FOLLOW_WITH_USERNAME_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var username string
 		var followee_username string
 
@@ -326,7 +326,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "follow_with_username\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, GET_FOLLOWEES_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.GET_FOLLOWEES_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var user_id int64
 
 		decode_request_body(r, func(dec *codegen.Decoder) {
@@ -348,7 +348,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "get_followees\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, READ_HOME_TIMELINE_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.READ_HOME_TIMELINE_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var user_id int64
 		var start int
 		var stop int
@@ -395,7 +395,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "read_home_timeline\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, UPLOAD_MEDIA_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.UPLOAD_MEDIA_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var filename string
 		var data string
 
@@ -411,7 +411,7 @@ func serve(ctx context.Context, app *app) error {
 		fmt.Fprintf(w, "upload_media\n")
 	}, err_collector)
 
-	reg_listener_action(app.api_listener, GET_MEDIA_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
+	reg_listener_action(app.api_listener, common.GET_MEDIA_ENDPOINT, func(w http.ResponseWriter, r *http.Request) {
 		var filename string
 
 		decode_request_body(r, func(dec *codegen.Decoder) {
