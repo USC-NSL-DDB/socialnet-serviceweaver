@@ -14,13 +14,24 @@ import (
 )
 
 // var r = rand.New(rand.NewSource(time.Now().UnixNano()))
+var mu = sync.Mutex{}
 var r = rand.New(rand.NewSource(42))
 
 func randomString(letters string, length int) string {
 	var result strings.Builder
 	result.Grow(length) // Pre-allocate memory for efficiency
+  if length <= 0 {
+    fmt.Println("len < 0")
+  }
+  letter_len := len(letters)
+  if letter_len <= 0 {
+    fmt.Println("len letters == 0; ", letters)
+  }
+  mu.Lock()
+  defer mu.Unlock()
 	for i := 0; i < length; i++ {
-		result.WriteByte(letters[r.Intn(len(letters))])
+    ridx := r.Intn(letter_len)
+		result.WriteByte(letters[ridx])
 	}
 	return result.String()
 }
@@ -31,6 +42,8 @@ func randomDigits(length int) int64 {
 	var sb strings.Builder
 	sb.Grow(length) // Pre-allocate memory to improve performance
 
+  mu.Lock()
+  defer mu.Unlock()
 	for i := 0; i < length; i++ {
 		sb.WriteByte(digits[r.Intn(len(digits))])
 	}
@@ -83,13 +96,17 @@ func composePost(addr string, user_id int, num_users int, wg *sync.WaitGroup) {
 	text := randomString(letters, 256)
 
 	// User mentions
+  mu.Lock()
 	numMentions := r.Intn(6)
+  mu.Unlock()
 	for i := 0; i < numMentions; i++ {
 		text += " @username_" + strconv.Itoa(r.Intn(num_users)+1)
 	}
 
 	// URLs
+  mu.Lock()
 	numURLs := r.Intn(6)
+  mu.Unlock()
 	for i := 0; i < numURLs; i++ {
 		text += " http://" + randomString("abcdefghijklmnopqrstuvwxyz0123456789", 64)
 	}
@@ -192,9 +209,6 @@ func follow(addr string, edges [][]string) {
 		// return
 		if idx%50 == 0 {
 			wg.Wait()
-			fmt.Println("Added", idx*2)
-			// return
-			// time.Sleep(1 * time.Second)
 		}
 	}
 	wg.Wait()
@@ -209,7 +223,7 @@ func compose(addr string, nodes int) {
 		for j := 0; j < upper; j++ {
 			idx += 1
 			wg.Add(1)
-			go composePost(addr, i, nodes, &wg)
+			go composePost(addr, i+1, nodes, &wg)
 			if idx%100 == 0 {
 				wg.Wait()
 			}
@@ -219,7 +233,6 @@ func compose(addr string, nodes int) {
 }
 
 func main() {
-	// Command line arguments and initialization logic here similar to Python code
 	addr := api.BASE_URL
 	filepath := "./social-graph/socfb-Reed98/socfb-Reed98.mtx"
 	nodes := getNodes(filepath)
