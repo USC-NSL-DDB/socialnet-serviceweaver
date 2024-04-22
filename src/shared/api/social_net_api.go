@@ -27,7 +27,7 @@ func releaseClient(client *http.Client) {
 }
 
 const (
-	BASE_PORT = "55661"
+	BASE_PORT = "49555"
 	BASE_URL  = "http://localhost:" + BASE_PORT
 )
 

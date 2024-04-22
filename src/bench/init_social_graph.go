@@ -8,7 +8,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"SocialNetwork/shared/api"
 	"SocialNetwork/shared/common"
@@ -195,7 +194,7 @@ func follow(addr string, edges [][]string) {
 			wg.Wait()
 			fmt.Println("Added", idx*2)
 			// return
-			time.Sleep(1 * time.Second)
+			// time.Sleep(1 * time.Second)
 		}
 	}
 	wg.Wait()
@@ -237,5 +236,5 @@ func main() {
 
 	register(addr, nodes)
 	follow(addr, edges)
-	// compose(addr, nodes)
+	compose(addr, nodes)
 }

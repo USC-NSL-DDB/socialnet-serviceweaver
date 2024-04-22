@@ -91,8 +91,8 @@ type Storage struct {
 	usernameToUserProfileMap *HashMap[string, UserProfile]
 	postIdToPostMap          *HashMap[int64, Post]
 	shortToExtendedMap       *HashMap[string, string]
-	useridToFollowersMap     *HashMap[int64, map[int64]bool]
-	useridToFolloweesMap     *HashMap[int64, map[int64]bool]
+	useridToFollowersMap     *HashMap[int64, *HashMap[int64, bool]]
+	useridToFolloweesMap     *HashMap[int64, *HashMap[int64, bool]]
 
 	useridToTimelineMap *HashMap[int64, *btree.BTree]
 }
@@ -102,8 +102,8 @@ func (s *Storage) Init(context.Context) error {
 	s.usernameToUserProfileMap = NewHashMap[string, UserProfile]()
 	s.postIdToPostMap = NewHashMap[int64, Post]()
 	s.shortToExtendedMap = NewHashMap[string, string]()
-	s.useridToFollowersMap = NewHashMap[int64, map[int64]bool]()
-	s.useridToFolloweesMap = NewHashMap[int64, map[int64]bool]()
+	s.useridToFollowersMap = NewHashMap[int64, *HashMap[int64, bool]]()
+	s.useridToFolloweesMap = NewHashMap[int64, *HashMap[int64, bool]]()
 
 	s.useridToTimelineMap = NewHashMap[int64, *btree.BTree]()
 	return nil
@@ -152,17 +152,21 @@ func (s *Storage) Follow(_ context.Context, userId int64, followeeId int64) erro
 	// userId follows followeeId
 	followees, flag := s.useridToFolloweesMap.Get(userId)
 	if !flag {
-		followees = map[int64]bool{followeeId: true}
+    newMap := NewHashMap[int64, bool]()
+    newMap.Put(followeeId, true)
+		followees = newMap
 	} else {
-		followees[followeeId] = true
+    followees.Put(followeeId, true)
 	}
 	s.useridToFolloweesMap.Put(userId, followees)
 
 	followers, flag := s.useridToFollowersMap.Get(followeeId)
 	if !flag {
-		followers = map[int64]bool{userId: true}
+    newMap := NewHashMap[int64, bool]()
+    newMap.Put(userId, true)
+		followers = newMap
 	} else {
-		followers[userId] = true
+    followees.Put(userId, true)
 	}
 	s.useridToFollowersMap.Put(followeeId, followers)
 	return nil
@@ -177,29 +181,31 @@ func (s *Storage) Unfollow(_ context.Context, userId int64, followeeId int64) er
 		return nil
 	}
 
-	if _, ok := followees[followeeId]; !ok {
+	if _, ok := followees.Get(followeeId); !ok {
 		fmt.Printf("Unfollow: userId %d does not follow followeeId %d\n", userId, followeeId)
 		return nil
 	}
 
-	if _, ok := followers[userId]; !ok {
+	if _, ok := followers.Get(userId); !ok {
 		fmt.Printf("Unfollow: followeeId %d does not have userId %d as follower\n", followeeId, userId)
 		return nil
 	}
 
-	delete(followees, followeeId)
-	delete(followers, userId)
+  followees.Delete(followeeId)
+  followers.Delete(userId)
+	// delete(followees, followeeId)
+	// delete(followers, userId)
 	return nil
 }
 
 func (s *Storage) GetFollowers(_ context.Context, userId int64) (map[int64]bool, bool, error) {
 	v, e := s.useridToFollowersMap.Get(userId)
-	return v, e, nil
+	return v.Clone(), e, nil
 }
 
 func (s *Storage) GetFollowees(_ context.Context, userId int64) (map[int64]bool, bool, error) {
 	v, e := s.useridToFolloweesMap.Get(userId)
-	return v, e, nil
+	return v.Clone(), e, nil
 }
 
 func (s *Storage) PutShortenUrl(_ context.Context, key string, val string) error {
