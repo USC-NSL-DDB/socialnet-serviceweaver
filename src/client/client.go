@@ -11,23 +11,10 @@ import (
 	"github.com/ServiceWeaver/weaver/runtime/codegen"
 )
 
-// const (
-// 	REMOVE_POSTS_ENDPOINT           = "remove_posts"
-// 	COMPOSE_POST_ENDPOINT           = "compose_post"
-// 	LOGIN_ENDPOINT                  = "login"
-// 	REGISTER_USER_ENDPOINT          = "register_user"
-// 	REGISTER_USER_WITH_ID_ENDPOINT  = "register_user_with_id"
-// 	READ_USER_TIMELINE_ENDPOINT     = "read_user_timeline"
-// 	GET_FOLLOWERS_ENDPOINT          = "get_followers"
-// 	UNFOLLOW_ENDPOINT               = "unfollow"
-// 	UNFOLLOW_WITH_USERNAME_ENDPOINT = "unfollow_with_username"
-// 	FOLLOW_ENDPOINT                 = "follow"
-// 	FOLLOW_WITH_USERNAME_ENDPOINT   = "follow_with_username"
-// 	GET_FOLLOWEES_ENDPOINT          = "get_followees"
-// 	READ_HOME_TIMELINE_ENDPOINT     = "read_home_timeline"
-// 	UPLOAD_MEDIA_ENDPOINT           = "upload_media"
-// 	GET_MEDIA_ENDPOINT              = "get_media"
-// )
+const (
+	BASE_PORT = "49555"
+	BASE_URL  = "http://localhost:" + BASE_PORT
+)
 
 func send_request(address string, data []byte) (*http.Response, error) {
 	req, err := http.NewRequest("POST", address, bytes.NewBuffer(data))
@@ -38,6 +25,11 @@ func send_request(address string, data []byte) (*http.Response, error) {
 	req.Header.Set("Content-Type", "application/custom")
 	client := &http.Client{}
 	return client.Do(req)
+}
+
+func init_request(endpoint string, data []byte) (*http.Response, error) {
+	address := BASE_URL + endpoint
+	return send_request(address, data)
 }
 
 func encode_data(action func(*codegen.Encoder)) []byte {
