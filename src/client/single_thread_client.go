@@ -12,51 +12,48 @@ import (
 )
 
 const (
-	NUM_USER = 962
+	NUM_USER         = 962
 	TIMELINE_INT_MIN = 0
 	TIMELINE_INT_MAX = 99
-	NUM_URLS_MAX = 2
-	NUM_MEDIAS_MAX = 2
+	NUM_URLS_MAX     = 2
+	NUM_MEDIAS_MAX   = 2
 	NUM_MENTIONS_MAX = 2
-	TEXT_LEN = 64
-	URL_LEN = 64
-	CHAR_SET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	TEXT_LEN         = 64
+	URL_LEN          = 64
+	CHAR_SET         = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 	PERCENT_USER_TIMELINE = 60
 	PERCENT_HOME_TIMELINE = 30
-	PERCENT_COMPOSE_POST = 5
-	PERCENT_REMOVE_POSTS = 5
-	PERCENT_FOLLOW = 100 - PERCENT_USER_TIMELINE - PERCENT_HOME_TIMELINE - PERCENT_COMPOSE_POST - PERCENT_REMOVE_POSTS
+	PERCENT_COMPOSE_POST  = 5
+	PERCENT_REMOVE_POSTS  = 5
+	PERCENT_FOLLOW        = 100 - PERCENT_USER_TIMELINE - PERCENT_HOME_TIMELINE - PERCENT_COMPOSE_POST - PERCENT_REMOVE_POSTS
 
 	INTERVAL_BETWEEN_REQUESTS = 50 * time.Millisecond
 )
-
 
 type ClientRequest interface {
 	encode(*codegen.Encoder) []byte
 	generate(client *SingleThreadClient)
 }
 
-
 type ClientResponse interface {
 	decode(*http.Response) []byte
 	display()
 }
 
-
 type SingleThreadClient struct {
 	rand_charset_generator rand.Rand
 	rand_user_id_generator rand.Rand
-	rand_int_generator rand.Rand
+	rand_int_generator     rand.Rand
 
-	rand_max_urls_generator rand.Rand
-	rand_max_medias_generator rand.Rand
+	rand_max_urls_generator     rand.Rand
+	rand_max_medias_generator   rand.Rand
 	rand_max_mentions_generator rand.Rand
 
 	rand_request_type_generator rand.Rand
 }
 
-func (client *SingleThreadClient) Init() {	
+func (client *SingleThreadClient) Init() {
 	client.rand_charset_generator = *rand.New(rand.NewSource(0))
 	client.rand_user_id_generator = *rand.New(rand.NewSource(1))
 	client.rand_int_generator = *rand.New(rand.NewSource(2))
@@ -69,7 +66,7 @@ func (client *SingleThreadClient) Init() {
 
 func (client *SingleThreadClient) GenRequest() (ClientRequest, string) {
 	rand_int := client.rand_request_type_generator.Int() % 100
-	address := "http://localhost:12345/"
+	address := BASE_URL
 	if rand_int <= PERCENT_USER_TIMELINE {
 		req := &UserTimelineRequest{}
 		req.generate(client)
@@ -122,22 +119,21 @@ func (client *SingleThreadClient) _gen_user_id() int64 {
 }
 
 func (client *SingleThreadClient) _gen_timeline_int() int {
-	return client.rand_int_generator.Int() % (TIMELINE_INT_MAX - TIMELINE_INT_MIN) + TIMELINE_INT_MIN
+	return client.rand_int_generator.Int()%(TIMELINE_INT_MAX-TIMELINE_INT_MIN) + TIMELINE_INT_MIN
 }
 
 func (client *SingleThreadClient) _gen_text(text_len int) string {
 	text := ""
 	for i := 0; i < text_len; i++ {
-		text += string(CHAR_SET[client.rand_charset_generator.Int() % len(CHAR_SET)])
+		text += string(CHAR_SET[client.rand_charset_generator.Int()%len(CHAR_SET)])
 	}
 	return text
 }
 
-
 type HomeTimelineRequest struct {
 	user_id int64
-	start int
-	stop int
+	start   int
+	stop    int
 }
 
 func (htr *HomeTimelineRequest) encode(enc *codegen.Encoder) []byte {
@@ -155,8 +151,8 @@ func (htr *HomeTimelineRequest) generate(client *SingleThreadClient) {
 
 type UserTimelineRequest struct {
 	user_id int64
-	start int
-	stop int
+	start   int
+	stop    int
 }
 
 func (utr *UserTimelineRequest) encode(enc *codegen.Encoder) []byte {
@@ -173,12 +169,12 @@ func (utr *UserTimelineRequest) generate(client *SingleThreadClient) {
 }
 
 type ComposePostRequest struct {
-	username string
-	user_id int64
-	text string
-	media_ids []int64
+	username    string
+	user_id     int64
+	text        string
+	media_ids   []int64
 	media_types []string
-	post_type PostType
+	post_type   PostType
 }
 
 func (cpr *ComposePostRequest) encode(enc *codegen.Encoder) []byte {
@@ -218,8 +214,8 @@ func (cpr *ComposePostRequest) generate(client *SingleThreadClient) {
 
 type RemovePostsRequest struct {
 	user_id int64
-	start int
-	stop int
+	start   int
+	stop    int
 }
 
 func (rpr *RemovePostsRequest) encode(enc *codegen.Encoder) []byte {
@@ -236,7 +232,7 @@ func (rpr *RemovePostsRequest) generate(client *SingleThreadClient) {
 }
 
 type FollowRequest struct {
-	user_id int64
+	user_id     int64
 	followee_id int64
 }
 
@@ -252,7 +248,7 @@ func (fr *FollowRequest) generate(client *SingleThreadClient) {
 }
 
 type UnfollowRequest struct {
-	user_id int64
+	user_id     int64
 	followee_id int64
 }
 
@@ -279,7 +275,6 @@ func (gfr *GetFollowersRequest) encode(enc *codegen.Encoder) []byte {
 func (gfr *GetFollowersRequest) generate(client *SingleThreadClient) {
 	gfr.user_id = client._gen_user_id()
 }
-
 
 func main() {
 	client := SingleThreadClient{}
