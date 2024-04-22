@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	. "SocialNetwork/shared/common"
+	"SocialNetwork/shared/common"
 
 	"github.com/ServiceWeaver/weaver"
 )
@@ -77,12 +77,12 @@ func (s *SocialGraphService) FollowWithUsername(ctx context.Context, followerUse
 
 func (s *SocialGraphService) UnfollowWithUsername(ctx context.Context, followerUsername string, followeeUsername string) error {
 	user_service := s.user_service.Get()
-	follower_id_fu := AsyncExec(func() interface{} {
+	follower_id_fu := common.AsyncExec(func() interface{} {
 		followerId, _ := user_service.GetUserId(ctx, followerUsername)
 		return followerId
 	})
 
-	followee_id_fu := AsyncExec(func() interface{} {
+	followee_id_fu := common.AsyncExec(func() interface{} {
 		followeeId, _ := user_service.GetUserId(ctx, followeeUsername)
 		return followeeId
 	})

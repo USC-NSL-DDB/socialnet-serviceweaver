@@ -22,6 +22,9 @@ func iterative_search(text string, pattern string) []string {
 	reg := regexp.MustCompile(pattern)
 	for i := 0; i < len(text); {
 		loc := reg.FindIndex([]byte(text[i:]))
+		if loc == nil {
+			break
+		}
 		st, ed := loc[0], loc[1]
 		if st == -1 {
 			break

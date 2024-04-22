@@ -27,7 +27,10 @@ func (uts *UserTimelineService) WriteUserTimeline(ctx context.Context, postId, u
 func (uts *UserTimelineService) ReadUserTimeline(ctx context.Context, userId int64, start int, stop int) ([]Post, error) {
 	storage := uts.storage.Get()
 	postStorageService := uts.postStorageService.Get()
-	postIds, _ := storage.GetPostTimeline(ctx, userId, start, stop)
+	postIds, err := storage.GetPostTimeline(ctx, userId, start, stop)
+	if err != nil {
+		return make([]Post, 0), err
+	}
 	return postStorageService.ReadPosts(ctx, postIds)
 }
 

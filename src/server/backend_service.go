@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	. "SocialNetwork/shared/common"
+	"SocialNetwork/shared/common"
 
 	"github.com/ServiceWeaver/weaver"
 )
@@ -87,12 +87,12 @@ func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start,
 	htls := bs.homeTimelineService.Get()
 	uss := bs.urlShortenService.Get()
 
-	posts_fu := AsyncExec(func() interface{} {
+	posts_fu := common.AsyncExec(func() interface{} {
 		r, _ := utls.ReadUserTimeline(ctx, user_id, start, top)
 		return r
 	})
 
-	followers_fu := AsyncExec(func() interface{} {
+	followers_fu := common.AsyncExec(func() interface{} {
 		r, _ := sgs.GetFollowers(ctx, user_id)
 		return r
 	})
@@ -100,33 +100,33 @@ func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start,
 	posts := posts_fu.Await().([]Post)
 	followers := followers_fu.Await().([]int64)
 
-	remove_posts_fus := make([]Future, 0)
-	remove_from_timeline_fus := make([]Future, 0)
-	remove_short_url_fus := make([]Future, 0)
+	remove_posts_fus := make([]common.Future, 0)
+	remove_from_timeline_fus := make([]common.Future, 0)
+	remove_short_url_fus := make([]common.Future, 0)
 
 	for _, post := range posts {
-		remove_posts_fus = append(remove_posts_fus, AsyncExec(func() interface{} {
+		remove_posts_fus = append(remove_posts_fus, common.AsyncExec(func() interface{} {
 			result, _ := pss.RemovePost(ctx, post.Post_id)
 			return result
-		}).(Future))
+		}).(common.Future))
 
-		remove_from_timeline_fus = append(remove_from_timeline_fus, AsyncExec(func() interface{} {
+		remove_from_timeline_fus = append(remove_from_timeline_fus, common.AsyncExec(func() interface{} {
 			utls.RemovePost(ctx, user_id, post.Post_id, post.Timestamp)
 			return nil
-		}).(Future))
+		}).(common.Future))
 
 		for _, mention := range post.User_mentions {
-			remove_short_url_fus = append(remove_short_url_fus, AsyncExec(func() interface{} {
+			remove_short_url_fus = append(remove_short_url_fus, common.AsyncExec(func() interface{} {
 				htls.RemovePost(ctx, mention.UserId, post.Post_id, post.Timestamp)
 				return nil
-			}).(Future))
+			}).(common.Future))
 		}
 
 		for _, user_id := range followers {
-			remove_from_timeline_fus = append(remove_from_timeline_fus, AsyncExec(func() interface{} {
+			remove_from_timeline_fus = append(remove_from_timeline_fus, common.AsyncExec(func() interface{} {
 				utls.RemovePost(ctx, user_id, post.Post_id, post.Timestamp)
 				return nil
-			}).(Future))
+			}).(common.Future))
 		}
 
 		shortened_urls := make([]string, 0)
@@ -134,10 +134,10 @@ func (bs *BackendService) RemovePosts(ctx context.Context, user_id int64, start,
 			shortened_urls = append(shortened_urls, url.ShortenedUrl)
 		}
 
-		remove_short_url_fus = append(remove_short_url_fus, AsyncExec(func() interface{} {
+		remove_short_url_fus = append(remove_short_url_fus, common.AsyncExec(func() interface{} {
 			uss.RemoveUrls(ctx, shortened_urls)
 			return nil
-		}).(Future))
+		}).(common.Future))
 	}
 
 	// This blocking call is not necessary in the original code
@@ -178,19 +178,19 @@ func (bs *BackendService) CompostPost(
 	htls := bs.homeTimelineService.Get()
 	post_storage_service := bs.postStorageService.Get()
 
-	text_fu := AsyncExec(func() interface{} {
+	text_fu := common.AsyncExec(func() interface{} {
 		r, _ := text_service.ComposeText(ctx, text)
 		return r
 	})
-	unique_id_fu := AsyncExec(func() interface{} {
+	unique_id_fu := common.AsyncExec(func() interface{} {
 		r, _ := unique_id_service.ComposeUniqueId(ctx, post_type)
 		return r
 	})
-	medias_fu := AsyncExec(func() interface{} {
+	medias_fu := common.AsyncExec(func() interface{} {
 		r, _ := media_service.ComposeMedia(ctx, media_types, media_ids)
 		return r
 	})
-	creator_fu := AsyncExec(func() interface{} {
+	creator_fu := common.AsyncExec(func() interface{} {
 		r, _ := us.ComposeCreatorWithUserId(ctx, user_id, username)
 		return r
 	})
@@ -198,7 +198,7 @@ func (bs *BackendService) CompostPost(
 	timestamp := time.Now().Unix()
 	unique_id := unique_id_fu.Await().(int64)
 
-	write_user_timeline_fu := AsyncExec(func() interface{} {
+	write_user_timeline_fu := common.AsyncExec(func() interface{} {
 		utls.WriteUserTimeline(ctx, unique_id, user_id, timestamp)
 		return nil
 	})
@@ -208,7 +208,7 @@ func (bs *BackendService) CompostPost(
 	for _, item := range text_service_return.User_mentions {
 		user_mention_ids = append(user_mention_ids, item.UserId)
 	}
-	write_home_timeline_fu := AsyncExec(func() interface{} {
+	write_home_timeline_fu := common.AsyncExec(func() interface{} {
 		htls.WriteHomeTimeline(ctx, unique_id, user_id, timestamp, user_mention_ids)
 		return nil
 	})
@@ -225,7 +225,7 @@ func (bs *BackendService) CompostPost(
 		Post_type:     post_type,
 	}
 
-	post_fu := AsyncExec(func() interface{} {
+	post_fu := common.AsyncExec(func() interface{} {
 		post_storage_service.StorePost(ctx, post)
 		return nil
 	})
