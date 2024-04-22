@@ -12,21 +12,8 @@ import (
 )
 
 const (
-	REMOVE_POSTS_ENDPOINT           = "remove_posts"
-	COMPOSE_POST_ENDPOINT           = "compose_post"
-	LOGIN_ENDPOINT                  = "login"
-	REGISTER_USER_ENDPOINT          = "register_user"
-	REGISTER_USER_WITH_ID_ENDPOINT  = "register_user_with_id"
-	READ_USER_TIMELINE_ENDPOINT     = "read_user_timeline"
-	GET_FOLLOWERS_ENDPOINT          = "get_followers"
-	UNFOLLOW_ENDPOINT               = "unfollow"
-	UNFOLLOW_WITH_USERNAME_ENDPOINT = "unfollow_with_username"
-	FOLLOW_ENDPOINT                 = "follow"
-	FOLLOW_WITH_USERNAME_ENDPOINT   = "follow_with_username"
-	GET_FOLLOWEES_ENDPOINT          = "get_followees"
-	READ_HOME_TIMELINE_ENDPOINT     = "read_home_timeline"
-	UPLOAD_MEDIA_ENDPOINT           = "upload_media"
-	GET_MEDIA_ENDPOINT              = "get_media"
+	BASE_PORT = "49555"
+	BASE_URL  = "http://localhost:" + BASE_PORT
 )
 
 func send_request(address string, data []byte) (*http.Response, error) {
@@ -38,6 +25,11 @@ func send_request(address string, data []byte) (*http.Response, error) {
 	req.Header.Set("Content-Type", "application/custom")
 	client := &http.Client{}
 	return client.Do(req)
+}
+
+func init_request(endpoint string, data []byte) (*http.Response, error) {
+	address := BASE_URL + endpoint
+	return send_request(address, data)
 }
 
 func encode_data(action func(*codegen.Encoder)) []byte {
@@ -62,7 +54,7 @@ func send_remove_posts(user_id int64, start int, stop int) {
 		enc.Int(stop)
 	})
 
-	address := "http://localhost:12345/" + REMOVE_POSTS_ENDPOINT
+	address := "http://localhost:49555" + REMOVE_POSTS_ENDPOINT
 
 	response, err := send_request(address, data)
 	if err != nil {
@@ -84,7 +76,7 @@ func send_compose_post(
 		enc.Int((int)(post_type))
 	})
 
-	address := "http://localhost:12346/" + COMPOSE_POST_ENDPOINT
+	address := "http://localhost:49555" + COMPOSE_POST_ENDPOINT
 
 	response, err := send_request(address, data)
 	if err != nil {

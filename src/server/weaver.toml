@@ -2,18 +2,19 @@
 binary = "./server.out"
 
 [multi]
-listeners.remove_posts =            {address = "localhost:12345"}
-listeners.compose_post =            {address = "localhost:12346"}
-listeners.login =                   {address = "localhost:12347"}
-listeners.register_user =           {address = "localhost:12348"}
-listeners.register_user_with_id =   {address = "localhost:12349"}
-listeners.read_user_timeline =      {address = "localhost:12350"}
-listeners.get_followers =           {address = "localhost:12351"}
-listeners.unfollow =                {address = "localhost:12352"}
-listeners.unfollow_with_username =  {address = "localhost:12353"}
-listeners.follow =                  {address = "localhost:12354"}
-listeners.follow_with_username =    {address = "localhost:12355"}
-listeners.get_followees =           {address = "localhost:12356"}
-listeners.read_home_timeline =      {address = "localhost:12357"}
-listeners.upload_media =            {address = "localhost:12358"}
-listeners.get_media =               {address = "localhost:12359"}
+# listeners.remove_posts =            {address = "localhost:12345"}
+# listeners.compose_post =            {address = "localhost:12346"}
+# listeners.login =                   {address = "localhost:12347"}
+# listeners.register_user =           {address = "localhost:12348"}
+# listeners.register_user_with_id =   {address = "localhost:12349"}
+# listeners.read_user_timeline =      {address = "localhost:12350"}
+# listeners.get_followers =           {address = "localhost:12351"}
+# listeners.unfollow =                {address = "localhost:12352"}
+# listeners.unfollow_with_username =  {address = "localhost:12353"}
+# listeners.follow =                  {address = "localhost:12354"}
+# listeners.follow_with_username =    {address = "localhost:12355"}
+# listeners.get_followees =           {address = "localhost:12356"}
+# listeners.read_home_timeline =      {address = "localhost:12357"}
+# listeners.upload_media =            {address = "localhost:12358"}
+# listeners.get_media =               {address = "localhost:12359"}
+listeners.api_listener =            {address = "localhost:49555"}
