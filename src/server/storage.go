@@ -152,21 +152,21 @@ func (s *Storage) Follow(_ context.Context, userId int64, followeeId int64) erro
 	// userId follows followeeId
 	followees, flag := s.useridToFolloweesMap.Get(userId)
 	if !flag {
-    newMap := NewHashMap[int64, bool]()
-    newMap.Put(followeeId, true)
+		newMap := NewHashMap[int64, bool]()
+		newMap.Put(followeeId, true)
 		followees = newMap
 	} else {
-    followees.Put(followeeId, true)
+		followees.Put(followeeId, true)
 	}
 	s.useridToFolloweesMap.Put(userId, followees)
 
 	followers, flag := s.useridToFollowersMap.Get(followeeId)
 	if !flag {
-    newMap := NewHashMap[int64, bool]()
-    newMap.Put(userId, true)
+		newMap := NewHashMap[int64, bool]()
+		newMap.Put(userId, true)
 		followers = newMap
 	} else {
-    followees.Put(userId, true)
+		followees.Put(userId, true)
 	}
 	s.useridToFollowersMap.Put(followeeId, followers)
 	return nil
@@ -191,8 +191,8 @@ func (s *Storage) Unfollow(_ context.Context, userId int64, followeeId int64) er
 		return nil
 	}
 
-  followees.Delete(followeeId)
-  followers.Delete(userId)
+	followees.Delete(followeeId)
+	followers.Delete(userId)
 	// delete(followees, followeeId)
 	// delete(followers, userId)
 	return nil
@@ -200,11 +200,17 @@ func (s *Storage) Unfollow(_ context.Context, userId int64, followeeId int64) er
 
 func (s *Storage) GetFollowers(_ context.Context, userId int64) (map[int64]bool, bool, error) {
 	v, e := s.useridToFollowersMap.Get(userId)
+	if !e {
+		return nil, false, nil
+	}
 	return v.Clone(), e, nil
 }
 
 func (s *Storage) GetFollowees(_ context.Context, userId int64) (map[int64]bool, bool, error) {
 	v, e := s.useridToFolloweesMap.Get(userId)
+	if !e {
+		return nil, false, nil
+	}
 	return v.Clone(), e, nil
 }
 
