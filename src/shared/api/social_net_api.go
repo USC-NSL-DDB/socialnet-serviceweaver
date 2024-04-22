@@ -16,7 +16,7 @@ const (
 	BASE_URL  = "http://localhost:" + BASE_PORT
 )
 
-func send_request(address string, data []byte) (*http.Response, error) {
+func SendRequest(address string, data []byte) (*http.Response, error) {
 	req, err := http.NewRequest("POST", address, bytes.NewBuffer(data))
 	if err != nil {
 		fmt.Println("Error:", err)
@@ -29,7 +29,7 @@ func send_request(address string, data []byte) (*http.Response, error) {
 
 func InitRequest(endpoint string, data []byte) (*http.Response, error) {
 	address := BASE_URL + endpoint
-	return send_request(address, data)
+	return SendRequest(address, data)
 }
 
 func EncodeData(action func(*codegen.Encoder)) []byte {
