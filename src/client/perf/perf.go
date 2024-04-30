@@ -3,6 +3,7 @@ package perf
 import (
 	"math"
 	"math/rand"
+	"sort"
 	"sync"
 	"time"
 )
@@ -21,16 +22,25 @@ type PerfAdapter interface {
 }
 
 type Trace struct {
-	absl_start_us uint64
-	start_us      uint64
-	duration      uint64
+	AbslStartUs uint64
+	StartUs     uint64
+	Duration    uint64
 }
+
+type TraceFormat int
+
+const (
+	kUnsorted TraceFormat = iota
+	kSortedByDuration
+	kSortedByStart
+)
 
 // Closed-loop, possion arrival.
 type Perf struct {
-	adapter    PerfAdapter
-	traces     []Trace
-	real_mops_ float64
+	adapter      PerfAdapter
+	traces       []Trace
+	real_mops_   float64
+	trace_format TraceFormat
 }
 
 func NewPerf(adapter PerfAdapter) *Perf {
@@ -99,10 +109,10 @@ func (p *Perf) Benchmark(
 
 				now := microtime()
 				trace := Trace{
-					absl_start_us: now, start_us: now - start_us, duration: 0,
+					AbslStartUs: now, StartUs: now - start_us, Duration: 0,
 				}
 				ok := p.adapter.ServeRequest(thread_state, req_with_time.req)
-				trace.duration = microtime() - start_us - trace.start_us
+				trace.Duration = microtime() - start_us - trace.StartUs
 				if ok {
 					traces[i] = trace
 				}
@@ -145,12 +155,81 @@ func (p *Perf) RunMultiClients(
 	p.traces = p.Benchmark(all_perf_reqs, thread_states, num_threads, &miss_ddl_thresh_us)
 	var real_duration_us uint64 = 0
 	for _, trace := range p.traces {
-		end_us := trace.start_us + trace.duration
+		end_us := trace.StartUs + trace.Duration
 		if end_us > real_duration_us {
 			real_duration_us = end_us
 		}
 	}
 	p.real_mops_ = float64(len(p.traces)) / float64(real_duration_us)
+}
+
+func (p *Perf) GetAvgLat() uint64 {
+	if p.trace_format != kSortedByDuration {
+		sort.Slice(p.traces, func(i, j int) bool {
+			return p.traces[i].Duration < p.traces[j].Duration
+		})
+		p.trace_format = kSortedByDuration
+	}
+
+	var sum uint64
+	for _, trace := range p.traces {
+		sum += trace.Duration
+	}
+	return sum / uint64(len(p.traces))
+}
+
+func (p *Perf) GetNthLats(nth float64) uint64 {
+	if p.trace_format != kSortedByDuration {
+		sort.Slice(p.traces, func(i, j int) bool {
+			return p.traces[i].Duration < p.traces[j].Duration
+		})
+		p.trace_format = kSortedByDuration
+	}
+
+	idx := int(nth / 100.0 * float64(len(p.traces)))
+	return p.traces[idx].Duration
+}
+
+func (p *Perf) GetTimeseriesNthLats(interval_us uint64, nth float64) []Trace {
+	if p.trace_format != kSortedByStart {
+		sort.Slice(p.traces, func(i, j int) bool {
+			return p.traces[i].StartUs < p.traces[j].StartUs
+		})
+		p.trace_format = kSortedByStart
+	}
+
+	var timeseries []Trace
+	var win_duratins []uint64
+	curr_win_us := p.traces[0].StartUs
+	absl_curr_win_us := p.traces[0].AbslStartUs
+
+	for _, trace := range p.traces {
+		if curr_win_us+interval_us < trace.StartUs {
+			sort.Slice(win_duratins, func(i, j int) bool {
+				return win_duratins[i] < win_duratins[j]
+			})
+			if len(win_duratins) >= 100 {
+				idx := int(nth / 100.0 * float64(len(win_duratins)))
+				timeseries = append(timeseries, Trace{
+					AbslStartUs: absl_curr_win_us, StartUs: curr_win_us, Duration: win_duratins[idx],
+				})
+			}
+			curr_win_us += interval_us
+			absl_curr_win_us += interval_us
+			win_duratins = win_duratins[:0]
+		}
+		win_duratins = append(win_duratins, trace.Duration)
+	}
+
+	return timeseries
+}
+
+func (p *Perf) GetRealMops() float64 {
+	return p.real_mops_
+}
+
+func (p *Perf) GetTraces() []Trace {
+	return p.traces
 }
 
 // get current time in microsecond resolution.

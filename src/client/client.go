@@ -1,14 +1,24 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"math/rand"
+	"os"
 	"time"
 
+	"SocialNetwork/client/perf"
 	"SocialNetwork/shared/api"
 	"SocialNetwork/shared/common"
 
 	"github.com/ServiceWeaver/weaver/runtime/codegen"
+)
+
+const (
+	NUM_THREADS            = 200
+	TARGET_MOPS            = 0.1
+	TOTAL_MOPS             = 1
+	TIMESERIES_INTERVAL_US = 10 * 1000
 )
 
 const (
@@ -45,6 +55,12 @@ type SingleThreadClient struct {
 	rand_request_type_generator rand.Rand
 }
 
+func NewSingleThreadClient() *SingleThreadClient {
+	client := SingleThreadClient{}
+	client.Init()
+	return &client
+}
+
 func (client *SingleThreadClient) Init() {
 	client.rand_charset_generator = *rand.New(rand.NewSource(0))
 	client.rand_user_id_generator = *rand.New(rand.NewSource(1))
@@ -55,44 +71,101 @@ func (client *SingleThreadClient) Init() {
 	client.rand_request_type_generator = *rand.New(rand.NewSource(6))
 }
 
-func (client *SingleThreadClient) GenRequest() (api.ClientRequest, string) {
+type SocialNetworkAdapter struct{}
+
+func (adapter *SocialNetworkAdapter) CreateGoroutineState() perf.PerfThreadState {
+	return NewSingleThreadClient()
+}
+
+func (adapter *SocialNetworkAdapter) GenRequest(state perf.PerfThreadState) perf.PerfRequest {
+	client := state.(*SingleThreadClient)
 	rand_int := client.rand_request_type_generator.Int() % 100
-	address := BASE_URL
 	if rand_int <= PERCENT_USER_TIMELINE {
 		req := &api.ReadUserTimelineRequest{}
 		GenReadUserTimelineReq(req, client)
-		address += common.READ_USER_TIMELINE_ENDPOINT
-		return req, address
+		return req
 	}
 	rand_int -= PERCENT_USER_TIMELINE
 	if rand_int < PERCENT_HOME_TIMELINE {
 		req := &api.ReadHomeTimelineRequest{}
 		GenReadHomeTimelineReq(req, client)
-		address += common.READ_HOME_TIMELINE_ENDPOINT
-		return req, address
+		return req
 	}
 
 	rand_int -= PERCENT_HOME_TIMELINE
 	if rand_int < PERCENT_COMPOSE_POST {
 		req := &api.ComposePostRequest{}
 		GenComposePostReq(req, client)
-		address += common.COMPOSE_POST_ENDPOINT
-		return req, address
+		return req
 	}
 
 	rand_int -= PERCENT_COMPOSE_POST
 	if rand_int < PERCENT_REMOVE_POSTS {
 		req := &api.RemovePostsRequest{}
 		GenRemovePostsReq(req, client)
-		address += common.REMOVE_POSTS_ENDPOINT
-		return req, address
+		return req
 	}
 
 	req := &api.FollowRequest{}
 	GenFollowReq(req, client)
-	address += common.FOLLOW_ENDPOINT
-	return req, address
+	return req
 }
+
+func (adapter *SocialNetworkAdapter) ServeRequest(state perf.PerfThreadState, request perf.PerfRequest) bool {
+	client := state.(*SingleThreadClient)
+	switch req := request.(type) {
+	case *api.ReadUserTimelineRequest:
+		client.SendRequest(req, BASE_URL+common.READ_USER_TIMELINE_ENDPOINT)
+	case *api.ReadHomeTimelineRequest:
+		client.SendRequest(req, BASE_URL+common.READ_HOME_TIMELINE_ENDPOINT)
+	case *api.ComposePostRequest:
+		client.SendRequest(req, BASE_URL+common.COMPOSE_POST_ENDPOINT)
+	case *api.RemovePostsRequest:
+		client.SendRequest(req, BASE_URL+common.REMOVE_POSTS_ENDPOINT)
+	case *api.FollowRequest:
+		client.SendRequest(req, BASE_URL+common.FOLLOW_ENDPOINT)
+	}
+	return true
+}
+
+// func (client *SingleThreadClient) GenRequest() (api.ClientRequest, string) {
+// 	rand_int := client.rand_request_type_generator.Int() % 100
+// 	address := BASE_URL
+// 	if rand_int <= PERCENT_USER_TIMELINE {
+// 		req := &api.ReadUserTimelineRequest{}
+// 		GenReadUserTimelineReq(req, client)
+// 		address += common.READ_USER_TIMELINE_ENDPOINT
+// 		return req, address
+// 	}
+// 	rand_int -= PERCENT_USER_TIMELINE
+// 	if rand_int < PERCENT_HOME_TIMELINE {
+// 		req := &api.ReadHomeTimelineRequest{}
+// 		GenReadHomeTimelineReq(req, client)
+// 		address += common.READ_HOME_TIMELINE_ENDPOINT
+// 		return req, address
+// 	}
+
+// 	rand_int -= PERCENT_HOME_TIMELINE
+// 	if rand_int < PERCENT_COMPOSE_POST {
+// 		req := &api.ComposePostRequest{}
+// 		GenComposePostReq(req, client)
+// 		address += common.COMPOSE_POST_ENDPOINT
+// 		return req, address
+// 	}
+
+// 	rand_int -= PERCENT_COMPOSE_POST
+// 	if rand_int < PERCENT_REMOVE_POSTS {
+// 		req := &api.RemovePostsRequest{}
+// 		GenRemovePostsReq(req, client)
+// 		address += common.REMOVE_POSTS_ENDPOINT
+// 		return req, address
+// 	}
+
+// 	req := &api.FollowRequest{}
+// 	GenFollowReq(req, client)
+// 	address += common.FOLLOW_ENDPOINT
+// 	return req, address
+// }
 
 func (client *SingleThreadClient) SendRequest(req api.ClientRequest, address string) {
 	data := req.Encode(codegen.NewEncoder())
@@ -178,13 +251,52 @@ func GenFollowerReq(req *api.GetFollowersRequest, client *SingleThreadClient) {
 	req.UserId = client._gen_user_id()
 }
 
-func main() {
-	client := SingleThreadClient{}
-	client.Init()
-
-	for {
-		req, address := client.GenRequest()
-		client.SendRequest(req, address)
-		time.Sleep(INTERVAL_BETWEEN_REQUESTS)
+func writeTimeseries(perfer perf.Perf, filename string) {
+	file, err := os.Create(filename)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to create file: %v\n", err)
+		return
 	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	timeseries := perfer.GetTimeseriesNthLats(TIMESERIES_INTERVAL_US, 99)
+	for _, trace := range timeseries {
+		if _, err := fmt.Fprintf(writer, "%d %d\n", trace.StartUs, trace.Duration); err != nil {
+			fmt.Fprintf(os.Stderr, "Failed to write to file: %v\n", err)
+			return
+		}
+	}
+	if err := writer.Flush(); err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to flush writer: %v\n", err)
+	}
+}
+
+func main() {
+	// client := SingleThreadClient{}
+	// client.Init()
+	sn_adapter := SocialNetworkAdapter{}
+	perf_runner := perf.NewPerf(&sn_adapter)
+	duration_us := uint64(TOTAL_MOPS / TARGET_MOPS * 1e6)
+	warmup_us := duration_us
+	perf_runner.Run(NUM_THREADS, TARGET_MOPS, duration_us, warmup_us, 50*1000)
+
+	fmt.Println("real_mops, avg_lat, 50th_lat, 90th_lat, 95th_lat, 99th_lat, 99.9th_lat")
+	fmt.Printf("%f %d %d %d %d %d %d\n",
+		perf_runner.GetRealMops(),
+		perf_runner.GetAvgLat(),
+		perf_runner.GetNthLats(50),
+		perf_runner.GetNthLats(90),
+		perf_runner.GetNthLats(95),
+		perf_runner.GetNthLats(99),
+		perf_runner.GetNthLats(99.9),
+	)
+
+	writeTimeseries(*perf_runner, "timeseries.txt")
+
+	// for {
+	// 	req, address := client.GenRequest()
+	// 	client.SendRequest(req, address)
+	// 	time.Sleep(INTERVAL_BETWEEN_REQUESTS)
+	// }
 }
