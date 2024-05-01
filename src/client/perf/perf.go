@@ -53,13 +53,13 @@ func (p *Perf) Clear() {
 }
 
 func (p *Perf) GenRequests(
-	all_reqs [][]PerfRequestWithTime, thread_states []PerfThreadState, num_threads uint32, target_mops float64, duration_us uint64,
+	all_reqs *[][]PerfRequestWithTime, thread_states []PerfThreadState, num_threads uint32, target_mops float64, duration_us uint64,
 ) {
 	wg := sync.WaitGroup{}
 
 	for i := uint32(0); i < num_threads; i++ {
 		wg.Add(1)
-		go func(reqs []PerfRequestWithTime, thread_state PerfThreadState) {
+		go func(reqs *[]PerfRequestWithTime, thread_state PerfThreadState) {
 			defer wg.Done()
 			state := p.adapter.CreateGoroutineState()
 			src := rand.NewSource(time.Now().UnixNano())
@@ -76,10 +76,10 @@ func (p *Perf) GenRequests(
 					start_us: curr_us, req: p.adapter.GenRequest(state),
 				}
 
-				reqs = append(reqs, req_with_time)
+				*reqs = append(*reqs, req_with_time)
 				curr_us += uint64(interval)
 			}
-		}(all_reqs[i], thread_states[i])
+		}(&(*all_reqs)[i], thread_states[i])
 	}
 
 	wg.Wait()
@@ -129,9 +129,9 @@ func (p *Perf) Benchmark(
 	return gathered_traces
 }
 
-func (p *Perf) CreateThreadStates(thread_states []PerfThreadState, num_threads uint32) {
+func (p *Perf) CreateThreadStates(thread_states *[]PerfThreadState, num_threads uint32) {
 	for i := uint32(0); i < num_threads; i++ {
-		thread_states = append(thread_states, p.adapter.CreateGoroutineState())
+		*thread_states = append(*thread_states, p.adapter.CreateGoroutineState())
 	}
 }
 
@@ -145,11 +145,11 @@ func (p *Perf) RunMultiClients(
 	num_threads uint32, target_mops float64, duration_us uint64, warmup_us uint64, miss_ddl_thresh_us uint64,
 ) {
 	thread_states := make([]PerfThreadState, 0)
-	p.CreateThreadStates(thread_states, num_threads)
+	p.CreateThreadStates(&thread_states, num_threads)
 	all_warmup_reqs := make([][]PerfRequestWithTime, num_threads)
 	all_perf_reqs := make([][]PerfRequestWithTime, num_threads)
-	p.GenRequests(all_warmup_reqs, thread_states, num_threads, target_mops, warmup_us)
-	p.GenRequests(all_perf_reqs, thread_states, num_threads, target_mops, duration_us)
+	p.GenRequests(&all_warmup_reqs, thread_states, num_threads, target_mops, warmup_us)
+	p.GenRequests(&all_perf_reqs, thread_states, num_threads, target_mops, duration_us)
 	p.Benchmark(all_warmup_reqs, thread_states, num_threads, nil)
 	// barrier?
 	p.traces = p.Benchmark(all_perf_reqs, thread_states, num_threads, &miss_ddl_thresh_us)

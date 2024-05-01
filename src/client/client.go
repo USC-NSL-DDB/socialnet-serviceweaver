@@ -40,7 +40,7 @@ const (
 
 	INTERVAL_BETWEEN_REQUESTS = 50 * time.Millisecond
 
-	BASE_URL = "http://localhost:49555"
+	BASE_URL = "http://128.110.223.7"
 )
 
 type SingleThreadClient struct {
