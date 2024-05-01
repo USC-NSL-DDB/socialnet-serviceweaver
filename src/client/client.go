@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"math/rand"
+	"net/http"
 	"os"
 	"time"
 
@@ -15,9 +16,9 @@ import (
 )
 
 const (
-	NUM_THREADS            = 200
+	NUM_THREADS            = 8
 	TARGET_MOPS            = 0.1
-	TOTAL_MOPS             = 1
+	TOTAL_MOPS             = 0.5
 	TIMESERIES_INTERVAL_US = 10 * 1000
 )
 
@@ -40,7 +41,7 @@ const (
 
 	INTERVAL_BETWEEN_REQUESTS = 50 * time.Millisecond
 
-	BASE_URL = "http://128.110.223.7"
+	BASE_URL = "http://10.10.1.1:49555"
 )
 
 type SingleThreadClient struct {
@@ -53,6 +54,7 @@ type SingleThreadClient struct {
 	rand_max_mentions_generator rand.Rand
 
 	rand_request_type_generator rand.Rand
+	client *http.Client
 }
 
 func NewSingleThreadClient() *SingleThreadClient {
@@ -69,6 +71,7 @@ func (client *SingleThreadClient) Init() {
 	client.rand_max_medias_generator = *rand.New(rand.NewSource(4))
 	client.rand_max_mentions_generator = *rand.New(rand.NewSource(5))
 	client.rand_request_type_generator = *rand.New(rand.NewSource(6))
+	client.client = &http.Client{}
 }
 
 type SocialNetworkAdapter struct{}
@@ -169,8 +172,8 @@ func (adapter *SocialNetworkAdapter) ServeRequest(state perf.PerfThreadState, re
 
 func (client *SingleThreadClient) SendRequest(req api.ClientRequest, address string) {
 	data := req.Encode(codegen.NewEncoder())
-	fmt.Println("Sending request to ", address, " with data: ", data)
-	response, err := api.SendRequest(address, data)
+	// fmt.Println("Sending request to ", address, " with data: ", data)
+	response, err := api.ClientSendRequest(client.client, address, data)
 	if err != nil {
 		fmt.Println("Error:", err)
 		return

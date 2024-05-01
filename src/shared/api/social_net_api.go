@@ -28,7 +28,7 @@ func releaseClient(client *http.Client) {
 
 const (
 	BASE_PORT = "49555"
-	BASE_URL  = "http://localhost:" + BASE_PORT
+	BASE_URL  = "http://10.10.1.1:" + BASE_PORT
 )
 
 // var client = &http.Client{}
@@ -44,6 +44,18 @@ func SendRequest(address string, data []byte) (*http.Response, error) {
 	client := getClient()
 	resp, err := client.Do(req)
 	releaseClient(client)
+	return resp, err
+}
+
+func ClientSendRequest(client *http.Client, address string, data []byte) (*http.Response, error) {
+	// fmt.Println("Sending to addr:", address)
+	req, err := http.NewRequest("POST", address, bytes.NewBuffer(data))
+	if err != nil {
+		fmt.Println("[SendRequest] Error:", err)
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/custom")
+	resp, err := client.Do(req)
 	return resp, err
 }
 

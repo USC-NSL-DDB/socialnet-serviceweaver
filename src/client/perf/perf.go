@@ -6,6 +6,7 @@ import (
 	"sort"
 	"sync"
 	"time"
+	"fmt"
 )
 
 type PerfThreadState interface{}
@@ -116,6 +117,7 @@ func (p *Perf) Benchmark(
 				if ok {
 					traces[i] = trace
 				}
+				time.Sleep(100 * time.Millisecond)
 			}
 		}(all_reqs[i], thread_states[i], all_traces[i])
 	}
@@ -152,6 +154,8 @@ func (p *Perf) RunMultiClients(
 	p.GenRequests(&all_perf_reqs, thread_states, num_threads, target_mops, duration_us)
 	p.Benchmark(all_warmup_reqs, thread_states, num_threads, nil)
 	// barrier?
+	fmt.Println("finish warmup")
+	time.Sleep(3 * time.Second)
 	p.traces = p.Benchmark(all_perf_reqs, thread_states, num_threads, &miss_ddl_thresh_us)
 	var real_duration_us uint64 = 0
 	for _, trace := range p.traces {
