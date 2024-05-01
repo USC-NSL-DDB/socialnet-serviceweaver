@@ -16,9 +16,9 @@ import (
 )
 
 const (
-	NUM_THREADS            = 8
-	TARGET_MOPS            = 0.1
-	TOTAL_MOPS             = 0.5
+	NUM_THREADS            = 10
+	TARGET_MOPS            = 0.00005
+	TOTAL_MOPS             = 0.0002
 	TIMESERIES_INTERVAL_US = 10 * 1000
 )
 

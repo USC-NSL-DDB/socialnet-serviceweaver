@@ -1,5 +1,8 @@
 [serviceweaver]
 binary = "./server.out"
 
+[single]
+listeners.apilistener =            {address = "localhost:49555"}
+
 [multi]
 listeners.apilistener =            {address = "localhost:49555"}
