@@ -1,0 +1,7 @@
+appConfig: weaver.toml
+image: server.out:12345
+# repo: ybyan0108/socialnet-serviceweaver
+
+listeners:
+  - name: apilistener
+    public: true

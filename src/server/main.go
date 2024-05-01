@@ -23,7 +23,7 @@ type app struct {
 	weaver.Implements[weaver.Main]
 	backend_service weaver.Ref[BackendServicer]
 
-	api_listener weaver.Listener
+	api_listener weaver.Listener `weaver:"apilistener"`
 }
 
 func reg_listener_action(

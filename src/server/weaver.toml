@@ -2,4 +2,4 @@
 binary = "./server.out"
 
 [multi]
-listeners.api_listener =            {address = "localhost:49555"}
+listeners.apilistener =            {address = "localhost:49555"}
