@@ -42,8 +42,12 @@ func SendRequest(address string, data []byte) (*http.Response, error) {
 	}
 	req.Header.Set("Content-Type", "application/custom")
 	client := getClient()
+	defer releaseClient(client)
+
 	resp, err := client.Do(req)
-	releaseClient(client)
+	if err != nil {
+		fmt.Println("[SendRequest] Error:", err)
+	}
 	return resp, err
 }
 

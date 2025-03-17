@@ -160,7 +160,7 @@ func (us *UserService) Login(ctx context.Context, username, password string) (st
 		"ttl":       "3600",
 	})
 
-	secret := "mysecret"
+	secret := []byte("mysecret")
 
 	// Sign and get the complete encoded token as a string
 	tokenString, err := token.SignedString(secret)

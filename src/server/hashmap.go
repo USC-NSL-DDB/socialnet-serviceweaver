@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 	"sync"
 )
 
@@ -110,6 +110,6 @@ func ApplyWithReturn[K comparable, V any, R any](
 		return applyFn(key, val, args...), nil
 	} else {
 		var zeroR R
-		return zeroR, errors.New("key does not exist")
+		return zeroR, fmt.Errorf("key %v does not exist", key)
 	}
 }

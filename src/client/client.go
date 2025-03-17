@@ -41,7 +41,7 @@ const (
 
 	INTERVAL_BETWEEN_REQUESTS = 50 * time.Millisecond
 
-	BASE_URL = "http://10.10.1.1:49555"
+	BASE_URL = "http://localhost:8081"
 )
 
 type SingleThreadClient struct {
@@ -54,7 +54,7 @@ type SingleThreadClient struct {
 	rand_max_mentions_generator rand.Rand
 
 	rand_request_type_generator rand.Rand
-	client *http.Client
+	client                      *http.Client
 }
 
 func NewSingleThreadClient() *SingleThreadClient {
@@ -274,15 +274,29 @@ func writeTimeseries(perfer perf.Perf, filename string) {
 		fmt.Fprintf(os.Stderr, "Failed to flush writer: %v\n", err)
 	}
 }
-
+func setupTestUsers(client *SingleThreadClient, numUsers int) error {
+	// Register test users
+	for i := 0; i < numUsers; i++ {
+		username := fmt.Sprintf("username_%d", i)
+		client.SendRequest(&api.RegisterUserRequest{
+			FirstName: "Test",
+			LastName:  "User",
+			Username:  username,
+			Password:  "password123",
+		}, BASE_URL+common.REGISTER_USER_ENDPOINT)
+	}
+	return nil
+}
 func main() {
-	// client := SingleThreadClient{}
-	// client.Init()
+	client := &SingleThreadClient{}
+	client.Init()
 	sn_adapter := SocialNetworkAdapter{}
+
 	perf_runner := perf.NewPerf(&sn_adapter)
 	duration_us := uint64(TOTAL_MOPS / TARGET_MOPS * 1e6)
 	warmup_us := duration_us
-	perf_runner.Run(NUM_THREADS, TARGET_MOPS, duration_us, warmup_us, 50*1000)
+	setupTestUsers(client, NUM_USER)
+	perf_runner.Run(NUM_THREADS, TARGET_MOPS, 120*1e6, warmup_us, 50*1000)
 
 	fmt.Println("real_mops, avg_lat, 50th_lat, 90th_lat, 95th_lat, 99th_lat, 99.9th_lat")
 	fmt.Printf("%f %d %d %d %d %d %d\n",

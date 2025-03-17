@@ -1,14 +1,16 @@
 module SocialNetwork
 
-go 1.21.6
+go 1.21.1
 
 require (
-	github.com/ServiceWeaver/weaver v0.23.1
+	github.com/ServiceWeaver/weaver v0.22.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/btree v1.1.2
 	go.opentelemetry.io/otel v1.19.0
 	go.opentelemetry.io/otel/trace v1.19.0
 )
+
+replace github.com/ServiceWeaver/weaver => /home/junzhouh/distributed_debugger/serviceweavertest/weaver-0.22.0/weaver-0.22.0
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect

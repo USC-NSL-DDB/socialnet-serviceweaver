@@ -1,12 +1,12 @@
 package perf
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"sort"
 	"sync"
 	"time"
-	"fmt"
 )
 
 type PerfThreadState interface{}
@@ -141,7 +141,6 @@ func (p *Perf) Run(
 ) {
 	p.RunMultiClients(num_threads, target_mops, duration_us, warmup_us, miss_ddl_thresh_us)
 }
-
 func (p *Perf) RunMultiClients(
 	num_threads uint32, target_mops float64, duration_us uint64, warmup_us uint64, miss_ddl_thresh_us uint64,
 ) {

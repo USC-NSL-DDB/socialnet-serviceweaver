@@ -26,3 +26,10 @@ weaver_gen.go
 # Copied files
 src/client/data_type.go
 src/server/data_type.go
+
+*.txt
+deploy.yaml
+pkg
+kubeconfig
+weaver
+weaver-kube

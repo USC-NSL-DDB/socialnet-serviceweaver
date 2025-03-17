@@ -20,17 +20,17 @@ var r = rand.New(rand.NewSource(42))
 func randomString(letters string, length int) string {
 	var result strings.Builder
 	result.Grow(length) // Pre-allocate memory for efficiency
-  if length <= 0 {
-    fmt.Println("len < 0")
-  }
-  letter_len := len(letters)
-  if letter_len <= 0 {
-    fmt.Println("len letters == 0; ", letters)
-  }
-  mu.Lock()
-  defer mu.Unlock()
+	if length <= 0 {
+		fmt.Println("len < 0")
+	}
+	letter_len := len(letters)
+	if letter_len <= 0 {
+		fmt.Println("len letters == 0; ", letters)
+	}
+	mu.Lock()
+	defer mu.Unlock()
 	for i := 0; i < length; i++ {
-    ridx := r.Intn(letter_len)
+		ridx := r.Intn(letter_len)
 		result.WriteByte(letters[ridx])
 	}
 	return result.String()
@@ -42,8 +42,8 @@ func randomDigits(length int) int64 {
 	var sb strings.Builder
 	sb.Grow(length) // Pre-allocate memory to improve performance
 
-  mu.Lock()
-  defer mu.Unlock()
+	mu.Lock()
+	defer mu.Unlock()
 	for i := 0; i < length; i++ {
 		sb.WriteByte(digits[r.Intn(len(digits))])
 	}
@@ -96,17 +96,17 @@ func composePost(addr string, user_id int, num_users int, wg *sync.WaitGroup) {
 	text := randomString(letters, 256)
 
 	// User mentions
-  mu.Lock()
+	mu.Lock()
 	numMentions := r.Intn(6)
-  mu.Unlock()
+	mu.Unlock()
 	for i := 0; i < numMentions; i++ {
 		text += " @username_" + strconv.Itoa(r.Intn(num_users)+1)
 	}
 
 	// URLs
-  mu.Lock()
+	mu.Lock()
 	numURLs := r.Intn(6)
-  mu.Unlock()
+	mu.Unlock()
 	for i := 0; i < numURLs; i++ {
 		text += " http://" + randomString("abcdefghijklmnopqrstuvwxyz0123456789", 64)
 	}
@@ -233,7 +233,7 @@ func compose(addr string, nodes int) {
 }
 
 func main() {
-	addr := api.BASE_URL
+	addr := "http://localhost:49555"
 	filepath := "./social-graph/socfb-Reed98/socfb-Reed98.mtx"
 	nodes := getNodes(filepath)
 	edges := getEdges(filepath)

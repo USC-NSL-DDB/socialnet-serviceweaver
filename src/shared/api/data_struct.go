@@ -159,13 +159,13 @@ func (ufr *UnfollowRequest) Encode(enc *codegen.Encoder) []byte {
 }
 
 type UnfollowWithUsernameRequest struct {
-	Username        string
-	FolloweeUsernae string
+	Username         string
+	FolloweeUsername string
 }
 
 func (req *UnfollowWithUsernameRequest) Encode(enc *codegen.Encoder) []byte {
 	enc.String(req.Username)
-	enc.String(req.FolloweeUsernae)
+	enc.String(req.FolloweeUsername)
 	return enc.Data()
 }
 
