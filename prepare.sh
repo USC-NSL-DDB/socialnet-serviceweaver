@@ -2,6 +2,7 @@
 
 script_dir="$(dirname "$0")"
 
+# Set weaver path
 pushd  $script_dir/src
 cp shared/copy/* client
 cp shared/copy/* server 

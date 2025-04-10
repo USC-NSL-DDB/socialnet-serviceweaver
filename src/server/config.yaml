@@ -1,5 +1,5 @@
 appConfig: weaver.toml
-image: h21565897/socialnet-serviceweaver:123456
+image: h21565897/socialnet-serviceweaver:12345
 # repo: ybyan0108/socialnet-serviceweaver
 
 listeners:
@@ -12,7 +12,7 @@ scalingSpec:
 
 groups:
   - name: scalingMachines
-    components: 
+    components:
       - SocialNetwork/server/IStorage
     scalingSpec:
       minReplicas: 1

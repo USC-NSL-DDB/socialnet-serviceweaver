@@ -10,7 +10,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.19.0
 )
 
-replace github.com/ServiceWeaver/weaver => /home/junzhouh/distributed_debugger/serviceweavertest/weaver-0.22.0/weaver-0.22.0
+replace github.com/ServiceWeaver/weaver => github.com/hjzccc/weaver v0.0.0-20250410210437-8c1c5251e184
 
 require (
 	github.com/BurntSushi/toml v1.3.2 // indirect
